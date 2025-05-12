@@ -12,7 +12,8 @@ varAlloc = {@(x)(-project.basis.fw(x)-project.basis.fv(x)), @(x)(project.basis.V
     @(x)(project.basis.W1(x)), @(x)(project.basis.V1(x)), @(x)(project.basis.T(x))};
 
 %extract saved symbolic expressions....
-exprs = open('AlgExprs\kinetExpr.mat'); trms = exprs.T_keep;
+exprs = load('kinetExpr.mat');
+trms = exprs.T_keep;
 varDef = exprs.varDef; parDef = exprs.parDef; 
 
 %extract attachment positions from EoMs...

@@ -30,7 +30,7 @@ varAlloc = {@(x)(-project.basis.fv(x)-project.basis.fw(x)) , @(x)(project.basis.
 
 
 %extract saved symbolic expressions....
-exprs = open('AlgExprs\AerDownWash.mat');
+exprs = load('AerDownWash.mat');   
 varDef = exprs.varDef; parDef = exprs.parDef;
 
 %create a combined symbolic function for RHS..

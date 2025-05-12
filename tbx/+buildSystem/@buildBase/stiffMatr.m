@@ -9,7 +9,9 @@ varAlloc = {@(x)(project.basis.W1(x)), @(x)(project.basis.W2(x)), @(x)(project.b
     @(x)(project.basis.T(x)), @(x)(project.basis.T1(x))};
 
 %extract saved symbolic expressions....
-exprs = open('AlgExprs\stiffExpr.mat'); trms = exprs.U_keep;
+
+exprs = load('stiffExpr.mat');
+trms = exprs.U_keep;
 varDef = exprs.varDef; parDef = exprs.parDef; 
 
 %extract attachment positions from EoMs...

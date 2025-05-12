@@ -6,13 +6,9 @@
 clear all; close all;
 
 buildOb = buildSystem.buildBase; %call bass class for model building...
-buildOb.fileLocation = cd; %set the file location where a folder with a model-specific items could be created...
+buildOb.fileLocation = fileparts(mfilename('fullpath')); %set the file location where a folder with a model-specific items could be created...
 buildOb.name = '777_likeWing'; %a name for the model
 buildOb.par = {'E'}; %you can define some parameters (elastic and mass) that can be varied when calling a built model.. they should be defined here...
-
-%some example parameters from ucrm9..
-wing =  ucrm9_halfwing;
-
 %% some example 
 
 L = 29.4; %semi-span

@@ -13,7 +13,7 @@ varAlloc = {@(x)(-project.basis.fw(x)-project.basis.fv(x)), @(x)(project.basis.V
     @(x)(project.basis.T(x)), @(x)(project.basis.T1(x))};
 
 %open saved algebrai expressions..
-exprs = open('AlgExprs\gravExpr.mat'); 
+exprs = load('gravExpr.mat'); 
 vars = exprs.varSet; disps = exprs.disps;
 varDef = [disps, vars];
 trms = exprs.gravTrm;  par = exprs.pars; 

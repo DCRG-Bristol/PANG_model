@@ -27,7 +27,7 @@ varAlloc = {@(x)(-project.basis.fv(x)-project.basis.fw(x)) , @(x)(project.basis.
     @(x)(project.basis.W(x)), @(x)(project.basis.V(x)), @(x)(project.basis.V1(x)), @(x)(project.basis.W1(x)), @(x)(project.basis.T(x)), @(x)(project.basis.T1(x))};
 
 %extract saved symbolic expressions....
-exprs = open('AlgExprs\AerDispl_2.mat');
+exprs = load('AerDispl_2.mat');
 disps = exprs.disps;
 varDef = exprs.varDef; parDef = exprs.parDef;
 varDef = [disps, varDef];

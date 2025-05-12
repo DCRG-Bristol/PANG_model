@@ -65,6 +65,7 @@ classdef buildBase
             
             mkdir([obj.file]);
             fName = [obj.file];
+            
             projName = [fName, '\+project'];
 
             %make project folder
