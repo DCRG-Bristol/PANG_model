@@ -13,7 +13,7 @@ Additional functionalities, including the auto model generation from BAFF models
 
 ## Getting started
 
-Add the `toolbox` folder to the MATLAB path.
+Add the `tbx` folder to the MATLAB path.
 
 ## Model building
 
