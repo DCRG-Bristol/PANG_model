@@ -1,5 +1,6 @@
 %% example for building the model...
-%note: 'toolbox' fodler must be added to the path
+
+%note: 'tbx' fodler must be added to the path
 
 %example parameters for 777-like wing (stipulated!)
 
@@ -9,6 +10,7 @@ buildOb = buildSystem.buildBase; %call bass class for model building...
 buildOb.fileLocation = fileparts(mfilename('fullpath')); %set the file location where a folder with a model-specific items could be created...
 buildOb.name = '777_likeWing'; %a name for the model
 buildOb.par = {'E'}; %you can define some parameters (elastic and mass) that can be varied when calling a built model.. they should be defined here...
+
 %% some example 
 
 L = 29.4; %semi-span

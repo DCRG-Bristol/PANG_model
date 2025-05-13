@@ -18,26 +18,35 @@ if isempty(d_1)
 
 end
 
-kw0_1 = k1_1;
-for j=1:length(kw0_1(1,:))
-    for i=1:length(kw0_1(:,1))
-        kw0_1(i,j) = kw0_1(i,j) + k1_2(1,:,i,j)*q + q'*k1_3(:,:,i,j)*q;
-    end
-end
+% kw0_1 = k1_1;
+% for j=1:length(kw0_1(1,:))
+%     for i=1:length(kw0_1(:,1))
+%         kw0_1(i,j) = kw0_1(i,j) + k1_2(1,:,i,j)*q + q'*k1_3(:,:,i,j)*q;
+%     end
+% end
 
-kw0_2 = k2_1;
-for j=1:length(kw0_2(1,:))
-    for i=1:length(kw0_2(:,1))
-        kw0_2(i,j) = kw0_2(i,j) + k2_2(1,:,i,j)*q + q'*k2_3(:,:,i,j)*q;
-    end
-end
+kw0_1 = k1_1 + squeeze(pagemtimes(k1_2,q)) +...
+    squeeze(pagemtimes(q',pagemtimes(k1_3,q)));
 
-dw0 = d_1;
-for j=1:length(dw0(1,:))
-    for i=1:length(dw0(:,1))
-        dw0(i,j) = dw0(i,j) + d_2(1,:,i,j)*q + q'*d_3(:,:,i,j)*q;
-    end
-end
+% kw0_2 = k2_1;
+% for j=1:length(kw0_2(1,:))
+%     for i=1:length(kw0_2(:,1))
+%         kw0_2(i,j) = kw0_2(i,j) + k2_2(1,:,i,j)*q + q'*k2_3(:,:,i,j)*q;
+%     end
+% end
+
+kw0_2 = k2_1 + squeeze(pagemtimes(k2_2,q)) +...
+    squeeze(pagemtimes(q',pagemtimes(k2_3,q)));
+
+% dw0 = d_1;
+% for j=1:length(dw0(1,:))
+%     for i=1:length(dw0(:,1))
+%         dw0(i,j) = dw0(i,j) + d_2(1,:,i,j)*q + q'*d_3(:,:,i,j)*q;
+%     end
+% end
+
+dw0 = d_1 + squeeze(pagemtimes(d_2,q)) +...
+    squeeze(pagemtimes(q',pagemtimes(d_3,q)));
 
 vel = p0(1)*cos(p0(3))*(kw0_1*q) + p0(1)*sin(p0(3))*(1 + kw0_2*q) + dw0*qt; 
 

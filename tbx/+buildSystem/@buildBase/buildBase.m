@@ -50,6 +50,7 @@ classdef buildBase
         end
 
         function obj = writeModel(obj)
+            addpath('obj.file', '-begin')
             origCd = cd;
             cd(obj.file);
             obj = obj.genBasis;
@@ -63,9 +64,11 @@ classdef buildBase
 
         function prepFolder(obj)
             
+            warning('off', 'MATLAB:MKDIR:DirectoryExists');
+
             mkdir([obj.file]);
             fName = [obj.file];
-            
+           
             projName = [fName, '\+project'];
 
             %make project folder
@@ -94,6 +97,7 @@ classdef buildBase
                     mkdir([item, '\+odr_', num2str(odr)])
                 end
             end
+            warning('on', 'MATLAB:MKDIR:DirectoryExists');
         end
 
     end

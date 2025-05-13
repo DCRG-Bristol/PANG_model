@@ -141,7 +141,7 @@ classdef analysisBase
         function obj = setPars(obj,varargin)
 
             %reference parametert values
-            p = zeros(1,length(obj.par));
+            p = obj.p;
             p0 =  obj.p0;
 
             %update with user provided values..
@@ -222,8 +222,8 @@ classdef analysisBase
                         R(3,:) = [-z(1,:), -z(2,:)];
 
                         beta = obj.geom.sweep;
-                        R = [cos(beta), sin(beta), 0;...
-                            -sin(beta), cos(beta), 0;...
+                        R = [cos(beta), -sin(beta), 0;...
+                            sin(beta), cos(beta), 0;...
                             0, 0, 1]*R;
 
                         x = [R(1,1:end/2); R(1,end/2+1:end)];
