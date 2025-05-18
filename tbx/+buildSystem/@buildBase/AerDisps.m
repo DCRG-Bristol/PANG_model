@@ -9,6 +9,7 @@ fPath = ['+project\+aero\+disps'];
 %extract attachment positions from EoMs...
 a = obj.geom.a; b = obj.geom.b;
 WT = obj.geom.WTWidth;
+beta = obj.geom.sweep;
 
 %open saved basis info..
 N_tot = obj.basis.Ntot;
@@ -383,24 +384,53 @@ for j=1:length(xGrid)-1
     f_del(j,j+1) = -1;
 end
 
+% for i=1:N_gam
+%     for j=1:N_gam
+%         f_ind(i,j) = (0.25/pi)*(1./(xTrail(j)-xGrid(i)) + 1./(xTrail(j)+xGrid(i)));
+%     end
+% end
+
+%sweep version
 for i=1:N_gam
     for j=1:N_gam
-        f_ind(i,j) = (0.25/pi)*(1./(xTrail(j)-xGrid(i)) + 1./(xTrail(j)+xGrid(i)));
 
-        xd = xTrail(j)-xGrid(i); xs = xTrail(j)+xGrid(i);
+        swpFct1 = (1-sin(beta))./(cos(beta));
 
-        WT_corr = 2*xd*0.25*(psi(1-0.5*xd/WT)-psi(1+0.5*xd/WT))./(WT*xd)+...
-            2*xs*0.25*(psi(1-0.5*xs/WT)-psi(1+0.5*xs/WT))./(WT*xs);
+        %sweep - left wing
+        dx1 = (xTrail(j)+xGrid(i))*cos(beta);
+        dy = (xTrail(j)-xGrid(i))*sin(beta);
+        dr = sqrt(dx1^2+dy^2);
+        sB = (dy./dr);
+        cB = dx1./dr;
+        swpFct2 = (1-sB)./cos(beta);
 
-        f_ind(i,j)=f_ind(i,j)+(0.25/pi)*WT_corr;
+        %2nd effect
+        cs1=cB*cos(beta)+sB*sin(beta);
+
+        f_ind(i,j) = (0.25/pi)*(swpFct1./(xTrail(j)-xGrid(i)) + swpFct2./(xTrail(j)+xGrid(i)));
+
+        %...
+        %sweep - left wing
+        if j>1
+            dx2 = (xTrail(j-1)+xGrid(i))*cos(beta);
+            dy = (xTrail(j-1)-xGrid(i))*sin(beta);
+        else
+            dx2 = (0+xGrid(i))*cos(beta);
+            dy = (0-xGrid(i))*sin(beta);
+        end
+        dr = sqrt(dx2^2+dy^2);
+        sB = (dy./dr);
+        cB = dx2./dr;
+
+        %2nd effect
+        cs2=-cB*cos(beta)-sB*sin(beta);
+        dp = sin(2*beta)*xGrid(i);
+
+        f_ind2(i,j) = (0.25/pi)*(cs1+cs2)./dp;
     end
 end
 
-u_ind_matr = f_ind*f_del;%*X;%*Q_lam;
-
-%matlabFunction(sym(bx), 'File', 'AeroEqns\bi_fcn');
-%matlabFunction(sym(X), 'File', 'AeroEqns\X_fcn');
-%matlabFunction(sym(u_ind_matr), 'File', 'AeroEqns\u_ind');
+u_ind_matr = f_ind*f_del + f_ind2;
 
 writeFunction(u_ind_matr, 1, ['+project\+aero\+flow\'], 'u_ind', [])
 writeFunction(bx, 1, ['+project\+aero\+geom\'], 'bi_fcn', [])

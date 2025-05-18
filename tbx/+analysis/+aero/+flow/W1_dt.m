@@ -1,4 +1,4 @@
-function [W1_M, W1_G] = W1_dt(q,qt,p0,p)
+function [W1_M, W1_G] = W1_dt(q,qt,p0,p,beta)
 
 %such that W1_dt = W1_M*q_dt2 + W1_G
 

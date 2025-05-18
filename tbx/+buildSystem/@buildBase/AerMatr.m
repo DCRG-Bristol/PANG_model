@@ -45,7 +45,7 @@ disp(['generating aerodynamic flow terms...\n'])
 %% airspeed projection.......
 
 %create a combined symbolic function for RHS..
-for dir=1:2
+for dir=1:3
     trms = exprs.K_crd{dir};
 
     %assign null matrices...
@@ -361,7 +361,7 @@ end
 %%
 
 %create a combined symbolic function for RHS..
-for dir=1:2
+for dir=1:3
     trms = exprs.K_W0_trm{dir};
 
     %assign null matrices...

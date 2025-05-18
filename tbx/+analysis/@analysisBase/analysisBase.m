@@ -5,7 +5,7 @@ classdef analysisBase
         par
         par0
         p = [];
-        p0 = [20, 0, 0, 9.81, 1.225];
+        p0 = [20, 0, 0, 9.81, 1.225, 0];
         dampMatr
     end
 

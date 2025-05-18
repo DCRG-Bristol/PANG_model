@@ -1,4 +1,4 @@
-function vel = W1(q,qt,p0,p)
+function vel = W1(q,qt,p0,p,beta)
 
 persistent d_1 d_2 d_3
 

@@ -8,13 +8,14 @@ classdef buildBase
         inertia buildSystem.structure.inertiaBase
         grav buildSystem.structure.gravBase
         geom buildSystem.geom
-        par0 = {'U', 'alpha0', 'alpha', 'g', 'rho'};
-        par cell
+        par0 = {'U', 'alpha0', 'alpha', 'g', 'rho', 'mach'};
+        %par cell
         extForce %not completed yet
     end
 
     properties(Dependent)
         file
+        par
     end
 
     properties (Hidden)
@@ -22,6 +23,33 @@ classdef buildBase
     end
 
     methods
+
+        function par = get.par(obj)
+            par_idx = 1;
+            
+            for i=1:length(obj.elas)
+                if ~isempty(obj.elas(i).fctrId)
+                    par_all{par_idx} = obj.elas(i).fctrId;
+                    par_idx=par_idx+1;
+                end
+            end
+
+            for i=1:length(obj.inertia)
+                if ~isempty(obj.inertia(i).fctrId)
+                    par_all{par_idx} = obj.inertia(i).fctrId;
+                    par_idx=par_idx+1;
+                end
+            end
+
+            for i=1:length(obj.grav)
+                if ~isempty(obj.grav(i).fctrId)
+                    par_all{par_idx} = obj.grav(i).fctrId;
+                    par_idx=par_idx+1;
+                end
+            end
+            par = unique(par_all);
+        end
+
         function file = get.file(obj)
             if isempty(obj.fileLocation)
                 file = [cd,'\',obj.name];

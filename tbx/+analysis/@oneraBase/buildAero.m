@@ -1,12 +1,21 @@
 function [M_glob,F_glob] = buildAero(runObj,M_glob,F_glob,q_all,p0,p)
 
+beta = runObj.geom.sweep;
+
+Minf = p0(6)*cos(beta);
+mach_bet = sqrt(1-Minf^2);
+
+
 %%onera stuff....
 SL = pi;
 lam = 0.275;
 ML = 0.44;
 sigM = -0.25*pi;
-KL = 0.5*pi; sigL = 2*pi; 
-sigM_bar = -0.25*pi; sM = -0.5890;
+sigL = 2*pi; 
+sM = -0.5890;
+KL = 0.5*pi + 1.96*pi*(mach_bet-1);
+sigM_bar = -0.25*pi*(1 + 1.4*Minf.^2);
+
 
 %% runObj...
 
@@ -29,19 +38,19 @@ end
 bi = project.aero.geom.bi_fcn(p);
 
 %flow components...chordwise...
-vy = analysis.aero.flow.Vy(q,qt,p0,p);
+vy = analysis.aero.flow.Vy(q,qt,p0,p,beta);
 vyBlk = diag(vy);
 
 %.... W0/W1 and ders..
-w0 = analysis.aero.flow.W0(q,qt,p0,p);
-w1 = analysis.aero.flow.W1(q,qt,p0,p);
-[w0_dt_LHS, w0_dt_RHS] = analysis.aero.flow.W0_dt(q,qt,p0,p);
-[w1_dt_LHS, w1_dt_RHS] = analysis.aero.flow.W1_dt(q,qt,p0,p);
+w0 = analysis.aero.flow.W0(q,qt,p0,p,beta);
+w1 = analysis.aero.flow.W1(q,qt,p0,p,beta);
+[w0_dt_LHS, w0_dt_RHS] = analysis.aero.flow.W0_dt(q,qt,p0,p,beta);
+[w1_dt_LHS, w1_dt_RHS] = analysis.aero.flow.W1_dt(q,qt,p0,p,beta);
 
 indFac = project.aero.flow.u_ind(p);
 
 % total velocity in z
-vz = w0 + 0.5*w1 - project.aero.flow.u_ind(p)*qgam;
+vz = w0 + 0.5*w1 - mach_bet*project.aero.flow.u_ind(p)*qgam;
 vzBlk = diag(vz); %as a diagonal operator..
 
 %total airspeed...
@@ -52,9 +61,9 @@ U_tot = sqrt(vz.^2 + vy.^2);
 
 %% get all lift components...
 
-[Cl, Cl_alp] = runObj.Cl_fcn(vz,U_tot);
-[Cm, ~] = runObj.Cm_fcn(vz,U_tot);
-[Cd, ~] = runObj.Cd_fcn(vz,U_tot);
+[Cl, Cl_alp] = runObj.Cl_fcn(vz/mach_bet,U_tot);
+[Cm, ~] = runObj.Cm_fcn(vz/mach_bet,U_tot);
+[Cd, ~] = runObj.Cd_fcn(vz/mach_bet,U_tot);
 
 %% get displacement functions...
 
