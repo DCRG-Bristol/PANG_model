@@ -1,15 +1,17 @@
 # PANG_model
 ## Aeroelastic modelling tool with 'Polynomial Approximated Nonlinear Geometry' (PANG)
 
-The current version includes the essential functionalities to build a model and call the aeroelastic systems. Three example scripts are included:
+The current version includes the essential functionalities to build a model and call the aeroelastic systems. Two example cases are provided:
+`example1`: modelling a 777 like wing with user-defined problem parameters,
+`example12_BAFF`: shows an example with a BAFF aircraft file as an input for the problem parameters.
+
+In each case, three example scripts are included:
 
 `example_build.m`: this shows the process for building a model with some example parameters and generating and saving analysis modules.
 
 `demo_ONERA.m`: this is an example of using the embedded aerodynamic model () to perform some analyses.
 
 `demoRun_extForce.m` this is an example for using the module for an external aerodynamic models, including the functionality for calling the deformed aerodyanamic meshes.
-
-Additional functionalities, including the auto model generation from BAFF models will be developed. More detailed documentation will be included and is currently in progress.
 
 ## Getting started
 
