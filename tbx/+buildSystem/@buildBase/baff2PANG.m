@@ -77,6 +77,9 @@ buildObj.geom = geom;
 %set class property: basis for aero >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 if isempty(buildObj.basis)
     basis = buildSystem.basis;
+    basis.Nw = 4;
+    basis.Nv = 4;
+    basis.Nthet = 4;
     basis.xi = xi;
     buildObj.basis = basis;
 else

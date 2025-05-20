@@ -2,12 +2,17 @@ classdef extAeroBase<analysis.analysisBase
 
     properties (Dependent)
         q0_aeroStruct
+        xColloc
     end
 
     methods
 
         function q0_aeroStruct = get.q0_aeroStruct(obj)
             q0_aeroStruct = zeros(2*obj.Nstr,1);
+        end
+
+        function xColloc = get.xColloc(obj)
+            xColloc = 0.5*(obj.basis.xi(2:end) + obj.basis.xi(1:end-1));
         end
 
         function [L0, D0, M0] = initLoads(obj)
@@ -74,6 +79,13 @@ classdef extAeroBase<analysis.analysisBase
                         z = [R(3,1:end/2); R(3,end/2+1:end)];
                 end
             end
+        end
+
+        function [x,y,z] = getColloc(obj, q_all, frame)
+            [xC, yC, zC] = obj.getDisplField(q_all,obj.xColloc,frame);
+            x = 0.75*xC(1,:) + 0.25*xC(2,:);
+            y = 0.75*yC(1,:) + 0.25*yC(2,:);
+            z = 0.75*zC(1,:) + 0.25*zC(2,:);
         end
 
 

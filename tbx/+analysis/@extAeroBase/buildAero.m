@@ -13,6 +13,13 @@ vz = -sin(ang + runObj.geom.twist(runObj.basis.xColloc(:)));
 vyBlk = diag(vy);
 vzBlk = diag(vz);
 
+dx = project.aero.geom.dx_fcn(p);
+inv_dx = inv(dx);
+
+L = inv_dx*L;
+D = inv_dx*D;
+M = inv_dx*M;
+
 %% get displacement functions...
 
 proj_lift = analysis.aero.disps.liftDisp(q,qt,p0,p,vyBlk,vzBlk);

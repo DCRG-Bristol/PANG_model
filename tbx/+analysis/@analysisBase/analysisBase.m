@@ -136,6 +136,44 @@ classdef analysisBase
             evals = evals(2:2:end); shp = shp(:,2:2:end);
         end
 
+        function [shp, evals, K, C, M] = plotStructModes(obj,q0,varargin)
+
+            %call the eigenvalue solver...
+            [shp, evals, K, C, M] = obj.getStructModes(q0,varargin{:});
+
+            %get 'real' modes.. 
+            for j=1:length(evals)
+                mc_r=real(shp(:,j));
+                mc_i=imag(shp(:,j));
+                [uu,ss,vv]=svd([mc_r,mc_i]');
+                dq=uu(:,1).'*[mc_r.';mc_i.'];   % real mode
+                shpMat(:,j) = dq';
+            end
+
+            %loop and plot..
+            q0 = q0(obj.structDisp);
+            figure;
+            for j=1:min([12,length(evals)])
+                vctr = shpMat(:,j);
+
+                %get max displacement for scaling..
+                [x0, y0, z0] = obj.getMesh(q0, 'aircraft');
+                [x, y, z] = obj.getMesh(q0+vctr, 'aircraft');
+
+                dx = max(max(abs(x-x0))); dz = max(max(abs(z-z0)));
+                vctr = vctr*0.05*obj.geom.L/max([dz,dx]);
+                [x, y, z] = obj.getMesh(q0+vctr, 'aircraft');
+
+                subplot(3,4,j);
+                plot3([x0(1,:), flip(x0(2,:))], [y0(1,:), flip(y0(2,:))], [z0(1,:), flip(z0(2,:))], 'k-', 'linewidth', 1); hold on;
+                plot3([x(1,:), flip(x(2,:))], [y(1,:), flip(y(2,:))], [z(1,:), flip(z(2,:))], 'r-', 'linewidth', 2); hold on;
+                set(gca , 'dataaspectratio', [1,1,1]);
+                title(['\omega = ', num2str(abs(evals(j)/(2*pi)), 3), 'Hz, \zeta = ',...
+                    num2str(-real(evals(j))./abs(evals(j)),3)]);
+            end
+        end
+
+
 
         %%
         function obj = setPars(obj,varargin)
@@ -237,8 +275,9 @@ classdef analysisBase
     methods (Static)
         function obj = loadobj(obj)
             addpath([obj.file], '-begin');
+            clear persistent
             clc;
-            fprintf(['...Accessing matrices found in %s'], obj.file);
+            fprintf(['...Accessing matrices found in %s\n'], obj.file);
         end
     end
 end
