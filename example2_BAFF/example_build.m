@@ -16,7 +16,11 @@ buildOb.name = 'a320_likeWing'; %a name for the model
 
 %% basis properties
 
-buildOb = buildOb.baff2PANG(Baff_mdl, 'Wing_RHS'); %this builds a PANG model definition from a baff. 'Wing_RHS' is the name of the item in the baff input to use for generating the model in this case..
+if ADP.HingeEta==1
+    buildOb = buildOb.baff2PANG(Baff_mdl, 'Wing_RHS'); %this builds a PANG model definition from a baff. 'Wing_RHS' is the name of the item in the baff input to use for generating the model in this case..
+else
+    buildOb = buildOb.baff2PANG(Baff_mdl, 'Wing_RHS', 'FFWT_RHS'); %add wing tip if needed
+end
 
 %OPTIONAL - assign system size...
 buildOb.basis.Nw = 4; %# of out of plane bending fcns..

@@ -1,17 +1,34 @@
 %script to build PANG model with baff file
 
-function buildObj = baff2PANG(buildObj, baffObj, itmName)
+function buildObj = baff2PANG(buildObj, baffObj, varargin)
 
 %inputs:
 %baffObj: baff model for aircraft..(baff class)
 %itmName: name of wing object in baff (string)
 
+EA0 = [];
+eta_beam = [];
+globLgth =0;
+
 %find the matchig item in baff model...
-id = find(strcmp([baffObj.Wing.Name],itmName));
-baffItm = baffObj.Wing(id); %baff item to extract properties from....
+for i=1:length(varargin)
+    id(i) = find(strcmp([baffObj.Wing.Name],varargin{i}));
+    baffItm(i) = baffObj.Wing(id(i)); %baff item to extract properties from....
+
+    %collect all ETAS and  combine
+    EA0 = [EA0, [baffItm(i).GetGlobalPos([baffItm(i).Stations.Eta], [0;0;0])]]; %elastic axis in BAFF coordinates
+    eta_beam = [eta_beam, (i-1)+[baffItm(i).Stations.Eta]];
+    globLgth = globLgth + baffItm(i).EtaLength;
+end
+
+%remove duplicates...
+[eta_beam, idx] = unique(eta_beam);
+EA0 = EA0(:,idx);
+beam_idx = idx; %unique beam indices to keep..used later
 
 %get elastic axis coordinates.. aircraft frame...
-EA0 = baffItm.GetGlobalPos([baffItm.Stations.Eta], [0;0;0]); %elastic axis in BAFF coordinates
+%EA0 = baffItm.GetGlobalPos([baffItm.Stations.Eta], [0;0;0]); %elastic axis in BAFF coordinates
+r0 = EA0(:,1); %record of wing root in weird baff frame
 EA0 = EA0-EA0(:,1); %offset wing root
 EA_r = [abs(EA0(2,:)); -EA0(1,:)]; %PANG frame....
 
@@ -23,16 +40,37 @@ s_statn = EA_r(:,end)'*EA_r/norm(EA_r(:,end)); %beam stations.. project to beam:
 %aero dynamic/planfome__________________________________________________________
 
 %get aero aerometry at beam stations...
-xi = interp1([baffItm.Stations.Eta], s_statn, [baffItm.AeroStations.Eta]); %aero mesh...
+xi = [];
+cLE =[];
+cTE = [];
+LE_x = [];
+TE_x = [];
+twistDat = [];
+for i=1:length(varargin)
+    xi = [xi, ...
+        interp1(eta_beam, s_statn, i-1+[baffItm(i).AeroStations.Eta])]; %aero mesh...
 
-%LE/TE offsets...
-cLE = [[baffItm.AeroStations.Chord].*[baffItm.AeroStations.BeamLoc]]*cos(sweep);
-cTE = [[baffItm.AeroStations.Chord].*(1-[baffItm.AeroStations.BeamLoc])]*cos(sweep);
-twistDat = [baffItm.AeroStations.Twist];
+    %LE/TE offsets...
+    cLE = [cLE,...
+        ([baffItm(i).AeroStations.Chord].*[baffItm(i).AeroStations.BeamLoc])*cos(sweep)];
+    cTE = [cTE,...
+        ([baffItm(i).AeroStations.Chord].*(1-[baffItm(i).AeroStations.BeamLoc]))*cos(sweep)];
+    twistDat = [twistDat, [baffItm(i).AeroStations.Twist]];
 
-%x-coordinates of LE and TE....
-LE_x = interp1([baffItm.Stations.Eta], EA_r(1,:), [baffItm.AeroStations.Eta]) + cLE*sin(sweep);
-TE_x = interp1([baffItm.Stations.Eta], EA_r(1,:), [baffItm.AeroStations.Eta]) - cTE*sin(sweep);
+    %x-coordinates of LE and TE....
+    LE_x = [LE_x, interp1(eta_beam, EA_r(1,:), i-1+[baffItm(i).AeroStations.Eta])]; 
+    TE_x = [TE_x, interp1(eta_beam, EA_r(1,:), i-1+[baffItm(i).AeroStations.Eta])]; 
+end
+LE_x = LE_x  + cLE*sin(sweep);
+TE_x = TE_x - cTE*sin(sweep);
+
+%remoe duplicates...
+[xi, idx] = unique(xi);
+cLE = cLE(idx);
+cTE = cTE(idx);
+LE_x = LE_x(idx);
+TE_x = TE_x(idx);
+twistDat = twistDat(idx);
 
 %find place where TE_x=0 to clip...
 x_TEClip = interp1(TE_x, xi, 0, 'linear','extrap');
@@ -87,23 +125,38 @@ else
 end
 
 %beam properties__________________________________________________________
-for stn=1:length(s_statn)
-    I_matr = baffItm.Stations(stn).I;
-    J = baffItm.Stations(stn).J;
-    rho = baffItm.Stations(stn).Mat.rho;
-    E = baffItm.Stations(stn).Mat.E;
-    G = baffItm.Stations(stn).Mat.G;
+counter = 1;
+for i=1:length(varargin)
+    for stn=1:length([baffItm(i).Stations])
+        I_matr = baffItm(i).Stations(stn).I;
+        J = baffItm(i).Stations(stn).J;
+        rho = baffItm(i).Stations(stn).Mat.rho;
+        E = baffItm(i).Stations(stn).Mat.E;
+        G = baffItm(i).Stations(stn).Mat.G;
 
-    EI1(stn) = E*I_matr(2,2);
-    EI2(stn) = E*I_matr(1,1);
-    EI12(stn) = E*I_matr(1,2);
-    GJ(stn) = G*J;
+        EI1(counter) = E*I_matr(2,2);
+        EI2(counter) = E*I_matr(3,3);
+        EI12(counter) = E*I_matr(2,3);
+        GJ(counter) = G*J;
 
-    m(stn) = rho*baffItm.Stations(stn).A;
-    mxx(stn) = rho*(I_matr(1,1) + I_matr(2,2));
-    mzz(stn) = rho*(I_matr(1,1));
-    myy(stn) = rho*(I_matr(2,2));
+        m(counter) = rho*baffItm(i).Stations(stn).A;
+        mxx(counter) = rho*(I_matr(2,2) + I_matr(3,3));
+        mzz(counter) = rho*(I_matr(3,3));
+        myy(counter) = rho*(I_matr(2,2));
+        counter = counter + 1;
+    end
 end
+
+%only keep the unique ones...
+idx = beam_idx;
+EI1 = EI1(idx);
+EI2 = EI2(idx);
+EI12 = EI12(idx);
+GJ = GJ(idx);
+m = m(idx);
+mxx = mxx(idx);
+mzz = mzz(idx);
+myy=  myy(idx);
 
 %set class property: elastic >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 elas(1) = buildSystem.structure.elasBase; %call elastic property class
@@ -128,45 +181,69 @@ inertia(1).fctrId = [];
 fuel_idx = 0;
 mass_idx = 0;
 
-for i=1:length(baffItm.Children)
-    type = class(baffItm.Children(i));
+for j=1:length(varargin)
+    for i=1:length(baffItm(j).Children)
+        type = class(baffItm(j).Children(i));
 
-    switch type
-        case 'baff.Mass'
-            mass_idx = mass_idx+1;
-            mass_elem(mass_idx) = buildSystem.structure.descrElem;
-            mass_elem(mass_idx).m = baffItm.Children(i).mass;
-            mass_elem(mass_idx).xp =...
-                interp1([baffItm.Stations.Eta], s_statn, baffItm.Children(i).Eta);
-            mass_elem(mass_idx).e =...
-                -baffItm.Children(i).Offset(1)/b(mass_elem(mass_idx).xp)-1;
-            mass_elem(mass_idx).mxx = 0;
-            mass_elem(mass_idx).myy = 0;
-            mass_elem(mass_idx).mzz = 0;
+        switch type
+            case 'baff.Mass'
+                mass_idx = mass_idx+1;
+                mass_elem(mass_idx) = buildSystem.structure.descrElem;
+                mass_elem(mass_idx).m = baffItm(j).Children(i).mass;
+                mass_elem(mass_idx).xp =...
+                    interp1(eta_beam, s_statn, j-1+baffItm(j).Children(i).Eta);
 
-        case 'baff.DraggableBluffBody'
-            mass_idx = mass_idx+1;
-            mass_elem(mass_idx) = buildSystem.structure.descrElem;
-            mass_elem(mass_idx).m = sum(baffItm.Children(i).Children.mass);
-            mass_elem(mass_idx).xp =...
-                interp1([baffItm.Stations.Eta], s_statn, baffItm.Children(i).Eta);
-            mass_elem(mass_idx).e =...
-                -baffItm.Children(i).Offset(1)/b(mass_elem(mass_idx).xp)-1;
-            mass_elem(mass_idx).mxx = 0;
-            mass_elem(mass_idx).myy = 0;
-            mass_elem(mass_idx).mzz = 0;
+                %find offsets from nearest beam...
+                rawPostn = baffItm(j).GetGlobalPos(baffItm(j).Children(i).Eta, [0;0;0])-r0;
+                for dim=1:3
+                    beamPostn(dim) = interp1(eta_beam(:)', EA0(dim,:), j-1+baffItm(j).Children(i).Eta);
+                end
+                yOfst = -(rawPostn(1) - beamPostn(1))*cos(sweep);
+                mass_elem(mass_idx).e = yOfst/b(mass_elem(mass_idx).xp)-1;
+                mass_elem(mass_idx).mxx = 0;
+                mass_elem(mass_idx).myy = 0;
+                mass_elem(mass_idx).mzz = 0;
 
-        case 'baff.Fuel'
-            fuel_idx = fuel_idx+1;
-            fuel_elem(fuel_idx) = buildSystem.structure.descrElem;
-            fuel_elem(fuel_idx).m = sum(baffItm.Children(i).mass);
-            fuel_elem(fuel_idx).xp =...
-                interp1([baffItm.Stations.Eta], s_statn, baffItm.Children(i).Eta);
-            fuel_elem(fuel_idx).e =...
-                -baffItm.Children(i).Offset(1)/b(fuel_elem(fuel_idx).xp)-1;
-            fuel_elem(fuel_idx).mxx = 0;
-            fuel_elem(fuel_idx).myy = 0;
-            fuel_elem(fuel_idx).mzz = 0; 
+            case 'cast.drag.DraggableBluffBody'
+                for mm=1:length(baffItm(j).Children(i).Children)
+                    mass_idx = mass_idx+1;
+                    mass_elem(mass_idx) = buildSystem.structure.descrElem;
+                    mass_elem(mass_idx).m = (baffItm(j).Children(i).Children(mm).mass);
+                    mass_elem(mass_idx).xp =...
+                        interp1(eta_beam, s_statn, j-1+baffItm(j).Children(i).Eta);
+
+                    %find offsets from nearest beam...
+                    rawPostn = baffItm(j).Children(i).Children(mm).GetGlobalPos(baffItm(j).Children(i).Children(mm).Eta, [0;0;0])-r0;
+                    for dim=1:3
+                        beamPostn(dim) = interp1(eta_beam(:)', EA0(dim,:), j-1+baffItm(j).Children(i).Children(mm).Eta);
+                    end
+                    yOfst = -(rawPostn(1) - beamPostn(1))*cos(sweep);
+
+                    mass_elem(mass_idx).e = yOfst/b(mass_elem(mass_idx).xp)-1;
+                    mass_elem(mass_idx).mxx = 0;
+                    mass_elem(mass_idx).myy = 0;
+                    mass_elem(mass_idx).mzz = 0;
+                end
+
+            case 'baff.Fuel'
+                fuel_idx = fuel_idx+1;
+                fuel_elem(fuel_idx) = buildSystem.structure.descrElem;
+                fuel_elem(fuel_idx).m = sum(baffItm(j).Children(i).mass);
+                fuel_elem(fuel_idx).xp =...
+                    interp1(eta_beam, s_statn, j-1+baffItm(j).Children(i).Eta);
+
+                %find offsets from nearest beam...
+                rawPostn = baffItm(j).GetGlobalPos(baffItm(j).Children(i).Eta, [0;0;0])-r0;
+                for dim=1:3
+                    beamPostn(dim) = interp1(eta_beam(:)', EA0(dim,:), j-1+baffItm(j).Children(i).Eta);
+                end
+                yOfst = -(rawPostn(1) - beamPostn(1))*cos(sweep);
+
+                fuel_elem(fuel_idx).e = yOfst/b(fuel_elem(fuel_idx).xp)-1;
+                fuel_elem(fuel_idx).mxx = 0;
+                fuel_elem(fuel_idx).myy = 0;
+                fuel_elem(fuel_idx).mzz = 0;
+        end
     end
 end
 
