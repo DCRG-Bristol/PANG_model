@@ -28,6 +28,7 @@ classdef analysisBase
             arguments
                 obj_in buildSystem.buildBase
             end
+            addpath([obj_in.file], '-begin');
             obj.basis = obj_in.basis;
             obj.geom = obj_in.geom;
             obj.transF = eye(obj_in.basis.Ntot,obj_in.basis.Ntot);
