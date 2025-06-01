@@ -3,9 +3,11 @@ odr = argin.odr;
 scalF = argin.scalF;
 vctr = argin.vctr;
 
+RT = 5e-3;
+
 if odr==1
     matr = integral(@(x)(scalF(x)*(vctr{1}(x,1).*vctr{2}(x,1)')),...
-        0, L, 'ArrayValued', true);
+        0, L, 'ArrayValued', true, 'RelTol', RT);
 end
 
 if odr==2
@@ -15,7 +17,7 @@ if odr==2
             Jpick = [zeros(1,J-1),1,zeros(1,N-J)];
             pickFcn = @(x)(scalF(x)*(Jpick*vctr{1}(x,1)).*...
                 (Ipick*vctr{2}(x,1))');
-            matr(1,:,J,I) = integral(@(x)(pickFcn(x)*(vctr{3}(x,J)')), 0, L, 'ArrayValued', true);
+            matr(1,:,J,I) = integral(@(x)(pickFcn(x)*(vctr{3}(x,J)')), 0, L, 'ArrayValued', true, 'RelTol', RT);
         end
     end
 end
@@ -28,7 +30,7 @@ if odr==3
             pickFcn = @(x)(scalF(x)*(Jpick*vctr{1}(x,1)).*...
                 (Ipick*vctr{2}(x,1))');
             matr(:,:,J,I) = integral(@(x)(pickFcn(x)*...
-                (vctr{3}(x,J).*vctr{4}(x,I)')), 0, L, 'ArrayValued', true);
+                (vctr{3}(x,J).*vctr{4}(x,I)')), 0, L, 'ArrayValued', true, 'RelTol', RT);
         end
     end
 end
@@ -47,7 +49,7 @@ if odr==4
                     pickFcn_2 = @(x)((Jpick2*vctr{3}(x,1)).*...
                         (Ipick2*vctr{4}(x,1))');
                     matr(1,:,j,i,J,I) = integral(@(x)(pickFcn_1(x)*pickFcn_2(x)*...
-                        (vctr{5}(x,j)')), 0, L, 'ArrayValued', true);
+                        (vctr{5}(x,j)')), 0, L, 'ArrayValued', true, 'RelTol', RT);
                 end
             end
         end
