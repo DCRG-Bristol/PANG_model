@@ -199,7 +199,7 @@ for j=1:length(varargin)
                     beamPostn(dim) = interp1(eta_beam(:)', EA0(dim,:), j-1+baffItm(j).Children(i).Eta);
                 end
                 yOfst = -(rawPostn(1) - beamPostn(1))*cos(sweep);
-                mass_elem(mass_idx).e = yOfst/b(mass_elem(mass_idx).xp)-1;
+                mass_elem(mass_idx).e = -yOfst/b(mass_elem(mass_idx).xp)+a(mass_elem(mass_idx).xp);
                 mass_elem(mass_idx).mxx = 0;
                 mass_elem(mass_idx).myy = 0;
                 mass_elem(mass_idx).mzz = 0;
@@ -219,7 +219,7 @@ for j=1:length(varargin)
                     end
                     yOfst = -(rawPostn(1) - beamPostn(1))*cos(sweep);
 
-                    mass_elem(mass_idx).e = yOfst/b(mass_elem(mass_idx).xp)-1;
+                    mass_elem(mass_idx).e = -yOfst/b(mass_elem(mass_idx).xp)+a(mass_elem(mass_idx).xp);
                     mass_elem(mass_idx).mxx = 0;
                     mass_elem(mass_idx).myy = 0;
                     mass_elem(mass_idx).mzz = 0;
@@ -239,7 +239,7 @@ for j=1:length(varargin)
                 end
                 yOfst = -(rawPostn(1) - beamPostn(1))*cos(sweep);
 
-                fuel_elem(fuel_idx).e = yOfst/b(fuel_elem(fuel_idx).xp)-1;
+                fuel_elem(fuel_idx).e = -yOfst/b(fuel_elem(fuel_idx).xp)+a(fuel_elem(fuel_idx).xp);
                 fuel_elem(fuel_idx).mxx = 0;
                 fuel_elem(fuel_idx).myy = 0;
                 fuel_elem(fuel_idx).mzz = 0;
