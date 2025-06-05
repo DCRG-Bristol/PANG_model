@@ -7,24 +7,26 @@
 % ADP = load('UB321_baseline_simple.mat'); 
 % ADP = ADP(1).ADP.BuildBaff;
 
+load("C:\GIT\Sprint0626\example_data\A220_simple.mat");
+ADP.inclFlutterMass = false;
 Baff_mdl = ADP.Baff; % see 'Basic Model description' in https://github.com/DCRG-Bristol/Sprint0626
 
 %%
 buildOb = buildSystem.buildBase; %base class for model building...
 buildOb.fileLocation = fileparts(mfilename('fullpath')); %set the file location where a folder with a model-specific items could be created...can be changed...
-buildOb.name = 'a320_likeWing'; %a name for the model
+buildOb.name = 'a320_sprint'; %a name for the model
 
 %% basis properties
 
 if ADP.HingeEta==1
-    buildOb = buildOb.baff2PANG(Baff_mdl, 'Wing_RHS'); %this builds a PANG model definition from a baff. 'Wing_RHS' is the name of the item in the baff input to use for generating the model in this case..
+    buildOb = buildOb.baff2PANG(Baff_mdl, 'Wing_Connector_RHS', 'Wing_RHS'); %this builds a PANG model definition from a baff. 'Wing_RHS' is the name of the item in the baff input to use for generating the model in this case..
 else
-    buildOb = buildOb.baff2PANG(Baff_mdl, 'Wing_RHS', 'FFWT_RHS'); %add wing tip if needed
+    buildOb = buildOb.baff2PANG(Baff_mdl,'Wing_Connector_RHS', 'Wing_RHS', 'FFWT_RHS'); %add wing tip if needed
 end
 
 %OPTIONAL - assign system size...
-buildOb.basis.Nw = 4; %# of out of plane bending fcns..
-buildOb.basis.Nv = 4; %.. chord wise bending
+buildOb.basis.Nw = 6; %# of out of plane bending fcns..
+buildOb.basis.Nv = 2; %.. chord wise bending
 buildOb.basis.Nthet = 4;%...torsion
 
 %set the arc-length wise stations (easured along the beam's elastic axis)

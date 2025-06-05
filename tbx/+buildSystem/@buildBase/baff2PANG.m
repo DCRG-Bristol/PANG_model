@@ -35,7 +35,17 @@ EA_r = [abs(EA0(2,:)); -EA0(1,:)]; %PANG frame....
 sweep = asin(-EA_r(2,end)/EA_r(1,end)); %estimate beam sweep
 
 % beam loci...beam arc length coordinates...
-s_statn = EA_r(:,end)'*EA_r/norm(EA_r(:,end)); %beam stations.. project to beam: arc length
+%s_statn = EA_r(:,end)'*EA_r/norm(EA_r(:,end)); %beam stations.. project to beam: arc length
+
+%instead go element by element...
+s_statn = 0;
+for i=2:length(EA_r(1,:))
+    dr = EA_r(:,i) - EA_r(:,i-1);
+    lgth = EA_r(:,end)'*dr/norm(EA_r(:,end));
+    s_statn = [s_statn, s_statn(end)+lgth];
+    fctr(i) = norm(dr)/lgth;
+end
+fctr(1) = 1;
 
 %aero dynamic/planfome__________________________________________________________
 
@@ -149,14 +159,14 @@ end
 
 %only keep the unique ones...
 idx = beam_idx;
-EI1 = EI1(idx);
-EI2 = EI2(idx);
+EI1 = EI1(idx)./fctr;
+EI2 = EI2(idx)./fctr;
 EI12 = EI12(idx);
-GJ = GJ(idx);
-m = m(idx);
-mxx = mxx(idx);
-mzz = mzz(idx);
-myy=  myy(idx);
+GJ = GJ(idx)./fctr;
+m = m(idx)./fctr;
+mxx = mxx(idx)./fctr;
+mzz = mzz(idx)./fctr;
+myy=  myy(idx)./fctr;
 
 %set class property: elastic >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 elas(1) = buildSystem.structure.elasBase; %call elastic property class

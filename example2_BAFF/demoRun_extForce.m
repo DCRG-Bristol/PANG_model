@@ -18,7 +18,7 @@ load('run_ext_a320.mat'); run = run_ext;
 %exist by default = any others that were user-specified when buidling the
 %model..
 
-run = run.setPars('alpha0', 0*pi/180, 'g', 9.81, 'fuel_frac', 1);
+run = run.setPars('alpha0', 0*pi/180, 'g', 9.81, 'fuel_frac', 0.72);
 
 %this sets the baseline parameters - this has to be done for all user
 %specified  parameters (defined in buildSystem.buildBase.par) -in this case
