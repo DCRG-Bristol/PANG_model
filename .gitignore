@@ -41,7 +41,6 @@ octave-workspace
 *.mat
 !tbx/**/*.mat
 *.fig
-*.png
 *.jpg
 *.gif
 
