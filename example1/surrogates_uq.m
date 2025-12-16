@@ -381,7 +381,7 @@ if strcmp(input_distributions.Marginals(1).Type, 'Uniform') % this code works on
             title(sprintf('%s surrogate validation (1D slice)', surrogates.Options.MetaType))  % description of the surrogate
             xlabel(sprintf('Uncertain variable %d', ii))      % name of the uncertain variable (UQ) or design variable (optimisation)
             ylabel(sprintf('QI %d', kk))                   % name of the QI
-            legend('Surrogate model', 'Raw data');
+            legend('Surrogate model', 'Raw data', Location='best');
             saveas(fig, fullfile(plotsfolderName, 'plots_uq', sprintf('qi_%u_vs_uncertain_variable_%u_1D_plot_validation.png', kk, ii)))
             saveas(fig, fullfile(plotsfolderName, 'plots_uq', sprintf('qi_%u_vs_uncertain_variable_%u_1D_plot_validation.fig', kk, ii)))
         end
