@@ -3,12 +3,14 @@ function Y = model_evals_windoff(X, P)
 %{
 --------------------------------------------------------
 Comments:
-* The model computes the modal frequencies as a function of uncertain variables (i.e., E)
+* The model computes the modal frequencies as a function of uncertain variables (i.e., E, G)
 * We use a UQLab style notation, i.e., X: vector of uncertain variables; P: vector of deterministic parameters; Y: vector of model outputs
 --------------------------------------------------------
 Input:
 * X: uncertain variables
-    * X(1)      : Young's modulus E (Pa)
+    * X(1)      : Young's modulus E for OOP bending (Pa)
+    * X(2)      : Young's modulus E for IP bending (Pa)
+    * X(3)      : torsional modulus G    
 * P: deterministic parameters
     * P(1)      : pitch angle (rad)
 --------------------------------------------------------
@@ -30,7 +32,8 @@ Output:
 load('run_ONERA.mat'); run = run_ONERA;
 
 %ASSIGN BASELINE VALUES TO THE PARAMETERS
-run = run.setPars('E', 70e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
+run = run.setPars('EI_1', 70e9, 'EI_2', 70e9, 'G', 26e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
+
 
 %this sets the baseline parameters - this has to be done for all user
 %defined parameters (defined in buildSystem.buildBase.par) -in this case
@@ -146,10 +149,28 @@ xMesh = linspace(0,run.geom.L,50);
 %(uuser assined parameter - see example_build.m')
 
 q = q0; %zero state vector for structure only problem..
-q = fsolve(@(qstr)(run.structDeriv(qstr,'alpha0', P(1), 'E', X(1))), q); 
+q = fsolve(@(qstr)(run.structDeriv(qstr,'alpha0', P(1), 'EI_1', X(1), 'EI_2', X(2), 'G', X(3))), q); 
 
 %eigenvalues....
-[~, e] = run.getStructModes(q, 'E', X(1), 'alpha0', P(1)); %this calculates the structural modes with the reference parameters...
+[evec, e] = run.getStructModes(q, 'EI_1', X(1), 'EI_2', X(2), 'G', X(3), 'alpha0', P(1)); %this calculates the structural modes with the reference parameters...
 Y = abs(e(1:4))'./(2*pi);
+
+%plot first four modes...
+% [x0, y0, z0] = run.getDisplField(q*0, xMesh ,'beamModel'); %zero-wing for reference
+% figure;
+% for mode=1:4
+%     subplot(1,4,mode);
+% 
+%     vv = 100*evec(:,mode)./sum(evec(:,mode));
+% 
+%     [x, y, z] = run.getDisplField(vv, xMesh ,'beamModel'); %get displacements at x
+% 
+%     plot3(x,y,z, 'r-', 'Marker', 'o'); hold on;
+%     plot3(x0,y0,z0, 'k-'); hold on;
+% 
+%     set(gca, 'DataAspectRatio', [1,1,1])
+%     hold on;
+% 
+% end
 
 end

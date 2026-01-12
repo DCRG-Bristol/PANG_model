@@ -80,10 +80,14 @@ for ii = 1:length(alp)
 end    
 set(0, 'DefaultFigureVisible', 'on');
 
-%% 3. Surrogates for the modal frequencies (uncertain variable: E)
+%% 3. Surrogates for the modal frequencies (uncertain variables: E, EI_2, G)
 % Description of the uncertain variables for UQLab
 InputOpts.Marginals(1).Type = 'Uniform';
-InputOpts.Marginals(1).Parameters = [60, 80]*1e9; % (uncertain Young's modulus E) lower and upper uncertainty bound
+InputOpts.Marginals(1).Parameters = [60, 80]*1e9; % (uncertain Young's modulus E for OOP bending) lower and upper uncertainty bound
+InputOpts.Marginals(2).Type = 'Uniform';
+InputOpts.Marginals(2).Parameters = [60, 80]*1e9; % (uncertain Young's modulus E for IP bending) lower and upper uncertainty bound
+InputOpts.Marginals(3).Type = 'Uniform';
+InputOpts.Marginals(3).Parameters = [26, 32]*1e9; % (uncertain Young's modulus G for torsion) lower and upper uncertainty bound
 myInput = uq_createInput(InputOpts); 
 alp = linspace(pi/2,0,15);  %ranges of pitch angles...
 
@@ -110,14 +114,14 @@ for ii = 1:length(alp)
     flag_parfor = true;             % can we run the physical model in parallel to build the training set? (True/False)
     seed = 100;                     % seed for reproducibility due to randomness in sampling the training set
     N_train_increment = 8;          % we will increment the training set size until we reach convergence
-    N_train_max = 40;               % training budget (i.e., maximum number of training points allowed)
+    N_train_max = 500;              % training budget (i.e., maximum number of training points allowed)
     % run a test to check if surrogates are actually faster than classical MC for mean and sigma estimation  
     % recommended only for cheap models (to find the true mean and sigma, we need a large MC with the physical model) 
     flag_test_for_mean_and_sigma = false;
     flag_test_set = false;          % will a test set be generated for further surrogate validation?
 
     % Plots generator for parameter sweeps for the uncertain variables
-    inputs_name = ["Young's modulus (Pa)"];     % list of the names of the uncertain variables
+    inputs_name = ["E for OOP (Pa)", "E for IP (Pa)", "Torsion modulus (Pa)"];     % list of the names of the uncertain variables
     outputs_name = ["Mode 1 (Hz)", "Mode 2 (Hz)", "Mode 3 (Hz)", "Mode 4 (Hz)"];      % list of the names of the QIs
     N_outputs = length(outputs_name);           % number of quantities of interest (QIs)
     descriptive_title_for_plots = sprintf('%s surrogate (pitch angle (rad):%.2e)', MetaOpts.MetaType, alp(ii));
