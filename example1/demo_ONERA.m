@@ -211,7 +211,7 @@ set(gca, 'dataaspectratio', [1,1,1])
 set(gca, 'zDir', 'reverse');
 xlabel('x, [m]'); ylabel('y, [m]'); zlabel('z, [m]');
 
-% ODE SOLUTION SEQUENCE OF A GUST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+%% ODE SOLUTION SEQUENCE OF A GUST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 gustSeq_aoa = @(t)(0.5*(1-cos(2*pi*t/0.5)).*heaviside(0.5-t)); %gust input..
 
