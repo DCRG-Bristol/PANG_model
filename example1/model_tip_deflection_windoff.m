@@ -3,18 +3,20 @@ function Y = model_tip_deflection_windoff(X, P)
 %{
 --------------------------------------------------------
 Comments:
-* The model computes the wind-off tip deflection as a function of uncertain variables (i.e., E)
+* The model computes the wind-off tip deflection as a function of uncertain variables (i.e., E, G)
 * We use a UQLab style notation, i.e., X: vector of uncertain variables; P: vector of deterministic parameters; Y: vector of model outputs
 --------------------------------------------------------
 Input:
 * X: uncertain variables
-    * X(1)      : Young's modulus E (Pa)
+    * X(1)      : Young's modulus E for OOP bending (Pa)
+    * X(2)      : Young's modulus E for IP bending (Pa)
+    * X(3)      : torsional modulus G    
 * P: deterministic parameters
     * P(1)      : pitch angle (rad)
 --------------------------------------------------------
 Output:
 * Y: vector of quantities of interest (QIs)
-    * Y(1)      : tip LE displacement in z direction
+    * Y(1)      : tip LE displacement in z direction (OOP)
 --------------------------------------------------------
 %}
 %%
@@ -28,7 +30,7 @@ Output:
 load('run_ONERA.mat'); run = run_ONERA;
 
 %ASSIGN BASELINE VALUES TO THE PARAMETERS
-run = run.setPars('E', 70e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
+run = run.setPars('EI_1', 70e9, 'EI_2', 70e9, 'G', 26e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
 
 %this sets the baseline parameters - this has to be done for all user
 %defined parameters (defined in buildSystem.buildBase.par) -in this case
@@ -144,7 +146,7 @@ xMesh = linspace(0,run.geom.L,50);
 %(uuser assined parameter - see example_build.m')
 
 q = q0; %zero state vector for structure only problem..
-q = fsolve(@(qstr)(run.structDeriv(qstr,'alpha0', P(1), 'E', X(1))), q); 
+q = fsolve(@(qstr)(run.structDeriv(qstr,'alpha0', P(1), 'EI_1', X(1), 'EI_2', X(2), 'G', X(3))), q); 
 [x, y, z] = run.getDisplField(q, xMesh(end) ,'beamModel'); %get displacements at x
 Y = z(1,:); % deflection at the leaidng edge
 

@@ -2,7 +2,9 @@ Surrogates for each quantity of interest (QI) as a function of the uncertain var
 
 Legend:
 QI 1: Tip deflection (m)
-Uncertain variable 1: Young's modulus (Pa)
+Uncertain variable 1: E for OOP (Pa)
+Uncertain variable 2: E for IP (Pa)
+Uncertain variable 3: Torsion modulus (Pa)
 Deterministic variable 1: Pitch angle; Case: 7 out of 15; Value: 0.89760 (rad)
 Methodology: PCE surrogate (pitch angle (rad):8.98e-01)
 
