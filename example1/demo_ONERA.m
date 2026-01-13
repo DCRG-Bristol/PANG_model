@@ -14,7 +14,7 @@ load('run_ONERA.mat'); run = run_ONERA;
 %% INITIALISATION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 %ASSIGN BASELINE VALUES TO THE PARAMETERS
-run = run.setPars('E', 70e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
+run = run.setPars('EI_1', 70e9, 'EI_2', 70e9, 'G', 29e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
 
 %this sets the baseline parameters - this has to be done for all user
 %defined parameters (defined in buildSystem.buildBase.par) -in this case
