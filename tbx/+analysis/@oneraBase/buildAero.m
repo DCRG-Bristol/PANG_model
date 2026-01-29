@@ -11,7 +11,6 @@ SL = pi;
 lam = runObj.lam;
 ML = runObj.ML;
 sigM = -0.25*pi;
-sigL = 2*pi; 
 sM = -0.5890;
 KL = 0.5*pi + 1.96*pi*(mach_bet-1);
 sigM_bar = -0.25*pi*(1 + 1.4*Minf.^2);
@@ -64,6 +63,8 @@ U_tot = sqrt(vz.^2 + vy.^2);
 [Cl, Cl_alp] = runObj.Cl_fcn(vz/mach_bet,U_tot);
 [Cm, ~] = runObj.Cm_fcn(vz/mach_bet,U_tot);
 [Cd, ~] = runObj.Cd_fcn(vz/mach_bet,U_tot);
+
+sigL = Cl_alp;
 
 %% get displacement functions...
 
