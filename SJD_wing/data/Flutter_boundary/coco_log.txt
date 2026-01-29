@@ -1,0 +1,71 @@
+MATLAB version 24.2.0.2923080 (R2024b) Update 6 on architecture win64
+
+run: { runid='Flutter_boundary' toolbox='empty' tbxctor=@empty_ctor isol_type='' sol_type='' dir='C:\git projects\PANG_2\PANG_model\SJD_wing\data\Flutter_boundary' bdfname='C:\git projects\PANG_2\PANG_model\SJD_wing\data\Flutter_boundary\bd.mat' logname='C:\git projects\PANG_2\PANG_model\SJD_wing\data\Flutter_boundary\coco_log.txt' scrname='C:\git projects\PANG_2\PANG_model\SJD_wing\data\Flutter_boundary\coco_scr.txt' }
+
+all: { TOL=1e-06 CleanData=false LogLevel=1 data_dir='C:\git projects\PANG_2\PANG_model\SJD_wing\data' }
+  +-cont: { PtMX=num.array ResTOL=0.1 TOL=50 h_min=10 h_max=1000 }
+  +-corr: { PtMX=num.array ItMX=250 ResTOL=0.1 TOL=50 h_max=1000 }
+  +-lsol: { det=true }
+
+funcs
+  +-ep: { type='zero' }
+  | +-pars: { type='inactive' pars={ 'U' 'alp' } }
+  | +-var: { type='zero' }
+  | +-HB: { type='zero' }
+  | +-test: { type='regular' pars={ 'ep.test.BTP' } }
+  +-hb_glue: { type='zero' }
+  +-cseg
+  | +-prcond: { type='zero' }
+  +-atlas
+    +-test
+      +-BP: { type='singular' pars={ 'atlas.test.BP' } }
+      +-FP: { type='singular' pars={ 'atlas.test.FP' } }
+
+slots
+  +-ep: { signals={ 'bddat@bddat' 'save_full@coco_save_data' } }
+  | +-HB: { signal='update@update' }
+  +-cseg
+  | +-fix_mfunc: { signal='fix_mfunc@CurveSegmentBase.fix_mfunc' }
+  | +-remesh: { signal='remesh@CurveSegmentBase.remesh' }
+  | +-set_mode: { signal='set_mode@CurveSegmentBase.set_mode' }
+  | +-update: { signal='update@CurveSegmentBase.update' }
+  | +-update_h: { signal='update_h@CurveSegmentBase.update_h' }
+  | +-update_w: { signal='update_w@CurveSegmentBase.update_w' }
+  +-tb_info: { signals={ 'save_bd@coco_save_data' 'save_reduced@coco_save_data' } }
+  +-run: { signal='save_bd@save_run' }
+  +-bd: { signal='save_bd@save_bd' }
+  +-bddat: { signal='save_bd@save_bddat' }
+  +-lsol
+    +-det: { signal='set_mode@set_save_det' }
+
+signals
+  +-save_bd: { owner='coco' slots={ 'tb_info@coco_save_data' 'run@save_run' 'bd@save_bd' 'bddat@save_bddat' } }
+  +-update: { owner='CurveSegmentBase' slots={ 'ep.HB@update' 'cseg.update@CurveSegmentBase.update' } }
+  +-set_mode: { owner='CurveSegmentBase' slots={ 'cseg.set_mode@CurveSegmentBase.set_mode' 'lsol.det@set_save_det' } }
+  +-update_h: { owner='CurveSegmentBase' slots={ 'cseg.update_h@CurveSegmentBase.update_h' } }
+  +-fix_mfunc: { owner='CurveSegmentBase' slots={ 'cseg.fix_mfunc@CurveSegmentBase.fix_mfunc' } }
+  +-remesh: { owner='atlas_1d' slots={ 'cseg.remesh@CurveSegmentBase.remesh' } }
+  +-bddat: { owner='AtlasBase' slots={ 'ep@bddat' } }
+  +-save_full: { owner='AtlasBase' slots={ 'ep@coco_save_data' } }
+  +-save_reduced: { owner='AtlasBase' slots={ 'tb_info@coco_save_data' } }
+
+*********************************************************************
+
+    STEP   DAMPING               NORMS              COMPUTATION TIMES
+  IT SIT     GAMMA     ||d||     ||f||     ||U||   F(x)  DF(x)  SOLVE
+   0                          1.91e-04  9.10e+03    0.4    0.0    0.0
+init_chart: init_chart: angle(t,t324) =  8.88e+01[DEG]
+init_chart: init_chart: angle(t,t325) =  9.00e+01[DEG]
+
+ STEP   STEP SIZE      TIME        ||U||  LABEL  TYPE             U          alp
+    0    1.00e+01  00:00:03   9.1002e+03      1  EP      2.2292e+01   2.0944e-02
+
+POINT 0: computation finished
+*********************************************************************
+
+    STEP   DAMPING               NORMS              COMPUTATION TIMES
+  IT SIT     GAMMA     ||d||     ||f||     ||U||   F(x)  DF(x)  SOLVE
+   0                          4.77e+00  9.11e+03    0.4    0.0    0.0
+   1   1  1.00e+00  6.52e+00  2.06e+00  9.11e+03    0.7    1.8    0.0
+
+warning: atlas: minimum stepsize reached, but beta [8.2238e+01] > h_fac_max * al_max

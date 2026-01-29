@@ -98,6 +98,7 @@ run_ext = analysis.extAeroBase(buildOb); %analysis module foe the external aerod
 run_ONERA.Cl_grad = @(alp, U)(aeroCurves.clGradFcn(alp,U));
 run_ONERA.Cl = @(alp, U)(aeroCurves.clFcn(alp,U));
 run_ONERA.Cm = @(alp, U)(aeroCurves.cmFcn(alp,U));
+run_ONERA.Cd = @(alp, U)(aeroCurves.cdFcn(alp,U));
 
 %save these analysis modules for calling later...
 save('run_ONERA.mat', 'run_ONERA')

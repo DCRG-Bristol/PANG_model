@@ -1,11 +1,13 @@
 function K = massModel_dir_1(p)
 % Auto-generated constant matrix
-K = zeros(12,1);
+K = zeros(14,1);
 K = [
   9.975645e-02;
   -4.954960e-02;
   -2.107448e-02;
   3.214360e-02;
+  -1.785968e-02;
+  1.243736e-02;
   0.000000e+00;
   0.000000e+00;
   0.000000e+00;
