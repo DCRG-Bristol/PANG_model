@@ -74,6 +74,20 @@ for i=1:10
     elem(i).xp = 0.0375 + (i-1)*0.0650; %attachment potision...say 30% of the semi-span
 end
 
+%guide-masses
+xpLoc = 0.0375 + ([2,4,6,8]-1)*0.0650;
+for i=11:14
+    elem(i) = buildSystem.structure.descrElem; %descrete inertia for the engine....handled as a point mass
+    %all properties for this follow the same definitions as that for
+    %inertia...but NOT PER UNIT LENGTH AND ARE NOT FUNCTION HANDLES
+    elem(i).m = 0.01;
+    elem(i).mxx = 5.7704e-06;
+    elem(i).mzz = 5.6943e-06;
+    elem(i).myy = 2.4889e-07;
+    elem(i).e = -0.04;
+    elem(i).xp = xpLoc(i-10); %attachment potision...say 30% of the semi-span
+end
+
 inertia(1).elem = elem;
 inertia(1).name = 'massModel';
 inertia(1).fctrId = []; %no scalling is imposed on the mass matrix.. however can be implemented if needed

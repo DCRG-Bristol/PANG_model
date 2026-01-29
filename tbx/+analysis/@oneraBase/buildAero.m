@@ -100,16 +100,17 @@ LHSpot_str = -(invU)*ML*(bi.^2)*(sigL.*w0_dt_LHS +... %sigL this line origanlly 
 
 LHSpot_aer = (invU)*bi;
 
-dwnWsh_pot = -(invU)*ML*(bi.^2)*(-Cl_alp.*indFac);
+[~, Cl_alp_lin] = runObj.Cl_fcn(0*vz/mach_bet,U_tot);
+dwnWsh_pot = -(invU)*ML*(bi.^2)*(-Cl_alp_lin.*indFac);
 
 %% apply structural aerodynamic forces to structure...
 
-F_glob(runObj.structVel) = F_glob(runObj.structVel) + runObj.transF'*(...
+F_glob(runObj.structVel) = F_glob(runObj.structVel) + (1-runObj.lossFactor)*runObj.transF'*(...
     proj_lift*totLifStr_R + proj_moment*totMoM_R + proj_drag*totDrg_R);
 
 F_glob(runObj.unsAeroIdx) = F_glob(runObj.unsAeroIdx) + RHS_pot; %locally 2D unsteady comps
 
-M_glob(runObj.structVel, runObj.structVel) = M_glob(runObj.structVel, runObj.structVel) + runObj.transF'*(...
+M_glob(runObj.structVel, runObj.structVel) = M_glob(runObj.structVel, runObj.structVel) + (1-runObj.lossFactor)*runObj.transF'*(...
     proj_lift*totLifStr_L + proj_moment*totMoM_L)*runObj.transF;
 
 M_glob(runObj.unsAeroIdx, runObj.structVel) = M_glob(runObj.unsAeroIdx, runObj.structVel) +...

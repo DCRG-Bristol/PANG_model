@@ -15,6 +15,7 @@ classdef oneraBase<analysis.analysisBase
         %%onera stuff....
         lam = 0.275;
         ML = 0.44;
+        lossFactor = 0;
     end
 
     %this is temporarily hidden.. until the option for propegation eqn

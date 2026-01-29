@@ -7,6 +7,7 @@ load('run_ONERA.mat'); run = run_ONERA;
 run = run.setPars('alpha0', 0*pi/180, 'alpha', 0, 'g', 9.81, 'mach', 0);
 
 run.dispFlag = false; %this suppresses unnecessary message displaying
+run.lossFactor = 0.05;
 
 %get linear modes and matrices....
 [shp, evals, Kmat, Cmat, Mmat] = run.getStructModes(run.q0_struct); 
