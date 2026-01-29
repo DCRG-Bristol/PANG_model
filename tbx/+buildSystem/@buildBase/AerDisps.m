@@ -427,14 +427,24 @@ if beta~=0
             cs2=-cB*cos(beta)-sB*sin(beta);
             dp = sin(2*beta)*xGrid(i);
 
-            f_ind2(i,j) = (0.25/pi)*(cs1+cs2)./dp;
+            %tunnel corrections...            
+            xd = xTrail(j)-xGrid(i); xs = xTrail(j)+xGrid(i);
+            WT_corr = 2*xd*0.25*(psi(1-0.5*xd/WT)-psi(1+0.5*xd/WT))./(WT*xd)+...
+                2*xs*0.25*(psi(1-0.5*xs/WT)-psi(1+0.5*xs/WT))./(WT*xs);
+
+            f_ind2(i,j) = (0.25/pi)*(cs1+cs2)./dp + (0.25/pi)*WT_corr;
         end
     end
 else
     f_ind2 = 0;
     for i=1:N_gam
         for j=1:N_gam
-            f_ind(i,j) = (0.25/pi)*(1./(xTrail(j)-xGrid(i)) + 1./(xTrail(j)+xGrid(i)));
+            xd = xTrail(j)-xGrid(i); xs = xTrail(j)+xGrid(i);
+            WT_corr = 2*xd*0.25*(psi(1-0.5*xd/WT)-psi(1+0.5*xd/WT))./(WT*xd)+...
+                2*xs*0.25*(psi(1-0.5*xs/WT)-psi(1+0.5*xs/WT))./(WT*xs);
+
+            f_ind(i,j) = (0.25/pi)*(1./(xTrail(j)-xGrid(i)) + 1./(xTrail(j)+xGrid(i)))+...
+                +(0.25/pi)*WT_corr;
         end
     end
 end

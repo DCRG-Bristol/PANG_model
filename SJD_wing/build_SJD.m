@@ -20,6 +20,7 @@ geom.a = @(x)(0*ones(size(x))); %position of the elastic axis... theodorsen defi
 geom.b = @(x)(0.075*ones(size(x))); %semi-chord distribution
 geom.sweep = 0*pi/180; %sweep (of beam line!)
 geom.twist = @(x)(0*ones(size(x))); %wing twist distribution
+geom.WTWidth = 0.8;
 
 buildOb.geom = geom; %write to buildBass class...
 
