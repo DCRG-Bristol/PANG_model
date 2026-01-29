@@ -100,8 +100,8 @@ LHSpot_str = -(invU)*ML*(bi.^2)*(sigL.*w0_dt_LHS +... %sigL this line origanlly 
 
 LHSpot_aer = (invU)*bi;
 
-[~, Cl_alp_lin] = runObj.Cl_fcn(0*vz/mach_bet,U_tot);
-dwnWsh_pot = -(invU)*ML*(bi.^2)*(-Cl_alp_lin.*indFac);
+%[~, Cl_alp_lin] = runObj.Cl_fcn(0*vz/mach_bet,U_tot);
+dwnWsh_pot = -(invU)*ML*(bi.^2)*(-Cl_alp.*indFac);
 
 %% apply structural aerodynamic forces to structure...
 

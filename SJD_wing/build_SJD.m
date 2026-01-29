@@ -47,7 +47,7 @@ elas(1) = buildSystem.structure.elasBase; %call elastic property class
 elas(1).EI1 = @(x)(2.268*ones(size(x)));
 elas(1).EI2 = @(x)(59.136*ones(size(x)));
 elas(1).EI12 = @(x)(0);
-elas(1).GJ = @(x)(3.38); %GJ handled seperately as we want this to be independednt of E
+elas(1).GJ = @(x)(3.3843); %GJ handled seperately as we want this to be independednt of E
 elas(1).name = 'K_matr'; %namee for this matrix..
 elas(1).fctrId = []; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
 
