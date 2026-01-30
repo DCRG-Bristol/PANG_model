@@ -49,11 +49,11 @@ w1 = analysis.aero.flow.W1(q,qt,p0,p,beta);
 indFac = project.aero.flow.u_ind(p);
 
 % total velocity in z
-vz = w0 + 0.5*w1 - mach_bet*project.aero.flow.u_ind(p)*qgam;
-vzBlk = diag(vz); %as a diagonal operator..
+vz = w0 - mach_bet*project.aero.flow.u_ind(p)*qgam; %...0.25chord...
+vzBlk = diag(vz + 0.5*w1); %as a diagonal operator..at mid chord
 
 %total airspeed...
-U_tot = sqrt(vz.^2 + vy.^2);
+U_tot = sqrt((vz + 0.5*w1).^2 + vy.^2);
     U_Mat = diag(U_tot);
     invU = inv(U_Mat);
     
@@ -100,8 +100,8 @@ LHSpot_str = -(invU)*ML*(bi.^2)*(sigL.*w0_dt_LHS +... %sigL this line origanlly 
 
 LHSpot_aer = (invU)*bi;
 
-%[~, Cl_alp_lin] = runObj.Cl_fcn(0*vz/mach_bet,U_tot);
-dwnWsh_pot = -(invU)*ML*(bi.^2)*(-Cl_alp.*indFac);
+[~, Cl_alp_lin] = runObj.Cl_fcn(0*vz/mach_bet,U_tot);
+dwnWsh_pot = -(invU)*ML*(bi.^2)*(-Cl_alp_lin.*indFac);
 
 %% apply structural aerodynamic forces to structure...
 

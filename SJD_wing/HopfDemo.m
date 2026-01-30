@@ -5,7 +5,7 @@ load('run_ONERA.mat'); run = run_ONERA;
 
 %set initial parameters - note mach =0 for SJD wing
 run = run.setPars('alpha0', 0*pi/180, 'alpha', 0, 'g', 9.81, 'mach', 0);
-run.lossFactor = 0.0;
+run.lossFactor = 0.00;
 
 run.dispFlag = false; %this suppresses unnecessary message displaying
 
@@ -17,7 +17,7 @@ Dmat = 0.071*Mmat + (1e-4)*Kmat;
 run.dampMatr = Dmat; 
 
 %set to work with modal form...
-run = run.setTransform('modal', 14); %...using the first 6 modes
+run = run.setTransform('modal', 12); %...using the first 6 modes
 
 %% equilirbium tracing.. using coco...
 
