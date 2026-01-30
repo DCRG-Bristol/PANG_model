@@ -30,7 +30,7 @@ basis = buildSystem.basis;
 basis.Nw = 6; %size of shape basis..out of plane bending
 basis.Nv = 4; %.. chord wise bending
 basis.Nthet = 4;%...torsion
-basis.xi = linspace(0, L, 21); %aerodynamic grid (spanwise)... collocation points assigned at the mid-points of xi
+basis.xi = linspace(0.005, L, 21); %aerodynamic grid (spanwise)... collocation points assigned at the mid-points of xi
 
 buildOb.basis = basis; %write to buildBass class...
 
@@ -84,7 +84,7 @@ for i=11:14
     elem(i).mxx = 5.7704e-06;
     elem(i).mzz = 5.6943e-06;
     elem(i).myy = 2.4889e-07;
-    elem(i).e = -0.04;
+    elem(i).e = -0.4;
     elem(i).xp = xpLoc(i-10); %attachment potision...say 30% of the semi-span
 end
 
@@ -114,6 +114,9 @@ run_ONERA.Cl_grad = @(alp, U)(aeroCurves.clGradFcn(alp,U));
 run_ONERA.Cl = @(alp, U)(aeroCurves.clFcn(alp,U));
 run_ONERA.Cm = @(alp, U)(aeroCurves.cmFcn(alp,U));
 run_ONERA.Cd = @(alp, U)(aeroCurves.cdFcn(alp,U));
+run_ONERA.lossFactor = 0.05;
+run_ONERA.ML = 0.44;
+run_ONERA.lam = 0.275;
 
 %save these analysis modules for calling later...
 save('run_ONERA.mat', 'run_ONERA')

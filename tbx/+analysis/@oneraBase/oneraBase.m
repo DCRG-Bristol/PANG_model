@@ -13,8 +13,10 @@ classdef oneraBase<analysis.analysisBase
         Cd = @(alp, U)(zeros(size(alp)));
 
         %%onera stuff....
-        lam = 0.275;
-        ML = 0.44;
+        lam = 0.17;
+        ML = 0.53;
+
+        %pressure loss/scaling for aero laods (e.g. fairing gaps)
         lossFactor = 0;
     end
 
