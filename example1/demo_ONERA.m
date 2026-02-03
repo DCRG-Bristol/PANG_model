@@ -14,7 +14,7 @@ load('run_ONERA.mat'); run = run_ONERA;
 %% INITIALISATION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 %ASSIGN BASELINE VALUES TO THE PARAMETERS
-run = run.setPars('E', 70e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
+run = run.setPars('EI_1', 70e9, 'EI_2', 70e9, 'G', 26e9, 'alpha0', 0*pi/180, 'g', 9.81, 'mach', 0.78);
 
 %this sets the baseline parameters - this has to be done for all user
 %defined parameters (defined in buildSystem.buildBase.par) -in this case
@@ -144,13 +144,13 @@ for k_idx = 1:length(Er) %loop through young's moduli
 
     for a_idx = 1:length(alp) %loop through pitch angles
 
-        q = fsolve(@(qstr)(run.structDeriv(qstr,'alpha0', alp(a_idx), 'E', Er(k_idx))), q); 
+        q = fsolve(@(qstr)(run.structDeriv(qstr,'alpha0', alp(a_idx),  'EI_1', Er(k_idx), 'EI_2', Er(k_idx), 'G', 26e9)), q);  
 
         [x, y, z] = run.getDisplField(q, xMesh(end) ,'beamModel'); %get displacements at x
         tipDefl_str{k_idx}(a_idx) = z(1,:); %z of size [2, length(xMeasureStat)] hold the z displacements in z(1,:) and TE in z(2,:)
 
         %eigenvalues....
-        [~, e] = run.getStructModes(q, 'E', Er(k_idx), 'alpha0', alp(a_idx)); %this calculates the structural modes with the reference parameters...
+        [~, e] = run.getStructModes(q, 'EI_1', Er(k_idx), 'EI_2', Er(k_idx), 'G', 26e9, 'alpha0', alp(a_idx)); %this calculates the structural modes with the reference parameters...
         EigVals{k_idx}(:,a_idx) = e;
     end
 
@@ -211,7 +211,7 @@ set(gca, 'dataaspectratio', [1,1,1])
 set(gca, 'zDir', 'reverse');
 xlabel('x, [m]'); ylabel('y, [m]'); zlabel('z, [m]');
 
-% ODE SOLUTION SEQUENCE OF A GUST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+%% ODE SOLUTION SEQUENCE OF A GUST>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 gustSeq_aoa = @(t)(0.5*(1-cos(2*pi*t/0.5)).*heaviside(0.5-t)); %gust input..
 

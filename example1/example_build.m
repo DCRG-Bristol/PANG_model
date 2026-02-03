@@ -46,23 +46,30 @@ elas(1) = buildSystem.structure.elasBase; %call elastic property class
 
 %stiffness properties... matrices with these rigidities will be multiplied
 %by a user dfined parameters...
-elas(1).EI1 = @(x)(100*exp(18.8-7.3*x/L)/(70e9));
-elas(1).EI2 = @(x)(5*100*exp(18.8-7.3*x/L)/(70e9));
+elas(1).EI1 = @(x)(100*exp(18.8-7.3*x/L)/(70e9)); %out of plane bending rigidity
+elas(1).EI2 = @(x)(0);  %chord wise of plane bending rigidity
 elas(1).EI12 = @(x)(0);
 elas(1).GJ = @(x)(0); %GJ handled seperately as we want this to be independednt of E
-elas(1).name = 'K_E'; %namee for this matrix..
-elas(1).fctrId = 'E'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+elas(1).name = 'K_E1'; %namee for this matrix..
+elas(1).fctrId = 'EI_1'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+
+elas(2).EI1 = @(x)(0); %out of plane bending rigidity
+elas(2).EI2 = @(x)(5*100*exp(18.8-7.3*x/L)/(70e9));  %chord wise of plane bending rigidity
+elas(2).EI12 = @(x)(0);
+elas(2).GJ = @(x)(0); %GJ handled seperately as we want this to be independednt of E
+elas(2).name = 'K_E2'; %namee for this matrix..
+elas(2).fctrId = 'EI_2'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
 
 %a stiffnes matrix for torsional rigidity...here we keep it constant (i.e.
 %not dependednt on 
 
-elas(2) = buildSystem.structure.elasBase; %call elastic property class
-elas(2).EI1 = @(x)(0);
-elas(2).EI2 = @(x)(0);
-elas(2).EI12 = @(x)(0);
-elas(2).GJ = @(x)(100*exp(18.3-6.3*x/L)); %we want to use a fixed GJ model here... 
-elas(2).name = 'K_G';
-elas(2).fctrId = []; %..hence the fctrId property is left empty...
+elas(3) = buildSystem.structure.elasBase; %call elastic property class
+elas(3).EI1 = @(x)(0);
+elas(3).EI2 = @(x)(0);
+elas(3).EI12 = @(x)(0);
+elas(3).GJ = @(x)(100*exp(18.3-6.3*x/L)/(26e9)); %we want to use a fixed GJ model here... 
+elas(3).name = 'K_G';
+elas(3).fctrId = 'G'; %..hence the fctrId property is left empty...
 
 buildOb.elas = elas; %write to buildBass class...
 
