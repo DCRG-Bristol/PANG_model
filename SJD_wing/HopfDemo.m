@@ -7,7 +7,7 @@ s_I = 0.025; %measurment location for WRBM
 load('run_ONERA.mat'); run = run_ONERA;
 
 %set initial parameters - note mach =0 for SJD wing
-run = run.setPars('alpha0', 0*pi/180, 'alpha', 0, 'g', 9.81, 'mach', 0);
+run = run.setPars('EI_1', 1.1, 'EI_2', 1, 'G', 0.9, 'alpha0', 0*pi/180, 'alpha', 0, 'g', 9.81, 'mach', 0);
 
 run.dispFlag = false; %this suppresses unnecessary message displaying
 
@@ -35,7 +35,7 @@ run = run.setTransform('modal', 14); %...using the first 6 modes
 % (https://sourceforge.net/projects/cocotools/)
 
 %starting points..
-alp0 = ([0.3, 1.0, 1.2] - 0.8)*pi/180; %angles of attack to run...
+alp0 = ([0.3, 1.0, 1.2])*pi/180; %angles of attack to run...
 U0 =  16; %initial speed...
 
 %figure for plotting equilibrium paths....
@@ -46,7 +46,7 @@ xlabel('Airspeed, [U]'); ylabel('w_L/L, [-]'); hold on;
 dMyAx = subplot(1,2,2);
 xlabel('Airspeed, [U]'); ylabel('\DeltaM_y, [Nm]'); hold on;
 
-for a_idx=1:length(alp0)
+for a_idx=1%:length(alp0)
 
     %collect and initial solution for U=11 using fsolve...
     q0 = fsolve(@(q_all)(run.aero_structDeriv(q_all, 'U', 11,...
@@ -115,6 +115,7 @@ for a_idx=1:length(alp0)
     plot(dMyAx, U_1dim_HB{a_idx}, dMy_1dim_HB{a_idx},...
         'k^', 'markerFaceColor', 'r');
     hold(dMyAx, 'on');
+    drawnow;
 end
 
 %the follolowing could be read as teh output at this point....

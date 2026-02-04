@@ -45,11 +45,25 @@ elas(1) = buildSystem.structure.elasBase; %call elastic property class
 %stiffness properties... matrices with these rigidities will be multiplied
 %by a user dfined parameters...
 elas(1).EI1 = @(x)(2.268*ones(size(x)));
-elas(1).EI2 = @(x)(59.136*ones(size(x)));
+elas(1).EI2 = @(x)(0);
 elas(1).EI12 = @(x)(0);
-elas(1).GJ = @(x)(3.3843); %GJ handled seperately as we want this to be independednt of E
-elas(1).name = 'K_matr'; %namee for this matrix..
-elas(1).fctrId = []; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+elas(1).GJ = @(x)(0); %GJ handled seperately as we want this to be independednt of E
+elas(1).name = 'K_E1'; %namee for this matrix..
+elas(1).fctrId = 'EI_1'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+
+elas(2).EI1 = @(x)(0);
+elas(2).EI2 = @(x)(59.136*ones(size(x)));
+elas(2).EI12 = @(x)(0);
+elas(2).GJ = @(x)(0); %GJ handled seperately as we want this to be independednt of E
+elas(2).name = 'K_E2'; %namee for this matrix..
+elas(2).fctrId = 'EI_2'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+
+elas(3).EI1 = @(x)(0);
+elas(3).EI2 = @(x)(0);
+elas(3).EI12 = @(x)(0);
+elas(3).GJ = @(x)(3.3843); %GJ handled seperately as we want this to be independednt of E
+elas(3).name = 'K_G'; %namee for this matrix..
+elas(3).fctrId = 'G'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
 
 buildOb.elas = elas; %write to buildBass class...
 
