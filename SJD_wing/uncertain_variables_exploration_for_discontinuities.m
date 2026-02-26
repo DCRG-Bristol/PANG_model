@@ -67,7 +67,9 @@ for jj = 1:N_variables
 end
 for ii = 1:N_variables
     eval_points(:, ii) = eval_locations(:, ii);                     % discretisation of the uncertain variable in preparation for the plot
-    surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled(eval_points, mean_Y, std_Y);      % evaluate the surrogates at the discretisation points (i.e., get all QIs)
+    % surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled(eval_points, mean_Y, std_Y);      % evaluate the surrogates at the discretisation points (i.e., get all QIs)
+    % surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled_rbm(eval_points, mean_Y, std_Y);      % evaluate the surrogates at the discretisation points (i.e., get all QIs)
+    surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled_tip_deflection(eval_points, mean_Y, std_Y);      % evaluate the surrogates at the discretisation points (i.e., get all QIs)
     for kk = 1:N_outputs
         % make a plot for each QI as a function of the uncertain variable
         fig = figure();
@@ -97,7 +99,9 @@ if N_variables >= 2
                 eval_points(:, jj) = (upper_bounds(jj)+lower_bounds(jj))/2; % the other uncertain variables are fixed to their mean value
             end
         end
-        surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled(eval_points, mean_Y, std_Y); % evaluate the surrogates at the discretisation points (i.e., get all QIs)
+        % surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled(eval_points, mean_Y, std_Y); % evaluate the surrogates at the discretisation points (i.e., get all QIs)
+        % surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled_rbm(eval_points, mean_Y, std_Y); % evaluate the surrogates at the discretisation points (i.e., get all QIs)
+        surrogates_output = PCE_ensemble_hard_mixture_demo_rescaled_tip_deflection(eval_points, mean_Y, std_Y); % evaluate the surrogates at the discretisation points (i.e., get all QIs)
         % extract the training set (a.k.a. experimental design) points that are within the plotting bounds
         rowsToKeep = all(X_train(:, pairwise_combinations(ii, 1)) >= lower_bounds(pairwise_combinations(ii, 1)) & X_train(:, pairwise_combinations(ii, 1)) <= upper_bounds(pairwise_combinations(ii, 1)) & ...
             X_train(:, pairwise_combinations(ii, 2)) >= lower_bounds(pairwise_combinations(ii, 2)) & X_train(:, pairwise_combinations(ii, 2)) <= upper_bounds(pairwise_combinations(ii, 2)), 2);
@@ -152,7 +156,9 @@ end
 %% 5. Parallel coordinate plots (PCP) 
 N_MC = 10^5;
 inputs_for_pcp = uq_getSample(input_distributions, N_MC, 'LHS');            % generate N_MC Latin Hypercube points in the uncertain variables' space
-outputs_for_pcp = PCE_ensemble_hard_mixture_demo_rescaled(inputs_for_pcp, mean_Y, std_Y);       % evaluate the surrogates to get QIs data for the PCP
+% outputs_for_pcp = PCE_ensemble_hard_mixture_demo_rescaled(inputs_for_pcp, mean_Y, std_Y);       % evaluate the surrogates to get QIs data for the PCP
+% outputs_for_pcp = PCE_ensemble_hard_mixture_demo_rescaled_rbm(inputs_for_pcp, mean_Y, std_Y);       % evaluate the surrogates to get QIs data for the PCP
+outputs_for_pcp = PCE_ensemble_hard_mixture_demo_rescaled_tip_deflection(inputs_for_pcp, mean_Y, std_Y);       % evaluate the surrogates to get QIs data for the PCP
 for kk = 1:N_outputs
     var_qi = outputs_for_pcp(:, kk);
     group = repmat("Mid", size(outputs_for_pcp, 1), 1);
@@ -202,7 +208,9 @@ end
 %% 6. Histograms
 N_MC = 10^5;
 inputs_for_histograms = uq_getSample(input_distributions, N_MC, 'MC');      % generate N_MC Monte Carlo points in the uncertain variables' space
-outputs_for_histograms = PCE_ensemble_hard_mixture_demo_rescaled(inputs_for_histograms, mean_Y, std_Y);   % evaluate the surrogates to get QIs data for the histograms
+% outputs_for_histograms = PCE_ensemble_hard_mixture_demo_rescaled(inputs_for_histograms, mean_Y, std_Y);   % evaluate the surrogates to get QIs data for the histograms
+% outputs_for_histograms = PCE_ensemble_hard_mixture_demo_rescaled_rbm(inputs_for_histograms, mean_Y, std_Y);   % evaluate the surrogates to get QIs data for the histograms
+outputs_for_histograms = PCE_ensemble_hard_mixture_demo_rescaled_tip_deflection(inputs_for_histograms, mean_Y, std_Y);   % evaluate the surrogates to get QIs data for the histograms
 mean_outputs_for_histograms = mean(outputs_for_histograms, 1);              % mean of each QI: to be added to the histogram legend
 median_outputs_for_histograms = median(outputs_for_histograms, 1);          % median of each QI: to be added to the histogram legend
 std_outputs_for_histograms = std(outputs_for_histograms, 1);                % sigma of each QI: to be added to the histogram legend
@@ -328,7 +336,9 @@ end
 %% 9. Global sensitivity analysis (Sobol indices)
 % prepare a UQLab object for sensitivity analysis
 SobolOpts.Input = input_distributions;  % probability distributions of the uncertain variables
-ModelOpts.mFile = 'PCE_ensemble_hard_mixture_demo';
+% ModelOpts.mFile = 'PCE_ensemble_hard_mixture_demo';
+% ModelOpts.mFile = 'PCE_ensemble_hard_mixture_demo_rbm';
+ModelOpts.mFile = 'PCE_ensemble_hard_mixture_demo_tip_deflection';
 % myInputN = uq_createInput(InputOptsN);
 myModel = uq_createModel(ModelOpts);
 SobolOpts.Type = 'Sensitivity';
@@ -387,7 +397,9 @@ if strcmp(input_distributions.Marginals(1).Type, 'Uniform') % this code works on
             inputs_for_ICE{jj} = uq_getSample(input_distributions, 1, 'MC');
             inputs_for_ICE{jj} = repmat(inputs_for_ICE{jj}, N_eval_ICE, 1);
             inputs_for_ICE{jj}(:, ii) = eval_locations_ICE(:, ii);
-            outputs_for_ICE{jj} = PCE_ensemble_hard_mixture_demo_rescaled(inputs_for_ICE{jj}, mean_Y, std_Y);  
+            % outputs_for_ICE{jj} = PCE_ensemble_hard_mixture_demo_rescaled(inputs_for_ICE{jj}, mean_Y, std_Y);  
+            % outputs_for_ICE{jj} = PCE_ensemble_hard_mixture_demo_rescaled_rbm(inputs_for_ICE{jj}, mean_Y, std_Y);  
+            outputs_for_ICE{jj} = PCE_ensemble_hard_mixture_demo_rescaled_tip_deflection(inputs_for_ICE{jj}, mean_Y, std_Y);  
         end
         for kk = 1:N_outputs
             mean_outputs_for_ICE = zeros(N_eval_ICE, N_ICE);

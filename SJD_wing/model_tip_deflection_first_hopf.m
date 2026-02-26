@@ -8,9 +8,8 @@ Comments:
 --------------------------------------------------------
 Input:
 * X: multiplicative scaling factor for the uncertain variables
-    * X(1)      : Young's modulus E for OOP bending (Pa)
-    * X(2)      : Young's modulus E for IP bending (Pa)
-    * X(3)      : torsional modulus G    
+    * X(1)      : Young's modulus E
+    * X(2)      : torsional modulus G    
 * P: deterministic parameters
     * P(1)      : angle of attack (rad)
 --------------------------------------------------------
@@ -24,7 +23,7 @@ Output:
 load('run_ONERA.mat'); run = run_ONERA;
 
 %set initial parameters - note mach =0 for SJD wing
-run = run.setPars('EI_1', X(1), 'EI_2', X(2), 'G', X(3), 'alpha0', 0*pi/180, 'alpha', 0, 'g', 9.81, 'mach', 0);
+run = run.setPars('EI_1', X(1), 'EI_2', X(1), 'G', X(2), 'alpha0', 0*pi/180, 'alpha', 0, 'g', 9.81, 'mach', 0);
 
 run.dispFlag = false; %this suppresses unnecessary message displaying
 
@@ -80,7 +79,7 @@ equib_run_id{1} = ['equilibrium_branch_AoA=',...
 
 %call coco.....
 bd_TrvEquib = coco(prob_equib, equib_run_id{1}, [],...
-    1, {'U'}, [15, 31]); %run continuuation between 10<U<21
+    1, {'U'}, [15, 35]); %run continuuation between 10<U<21
 
 %.read coco solutions....see coco examples...
 equib = coco_bd_read(equib_run_id{1});
