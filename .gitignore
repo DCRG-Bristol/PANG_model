@@ -41,7 +41,11 @@ octave-workspace
 *.mat
 !tbx/**/*.mat
 !SJD_wing/groundTests/testData/*.mat
+!SJD_wing/first_hopf_aoa_1_2_classification_and_local_models.mat
+!SJD_wing/rbm_first_hopf_aoa_1_2_classification_and_local_models.mat
+!SJD_wing/tip_deflection_first_hopf_aoa_1_2_classification_and_local_models.mat
 *.fig
+!SJD_wing/first_hopf_aoa_1_2_training_plot.fig
 #*.png
 *.jpg
 *.gif
