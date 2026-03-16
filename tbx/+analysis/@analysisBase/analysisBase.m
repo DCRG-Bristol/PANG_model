@@ -7,8 +7,9 @@ classdef analysisBase
         p = [];
         p0 = [20, 0, 0, 9.81, 1.225, 0];
         dampMatr
-
         dispFlag = true;
+
+        externalForce function_handle
     end
 
     properties (SetAccess = {?buildSystem.buildBase})
@@ -211,7 +212,12 @@ classdef analysisBase
 
         function qdt = structDeriv(obj,q_all,varargin)
             [M_glob,F_glob] = obj.structModel(q_all,varargin{:});
-            qdt = M_glob\F_glob;
+
+            if isempty(obj.externalForce)
+                qdt = M_glob\F_glob;
+            else
+                qdt = M_glob\(F_glob + obj.externalForce(q_all));
+            end
         end
 
         function [M_glob,F_glob] = structModel(obj,q_all,varargin)

@@ -132,6 +132,31 @@ run_ONERA.lossFactor = 0.05;
 run_ONERA.ML = 0.44;
 run_ONERA.lam = 0.275;
 
+
+%set damping matrices...
+qstr0 = fsolve(@(q_all)(run_ONERA.structDeriv(q_all,'alpha', 0, 'alpha0', 0)),...
+    run_ONERA.q0_struct);
+
+%get linear modes and matrices....
+[shp, evals, Kmat, Cmat, Mmat] = run_ONERA.getStructModes(qstr0);
+
+%add damping (values from paper)
+Dmat = 0.071*Mmat + (10e-5)*Kmat;
+run_ONERA.dampMatr = Dmat;
+
+qstr0 = fsolve(@(q_all)(run_ext.structDeriv(q_all,'alpha', 0, 'alpha0', 0)),...
+    run_ext.q0_struct);
+
+%get linear modes and matrices....
+[shp, evals, Kmat, Cmat, Mmat] = run_ext.getStructModes(qstr0);
+
+%add damping (values from paper)
+Dmat = 0.071*Mmat + (10e-5)*Kmat;
+run_ext.dampMatr = Dmat;
+
+
+
+
 %save these analysis modules for calling later...
 save('run_ONERA.mat', 'run_ONERA')
 save('run_ext.mat', 'run_ext')
