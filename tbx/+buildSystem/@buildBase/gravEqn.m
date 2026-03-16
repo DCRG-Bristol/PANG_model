@@ -45,7 +45,9 @@ for itm = 1:length(obj.grav)
         end
     end
 
-    disp(['Running garvity model, item: ', fcnName, '\n'])
+    disp('__________________________________________________')
+
+    disp(['generating gravitational forces for item: ', fcnName])
 
     for dir=1:2
         %assign null matrices...
@@ -189,6 +191,8 @@ for itm = 1:length(obj.grav)
     end
 
 end
+
+disp('__________________________________________________')
 
 writeOperator('vector', fPath, 'combGravMats_1', inpt{1})
 writeOperator('vector', fPath, 'combGravMats_2', inpt{2})

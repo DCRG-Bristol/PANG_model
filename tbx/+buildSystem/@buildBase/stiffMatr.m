@@ -40,7 +40,8 @@ for itm=1:length(obj.elas)
         end
     end
 
-    disp(['Running stiffness model, item: ', fcnName, '\n'])
+    disp('__________________________________________________')
+    disp(['Generating stiffness model for item: ', fcnName])
 
     %%
     K{1} = zeros(N_tot,N_tot);
@@ -86,13 +87,15 @@ for itm=1:length(obj.elas)
                 K{odr} = K{odr}  + permute(Matr0, dimOdr);
             end
         end
-        disp([' .....', num2str(odr,1), ' order stiffness terms complete\n']);
+        disp([' .....', num2str(odr,1), ' order stiffness terms complete']);
         writeFunction(K{odr}, odr, [fPath,'\+odr_',num2str(odr),'\'], fcnName, parIdx)
     end
 
     inpt{itm}.fcnName = fcnName;
 
 end
+
+disp('__________________________________________________')
 
 %% function to combine stiffness items...
 

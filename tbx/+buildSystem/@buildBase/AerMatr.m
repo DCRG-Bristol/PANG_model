@@ -40,7 +40,9 @@ Qt = sym('qt',[N_tot,1]); assume(Qt, 'real');
 U = sym('U'); alp = sym('alp');
 assume([U,alp], 'real');
 
-disp(['generating aerodynamic flow terms...\n'])
+disp('__________________________________________________')
+disp(['generating aerodynamic flow terms....'])
+disp('__________________________________________________')
 
 %% airspeed projection.......
 

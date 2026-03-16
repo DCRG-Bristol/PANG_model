@@ -56,17 +56,23 @@ plot(angl*180/pi, delta_TE, 'b--'); hold on;
 plot(exprData{2}.rootAngl, exprData{2}.delta_LE, 'bs', 'MarkerFaceColor',...
     'b'); hold on;
 plot(exprData{2}.rootAngl, exprData{2}.delta_TE, 'bs'); hold on;
+leg_stat = {'G1.1', [''], [''], [''], 'G1.2', [''], [''], ['']};
+legend(leg_stat)
 
 set(0, 'CurrentFigure', rootLoadFig)
 subplot(1,2,1)
 plot(angl*180/pi, beta_y, 'b-'); hold on;
 plot(exprData{2}.rootAngl, exprData{2}.beta_y, 'bs'); hold on;
+leg_statload = {'G1.1', [''], 'G1.2', ['']};
+legend(leg_statload)
 
 subplot(1,2,2)
 plot(angl*180/pi, beta_x, 'b-'); hold on;
 plot(exprData{2}.rootAngl, exprData{2}.beta_x, 'bs'); hold on;
+legend(leg_statload)
 
 drawnow;
+
 
 %% G2
 

@@ -46,7 +46,8 @@ for itm=1:length(obj.inertia)
         end
     end
 
-    disp(['Running mass model, item: ', fcnName, '\n'])
+    disp('__________________________________________________');
+    disp(['Generating mass model for item: ', fcnName]);
 
     %%
 
@@ -236,7 +237,7 @@ for itm=1:length(obj.inertia)
                 end
             end
         end
-         disp([' .....', num2str(odr,1), ' order mass terms complete\n']);
+         disp([' .....', num2str(odr,1), ' order mass terms complete']);
 
         %%
         writeFunction(M{odr}, odr, [fPath,'\+odr_',num2str(odr),'\'], fcnName, parIdx);
@@ -245,6 +246,8 @@ for itm=1:length(obj.inertia)
     inpt{itm}.fcnName = fcnName;
     inpt_gyr{itm}.fcnName = ['gyr_',fcnName];
 end
+
+disp('__________________________________________________')
 
 %% function to combine stiffness items...
 

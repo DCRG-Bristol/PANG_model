@@ -1,9 +1,5 @@
 function  obj = AerDisps(obj)
 
-disp([])
-disp('Running mass matrix computations......................')
-disp('  Extracting saved parameters and basis fcns...')
-
 fPath = ['+project\+aero\+disps'];
 
 %extract attachment positions from EoMs...
@@ -39,7 +35,9 @@ Qt = sym('qt',[N_tot,1]); assume(Qt, 'real');
 
 U = sym('U'); alp = sym('alp'); assume([U,alp], 'real');
 
-disp(['generating aerodynamic force projections...\n'])
+disp('__________________________________________________')
+disp(['generating aerodynamic force projections...'])
+disp('__________________________________________________')
 
 %% D_W0 terms...
 
