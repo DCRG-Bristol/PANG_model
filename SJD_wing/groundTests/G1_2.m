@@ -54,7 +54,7 @@ dx = @(q,ang)(mass*9.81*[zeros(size(obj.transF,2), 1);...
 alp=90*pi/180;
 q=obj.q0_struct;
 q = fsolve(@(q_all)(...
-    obj.structDeriv(q_all,'alpha0', alp)), q, opts);
+    obj.structDeriv(q_all,'alpha0', alp, varargin{:})), q, opts);
 
 [x,y,z] = obj.getDisplField(q, obj.geom.L,'beamModel');
 
@@ -72,7 +72,7 @@ obj.externalForce = @(q)(df_xy(q, 0) +...
 
 q=obj.q0_struct;
 q = fsolve(@(q_all)(...
-    obj.structDeriv(q_all,'alpha0', 0)), q, opts);
+    obj.structDeriv(q_all,'alpha0', 0, varargin{:})), q, opts);
 
 %record wing root bending moments....
 beta_y0 = project.basis.W2(s_I)'*obj.transF*q(obj.structDisp);

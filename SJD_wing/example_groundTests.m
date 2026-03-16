@@ -20,7 +20,7 @@ angl = linspace(0, 90, 15)*pi/180;
 
 %function in the groundTests folder, labelled based on the test, take in
 %the 'run' object and returns the test-specific measurements
-[delta_LE, delta_TE, beta_y, beta_x] = G1_1(run, angl, 'g', 9.81);
+[delta_LE, delta_TE, beta_y, beta_x] = G1_1(run, angl);
 
 tip_dispFig = figure('Name', 'tip deflections'); 
 plot(angl*180/pi, delta_LE, 'r-'); hold on;
@@ -48,7 +48,7 @@ drawnow;
 
 %% G1.2..
 
-[delta_LE, delta_TE, beta_y, beta_x] = G1_2(run, angl, 'g', 9.81);
+[delta_LE, delta_TE, beta_y, beta_x] = G1_2(run, angl);
 
 set(0, 'CurrentFigure', tip_dispFig)
 plot(angl*180/pi, delta_LE, 'b-'); hold on;
@@ -70,7 +70,7 @@ drawnow;
 
 %% G2
 
-[frqs] = G2(run, angl, 'g', 9.81, 'Sxx', 1);
+[frqs] = G2(run, angl);
 
 figure;
 for mode=1:4

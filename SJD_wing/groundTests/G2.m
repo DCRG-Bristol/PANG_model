@@ -18,7 +18,7 @@ opts = optimoptions('fsolve', 'Display', 'off');
 
 q=obj.q0_struct;
 q = fsolve(@(q_all)(...
-    obj.structDeriv(q_all,'alpha0', 0)), q, opts);
+    obj.structDeriv(q_all,'alpha0', 0, varargin{:})), q, opts);
 
 %record wing root bending moments....
 beta_y0 = project.basis.W2(s_I)'*obj.transF*q(obj.structDisp);
