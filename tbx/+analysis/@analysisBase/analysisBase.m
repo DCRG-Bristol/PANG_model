@@ -38,6 +38,7 @@ classdef analysisBase
             obj.par0 = obj_in.par0;
             obj.dampMatr = zeros(obj_in.basis.Ntot);
             obj.file = obj_in.file;
+            addpath([obj.file], '-begin');
         end
 
         %%
