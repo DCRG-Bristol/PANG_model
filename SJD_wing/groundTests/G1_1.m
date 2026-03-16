@@ -14,11 +14,27 @@ dy1 = 0.075;
 dy2 = -0.075;
 opts = optimoptions('fsolve', 'Display', 'off');
 
-%% solve for alpha=0 case...
+%% alpha=90 case for displ offset....
 
+alp=90*pi/180;
 q=obj.q0_struct;
 q = fsolve(@(q_all)(...
-    obj.structDeriv(q_all,'alpha0', 0)), q, opts);
+    obj.structDeriv(q_all,'alpha0', alp)), q, opts);
+
+[x,y,z] = obj.getDisplField(q, obj.geom.L,'beamModel');
+
+delta_LE0 = z(1)*cos(alp) + y(1)*sin(alp) +...
+    -dy1*sin(alp);
+
+delta_TE0 = z(2)*cos(alp) + y(2)*sin(alp) +...
+    -dy2*sin(alp);
+
+%% solve for alpha=0 case...
+
+alp=0;
+q=obj.q0_struct;
+q = fsolve(@(q_all)(...
+    obj.structDeriv(q_all,'alpha0', alp)), q, opts);
 
 %record wing root bending moments....
 beta_y0 = project.basis.W2(s_I)'*obj.transF*q(obj.structDisp);
@@ -46,10 +62,10 @@ for a_idx=1:length(ang)
     [x,y,z] = obj.getDisplField(q, obj.geom.L,'beamModel');
 
     delta_LE(1,a_idx) = z(1)*cos(alp) + y(1)*sin(alp) +...
-         -dy1*sin(alp);
+         -dy1*sin(alp) - delta_LE0;
 
     delta_TE(1,a_idx) = z(2)*cos(alp) + y(2)*sin(alp) +...
-        -dy2*sin(alp);
+        -dy2*sin(alp) - delta_TE0;
 
     %record wing root bending moments....
     beta_y(1,a_idx) = project.basis.W2(s_I)'*obj.transF*q(obj.structDisp)...
