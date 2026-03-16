@@ -70,7 +70,7 @@ drawnow;
 
 %% G2
 
-[frqs] = G2(run, angl, 'g', 9.81);
+[frqs] = G2(run, angl, 'g', 9.81, 'Sxx', 1);
 
 figure;
 for mode=1:4

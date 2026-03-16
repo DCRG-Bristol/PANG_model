@@ -55,19 +55,19 @@ buildOb.elas = elas; %write to buildBass class...
 
 %% add inertia
 
-inertia = buildSystem.structure.inertiaBase; %inertia property class
-inertia.e = @(x)(0); %position of mass axis.. theodorsen 
-inertia.m = @(x)(0.1242); %mass per unit length [kg/m]
-inertia.mxx = @(x)(2.7400e-06); %twisting inertia about chordwise about the CoM [kgm]
-inertia.mzz = @(x)(2.6500e-06); %chord-plane rotation inertia [kgm]
-inertia.myy = @(x)(0); %rotation inertia..bending rotation [kgm]
+inertia(1) = buildSystem.structure.inertiaBase; %inertia property class
+inertia(1).e = @(x)(0); %position of mass axis.. theodorsen 
+inertia(1).m = @(x)(0.1242); %mass per unit length [kg/m]
+inertia(1).mxx = @(x)(2.7400e-06); %twisting inertia about chordwise about the CoM [kgm]
+inertia(1).mzz = @(x)(2.6500e-06); %chord-plane rotation inertia [kgm]
+inertia(1).myy = @(x)(0); %rotation inertia..bending rotation [kgm]
 
 for i=1:10
     elem(i) = buildSystem.structure.descrElem; %descrete inertia for the engine....handled as a point mass
     %all properties for this follow the same definitions as that for
     %inertia...but NOT PER UNIT LENGTH AND ARE NOT FUNCTION HANDLES
     elem(i).m = 0.0613;
-    elem(i).mxx = 1.1796e-04;
+    elem(i).mxx = 0;
     elem(i).mzz = 1.3197e-04;
     elem(i).myy = 1.8399e-05;
     elem(i).e = 0.05;
@@ -92,11 +92,36 @@ inertia(1).elem = elem;
 inertia(1).name = 'massModel';
 inertia(1).fctrId = []; %no scalling is imposed on the mass matrix.. however can be implemented if needed
 
-buildOb.inertia = inertia; %write to buildBass class...
+%%
+
+inertia(2) = buildSystem.structure.inertiaBase; %inertia property class
+inertia(2).e = @(x)(0); %position of mass axis.. theodorsen 
+inertia(2).m = @(x)(0); %mass per unit length [kg/m]
+inertia(2).mxx = @(x)(0); %twisting inertia about chordwise about the CoM [kgm]
+inertia(2).mzz = @(x)(0); %chord-plane rotation inertia [kgm]
+inertia(2).myy = @(x)(0); %rotation inertia..bending rotation [kgm]
+
+for i=1:10
+    elem_xx(i) = buildSystem.structure.descrElem; %descrete inertia for the engine....handled as a point mass
+    %all properties for this follow the same definitions as that for
+    %inertia...but NOT PER UNIT LENGTH AND ARE NOT FUNCTION HANDLES
+    elem_xx(i).m = 0;
+    elem_xx(i).mxx = 1.1796e-04;
+    elem_xx(i).mzz = 0;
+    elem_xx(i).myy = 0;
+    elem_xx(i).e = 0.05;
+    elem_xx(i).xp = 0.0375 + (i-1)*0.0650; %attachment potision...say 30% of the semi-span
+end
+
+inertia(2).elem = elem_xx;
+inertia(2).name = 'SxxMatr';
+inertia(2).fctrId = 'Sxx'; %no scalling is imposed on the mass matrix.. however can be implemented if needed
+
+buildOb.inertia = inertia;
 
 %% gravity..
 
-grav = buildOb.inertia2grav(inertia); % this method in the buildBass class automatically generates a class with gravitational/weigth properties using the assigned inertia properties
+grav = buildOb.inertia2grav(inertia(1)); % this method in the buildBass class automatically generates a class with gravitational/weigth properties using the assigned inertia properties
 buildOb.grav = grav; %write to buildBass class...
 
 %% create the model...
@@ -118,6 +143,9 @@ run_ONERA.lossFactor = 0.05;
 run_ONERA.ML = 0.44;
 run_ONERA.lam = 0.275;
 
+%%
+run_ONERA = run_ONERA.setPars('Sxx', 1);
+run_ext = run_ext.setPars('Sxx', 1);
 
 %set damping matrices...
 qstr0 = fsolve(@(q_all)(run_ONERA.structDeriv(q_all,'alpha', 0, 'alpha0', 0)),...
@@ -139,8 +167,6 @@ qstr0 = fsolve(@(q_all)(run_ext.structDeriv(q_all,'alpha', 0, 'alpha0', 0)),...
 %add damping (values from paper)
 Dmat = 0.071*Mmat + (10e-5)*Kmat;
 run_ext.dampMatr = Dmat;
-
-
 
 
 %save these analysis modules for calling later...
