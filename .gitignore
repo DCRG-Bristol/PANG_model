@@ -41,6 +41,8 @@ octave-workspace
 *.mat
 !tbx/**/*.mat
 !SJD_wing/groundTests/testData/*.mat
+!SJD_wing/run_ONERA.mat
+!SJD_wing/run_ext.mat
 *.fig
 *.png
 *.jpg
