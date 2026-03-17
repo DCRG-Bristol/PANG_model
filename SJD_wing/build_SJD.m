@@ -45,11 +45,25 @@ elas(1) = buildSystem.structure.elasBase; %call elastic property class
 %stiffness properties... matrices with these rigidities will be multiplied
 %by a user dfined parameters...
 elas(1).EI1 = @(x)(2.268*ones(size(x)));
-elas(1).EI2 = @(x)(59.136*ones(size(x)));
+elas(1).EI2 = @(x)(0);
 elas(1).EI12 = @(x)(0);
-elas(1).GJ = @(x)(3.3843); %GJ handled seperately as we want this to be independednt of E
-elas(1).name = 'K_matr'; %namee for this matrix..
-elas(1).fctrId = []; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+elas(1).GJ = @(x)(0); %GJ handled seperately as we want this to be independednt of E
+elas(1).name = 'K_E1'; %namee for this matrix..
+elas(1).fctrId = 'EI_1'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+
+elas(2).EI1 = @(x)(0);
+elas(2).EI2 = @(x)(59.136*ones(size(x)));
+elas(2).EI12 = @(x)(0);
+elas(2).GJ = @(x)(0); %GJ handled seperately as we want this to be independednt of E
+elas(2).name = 'K_E2'; %namee for this matrix..
+elas(2).fctrId = 'EI_2'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
+
+elas(3).EI1 = @(x)(0);
+elas(3).EI2 = @(x)(0);
+elas(3).EI12 = @(x)(0);
+elas(3).GJ = @(x)(3.3843); %GJ handled seperately as we want this to be independednt of E
+elas(3).name = 'K_G'; %namee for this matrix..
+elas(3).fctrId = 'G'; %this property, which must be one of that defined among user parameters, will scale this matrix computed for elas(1)
 
 buildOb.elas = elas; %write to buildBass class...
 
@@ -68,7 +82,7 @@ for i=1:10
     %inertia...but NOT PER UNIT LENGTH AND ARE NOT FUNCTION HANDLES
     elem(i).m = 0.0613;
     elem(i).mxx = 0;
-    elem(i).mzz = 1.3197e-04;
+    elem(i).mzz = 0;
     elem(i).myy = 1.8399e-05;
     elem(i).e = 0.05;
     elem(i).xp = 0.0375 + (i-1)*0.0650; %attachment potision...say 30% of the semi-span
@@ -117,6 +131,32 @@ inertia(2).elem = elem_xx;
 inertia(2).name = 'SxxMatr';
 inertia(2).fctrId = 'Sxx'; %no scalling is imposed on the mass matrix.. however can be implemented if needed
 
+%%
+
+inertia(3) = buildSystem.structure.inertiaBase; %inertia property class
+inertia(3).e = @(x)(0); %position of mass axis.. theodorsen 
+inertia(3).m = @(x)(0); %mass per unit length [kg/m]
+inertia(3).mxx = @(x)(0); %twisting inertia about chordwise about the CoM [kgm]
+inertia(3).mzz = @(x)(0); %chord-plane rotation inertia [kgm]
+inertia(3).myy = @(x)(0); %rotation inertia..bending rotation [kgm]
+
+for i=1:10
+    elem_zz(i) = buildSystem.structure.descrElem; %descrete inertia for the engine....handled as a point mass
+    %all properties for this follow the same definitions as that for
+    %inertia...but NOT PER UNIT LENGTH AND ARE NOT FUNCTION HANDLES
+    elem_zz(i).m = 0;
+    elem_zz(i).mxx = 0;
+    elem_zz(i).mzz = 1.3197e-04;
+    elem_zz(i).myy = 0;
+    elem_zz(i).e = 0.05;
+    elem_zz(i).xp = 0.0375 + (i-1)*0.0650; %attachment potision...say 30% of the semi-span
+end
+
+inertia(3).elem = elem_zz;
+inertia(3).name = 'SzzMatr';
+inertia(3).fctrId = 'Szz'; %no scalling is imposed on the mass matrix.. however can be implemented if needed
+
+
 buildOb.inertia = inertia;
 
 %% gravity..
@@ -144,8 +184,8 @@ run_ONERA.ML = 0.44;
 run_ONERA.lam = 0.275;
 
 %%
-run_ONERA = run_ONERA.setPars('Sxx', 1);
-run_ext = run_ext.setPars('Sxx', 1);
+run_ONERA = run_ONERA.setPars('EI_1', 1, 'EI_2', 1, 'G', 1, 'Sxx', 1, 'Szz', 1);
+run_ext = run_ext.setPars('EI_1', 1, 'EI_2', 1, 'G', 1, 'Sxx', 1, 'Szz', 1);
 
 %set damping matrices...
 qstr0 = fsolve(@(q_all)(run_ONERA.structDeriv(q_all,'alpha', 0, 'alpha0', 0)),...
