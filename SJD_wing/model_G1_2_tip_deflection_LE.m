@@ -1,9 +1,9 @@
-function Y = model_G1_1_tip_deflection_LE(X)
-%% Title section - Tip deflections versus wing root pitch angles and EI, GJ (G1_1 test)
+function Y = model_G1_2_tip_deflection_LE(X)
+%% Title section - Tip deflections versus wing root pitch angles and EI, GJ (G1_2 test)
 %{
 --------------------------------------------------------
 Comments:
-* This model refers to the G1_1 test (i.e., ground static test, clean wing)
+* This model refers to the G1_2 test (i.e., ground static test with wing tip weight)
 * The model computes the tip deflection (leading edge (LE)) as a function of uncertain variables (i.e., EI, GJ)
 * The wing root pitch angles are fixed to the experimental values used in the ground static test
 * We use the UQLab notation: X: vector of uncertain variables; Y: vector of model outputs
@@ -36,6 +36,6 @@ angl = angl*pi/180; %transform from deg to rad
 
 %function in the groundTests folder, labelled based on the test, take in
 %the 'run' object and returns the test-specific measurements
-[Y] = G1_1_tip_deflection(run, angl, 'EI', X(1), 'GJ', X(2));
+[Y] = G1_2_tip_deflection(run, angl, 'EI', X(1), 'GJ', X(2));
 
 end
