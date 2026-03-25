@@ -1,18 +1,17 @@
 function Y = model_G2_frq_2_dim_red(X)
-%% Title section - Second frequency versus wing root pitch angles and EI, GJ (G2 test)
+%% Title section - Second frequency versus wing root pitch angles and EI (G2 test)
 %{
 --------------------------------------------------------
 Comments:
 * This model refers to the G2 test (i.e., ground vibration test)
-* The model computes the 2st modal frequency (IP bending) as a function of uncertain variables (i.e., EI, GJ)
-* The variables Sxx, Szz are fixed here (dimension reduction), as a result of sensitivity analysis
+* The model computes the 2st modal frequency (IP bending) as a function of uncertain variables (i.e., EI)
+* The variables GJ, Sxx, Szz are fixed here (dimension reduction), as a result of sensitivity analysis
 * The wing root pitch angles are fixed to the experimental values used in the GVT test
 * We use the notation: X: vector of uncertain variables; Y: vector of model outputs
 --------------------------------------------------------
 Input:
 * X: multiplicative scaling factor for the uncertain variables
-    * X(1)      : bending rigidity EI
-    * X(2)      : torsional rigidity GJ   
+    * X(1)      : bending rigidity EI  
 --------------------------------------------------------
 Output:
 * Y: 2nd modal frequency corresponding to the different wing root angles (the angles arranged in increasing order of magnitude)
@@ -37,6 +36,6 @@ angl = angl*pi/180; %transform from deg to rad
 
 %function in the groundTests folder, labelled based on the test, take in
 %the 'run' object and returns the test-specific measurements
-[Y] = G2_frq_2(run, angl, 'EI', X(1), 'GJ', X(2), 'Sxx', 1, 'Szz', 1);
+[Y] = G2_frq_2(run, angl, 'EI', X(1), 'GJ', 1, 'Sxx', 1, 'Szz', 1);
 
 end

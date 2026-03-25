@@ -43,6 +43,7 @@ octave-workspace
 !SJD_wing/groundTests/testData/*.mat
 !SJD_wing/run_ONERA.mat
 !SJD_wing/run_ext.mat
+!SJD_wing/particleswarm_lse_optim.mat
 *.fig
 *.png
 *.jpg
