@@ -44,6 +44,7 @@ octave-workspace
 !SJD_wing/run_ONERA.mat
 !SJD_wing/run_ext.mat
 !SJD_wing/particleswarm_lse_optim.mat
+!SJD_wing/particleswarm_lse_optim_freq_alpha_0.mat
 *.fig
 !SJD_wing/freq_matching_freq_alpha_0_calibration.fig
 !SJD_wing/freq_matching_full_calibration.fig
