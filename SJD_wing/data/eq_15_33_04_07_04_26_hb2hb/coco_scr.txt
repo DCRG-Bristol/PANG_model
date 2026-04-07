@@ -1,0 +1,7 @@
+
+    STEP   DAMPING               NORMS              COMPUTATION TIMES
+  IT SIT     GAMMA     ||d||     ||f||     ||U||   F(x)  DF(x)  SOLVE
+   0                          7.33e-05  8.21e+03    0.4    0.0    0.0
+
+ STEP      TIME        ||U||  LABEL  TYPE             U          alp
+    0  00:00:04   8.2080e+03      1  EP      2.4260e+01   1.7453e-02

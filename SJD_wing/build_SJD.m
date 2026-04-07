@@ -71,7 +71,7 @@ for i=1:10
     elem(i).mzz = 1.3197e-04;
     elem(i).myy = 1.8399e-05;
     elem(i).e = 0.05;
-    elem(i).xp = 0.0375 + (i-1)*0.0650; %attachment potision...say 30% of the semi-span
+    elem(i).xp = 0.0375 + (i-1)*0.0650; 
 end
 
 %guide-masses
@@ -85,7 +85,7 @@ for i=11:14
     elem(i).mzz = 5.6943e-06;
     elem(i).myy = 2.4889e-07;
     elem(i).e = -0.4;
-    elem(i).xp = xpLoc(i-10); %attachment potision...say 30% of the semi-span
+    elem(i).xp = xpLoc(i-10); 
 end
 
 inertia(1).elem = elem;

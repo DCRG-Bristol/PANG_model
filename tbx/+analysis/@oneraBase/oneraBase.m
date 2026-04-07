@@ -97,6 +97,40 @@ classdef oneraBase<analysis.analysisBase
 
         end
 
+        %%
+
+        function [eval, evec, isFlut] = AE_modes(obj, q0, varargin)
+
+            epsilon = 1e-6;
+
+            %initial call...
+            [M0,F0] = obj.aero_structModel(q0,varargin{:});
+            statSize = size(q0, 1);
+            jac = zeros(statSize, statSize);
+
+            for j=1:statSize
+                q=q0; q(j) = q(j)+epsilon;
+                [~,F] = obj.aero_structModel(q,varargin{:});
+                jac(:,j) = (F - F0)/epsilon;
+            end
+
+            %run eigenvalue check...
+            [V,D] = eig(jac, M0); D = diag(D);
+            %find oscillatory modes..
+            osc_idx = find(abs(imag(D))>0.01*abs(real(D)));
+            D = D(osc_idx);
+            V = V(:,osc_idx);
+
+            %sort by frequency..
+            [~,odr] = sort(abs(D));
+            eval=D(odr(2:2:end));
+            evec=V(:,odr(2:2:end));
+
+            %test for flutter...
+            isFlut = ~isempty(find(real(eval)>0, 1));
+
+        end
+
         %% aero coeffs...
 
         function [Cf, Cf_alp] = Cl_fcn(obj, vz, U_tot)
