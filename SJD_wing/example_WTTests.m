@@ -14,7 +14,7 @@ run = run.setTransform('modal', 14);
 ang = 1.0*pi/180; %angle to run..
 
 %function to run static respnses and stability checks...
-[statResp, Uf, beta_yf, beta_xf] = W_statStab(run, false, ang, 0.275, 0.44, 'Sxx', 1);
+[statResp, Uf, beta_yf, beta_xf] = W_statStab(run, false, ang, 0.275, 0.44, 'EI', 1, 'GJ', 1, 'Sxx', 1, 'Szz', 1);
 %inputs as below>>>>
 %run - run object
 %ang - wing root pitch angle
@@ -45,8 +45,8 @@ subplot(2,1,2); xline(Uf); xlabel('U, [m/s]'); ylabel('\omega, [Hz]');
 
 %% work in progress - potential option with COCO...
 
-%run for a fixed angle case...
-[statResp, Uf, beta_yf, beta_xf, coco_log] = W_statStab(run, true, ang, 0.275, 0.44, 'Sxx', 1);
-
-%compute entire boundary...
-[U_bd, beta_ybd, beta_xbd] = W_stabEnvel(run, coco_log);
+% %run for a fixed angle case...
+% [statResp, Uf, beta_yf, beta_xf, coco_log] = W_statStab(run, true, ang, 0.275, 0.44, 'Sxx', 1);
+% 
+% %compute entire boundary...
+% [U_bd, beta_ybd, beta_xbd] = W_stabEnvel(run, coco_log);
