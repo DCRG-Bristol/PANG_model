@@ -105,6 +105,8 @@ else
     isCurrFlut =  false; %is flutter happening currently
     statResp.U = Ur;
 
+    isBothMech = false; %are both the flutter mechanisms captured?
+
     for u_idx = 1:length(Ur)
 
         q = fsolve(@(q_all)(...
@@ -126,7 +128,7 @@ else
         statResp.damp(:,u_idx) = -real(eval(1:4))./abs(eval(1:4));
 
         %going into flutter.....
-        if ~isCurrFlut
+        if (~isCurrFlut && ~isBothMech)
             if isFlut
                 %find mode in flutter...
                 mode = find(statResp.damp(:,u_idx)<0);
@@ -148,7 +150,7 @@ else
         end
 
         %coming out of flutter...
-        if isCurrFlut
+        if (isCurrFlut && ~isBothMech)
             if ~isFlut
                 %find mode that was in flutter...
                 mode = find(statResp.damp(:,u_idx-1)<0);
@@ -166,6 +168,7 @@ else
                     (0-cr0)*(statResp.beta_x(u_idx)-statResp.beta_x(u_idx-1))/(cr-cr0);
 
                 isCurrFlut = false;
+                isBothMech = true;
             end
         end
     end
