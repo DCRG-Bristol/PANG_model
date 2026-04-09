@@ -1,4 +1,4 @@
-function Y = model_W1_2_Uf(X)
+function Y = model_W1_2_Uf_all_unc(X)
 %% Title section - Hopf bifurcations speeds versus lambda_L, alpha_L, EI, GJ, Sxx, Szz (W1.2 test)
 %{
 --------------------------------------------------------
@@ -35,6 +35,6 @@ ang = 1.0*pi/180; %angle to run..; transform from deg to rad
 
 %function in the WTTests folder, labelled based on the test, take in
 %the 'run' object and returns the test-specific measurements
-[~, Y, ~, ~] = W_statStab_parfor(run, false, ang, 0.275*X(1), 0.44*X(2), 'EI', 1, 'GJ', 1, 'Sxx', 1, 'Szz', 1);
+[~, Y, ~, ~] = W_statStab_parfor(run, false, ang, X(1), X(2), 'EI', X(3), 'GJ', X(4), 'Sxx', X(5), 'Szz', X(5));
 
 end

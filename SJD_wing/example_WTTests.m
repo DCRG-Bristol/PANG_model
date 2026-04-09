@@ -14,8 +14,8 @@ run = run.setTransform('modal', 14);
 ang = 1.0*pi/180; %angle to run..
 
 %function to run static respnses and stability checks...
-[statResp, Uf, beta_yf, beta_xf] = W_statStab(run, false, ang, 0.275, 0.44, 'EI', 1, 'GJ', 1, 'Sxx', 1, 'Szz', 1);
-%inputs as below>>>>
+[statResp, Uf, beta_yf, beta_xf] = W_statStab(run, false, ang, 0.275, 1.15*0.44, 'EI', 1, 'GJ', 1, 'Sxx', 1, 'Szz', 1);
+%inputs as below>>>
 %run - run object
 %ang - wing root pitch angle
 %true/false - to use continuation or not..
