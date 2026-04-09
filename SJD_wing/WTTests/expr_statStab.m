@@ -1,6 +1,6 @@
 function [true_ang, statResp, Uf, beta_yf, beta_xf] = expr_statStab(ang)
 
-Data = open('WTTests\WT_testData\SJD_wing_rawData.mat');%open('LTWT_Data_caliberated.mat');
+Data = open('WTTests\WT_testData\SJD_wing_rawData.mat');% experimental data must be added to this folder
 Data=Data.Data;
 
 modalData = open('WTTests\WT_testData\SJD_wing_proc_modalData.mat');
