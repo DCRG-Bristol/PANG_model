@@ -11,8 +11,8 @@ run = run.setTransform('modal', 14);
 
 %% run for a selected angle
 
-ang = 1.6*pi/180; %angle to run..
-ang_expr = 1.9; %note angles to access experimental data in degrees
+ang = 1.2*pi/180; %angle to run..
+ang_expr = 1.4; %note angles to access experimental data in degrees
 
 %function to retrieve processes experimental data...
 [ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
