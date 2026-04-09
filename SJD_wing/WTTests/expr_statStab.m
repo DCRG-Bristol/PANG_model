@@ -38,6 +38,10 @@ v_expr = Data.P2{p1_idx}.val; %experimental velo. at this angle..
 dBlock = Data.P2{p1_idx}.Data;
 instabTest=false;
 
+hopfSpeed = [0,0];
+hopfMy = [0,0];
+hopfMx = [0,0];
+
 [~,velOdr] = sort(v_expr);
 for v_idx=1:length(v_expr)
     p2_idx=velOdr(v_idx); %just to retain generality if a different ordering is applied
@@ -77,7 +81,7 @@ end
 
 hopfSpeed(hopfSpeed==0)=NaN;
 hopfMy(hopfMy==0)=NaN;
-hopfMy(hopfMy==0)=NaN;
+hopfMx(hopfMx==0)=NaN;
 
 statResp.U = v_expr(velOdr);
 statResp.beta_x = (expr_equib(velOdr,3)-expr_equib(1,3))/(GJ_ref);
