@@ -9,5 +9,7 @@
 * For direct comparisons between numerical and experimental data for the ground test:
 - in your black-box models, fix the wing root pitch angles to match the 'rootAngl' from 'exprData'
 - for visual comparisons, you can run the script 'example_groundTests.m' 
+* For direct comparisons between numerical and experimental data for the wind tunnel tests:
+- for visual comparisons, you can run the script 'example_WTTests.m' 
 * Additional comments and instructions are given in each function and script.
 
