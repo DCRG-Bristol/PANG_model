@@ -526,6 +526,7 @@ if flag_test_set
     end
     X_test = X_test(~any(isnan(Y_test), 2), :);                            % remove NaN physical model outputs from the test set
     Y_test = Y_test(~any(isnan(Y_test), 2), :);                            % remove NaN physical model outputs from the test set
+
     Y_test_surrogate = uq_evalModel(surrogates, X_test);
     for ii = 1:size(X_test, 1)
         for jj = 1:nOutputs
@@ -535,36 +536,38 @@ if flag_test_set
     mean_outputs_for_histograms = mean(relative_error_Y_test_surrogate, 1);              % mean of each relative error: to be added to the histogram legend
     median_outputs_for_histograms = median(relative_error_Y_test_surrogate, 1);          % median of each relative error: to be added to the histogram legend
     std_outputs_for_histograms = std(relative_error_Y_test_surrogate, 1);                % sigma of each relative error: to be added to the histogram legend
-    for kk = 1:nOutputs
-        % for each QI, make a histogram given all the uncertain variables 
-        fig = figure();
-        h = histogram(relative_error_Y_test_surrogate(:, kk));
-        hold on;
-        % Kernel density estimation
-        [f_tmp, xi_tmp] = ksdensity(relative_error_Y_test_surrogate(:, kk));
-        % Find the local maxima (modes)
-        % [~, locs_tmp] = findpeaks(f_tmp);
-        % Extract the modes
-        % modes_tmp = xi_tmp(locs_tmp);
-        [~, idx_tmp] = max(f_tmp);       % Index of the maximum density
-        mode_estimate = xi_tmp(idx_tmp); % Corresponding value of the mode
-        % Plot mean line
-        xline(mean_outputs_for_histograms(kk), 'r--', 'LineWidth', 2, 'Label', 'Mean');
-        % Plot standard deviation lines
-        xline(mean_outputs_for_histograms(kk) - std_outputs_for_histograms(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', '-1 Sigma');
-        xline(mean_outputs_for_histograms(kk) + std_outputs_for_histograms(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', '+1 Sigma');
-        % Plot median line
-        xline(median_outputs_for_histograms(kk), 'g--', 'LineWidth', 2, 'Label', 'Median');
-        % plot(modes_tmp, f_tmp(locs_tmp), 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
-        xline(mode_estimate, 'm--', 'LineWidth', 2, 'Label', 'Mode');  % Plot the main mode as a vertical line
-        title(sprintf('%s surrogate validation error: QI %d', surrogates.Options.MetaType, kk)); 
-        xlabel('Surrogate relative error on a validation set') 
-        % formatted_modes = compose('%.2e', modes_tmp);
-        % legend('Histogram', sprintf('Mean:%.2e', mean_outputs_for_histograms(kk)), sprintf('-1 Sigma:%.2e', mean_outputs_for_histograms(kk)-std_outputs_for_histograms(kk)), sprintf('+1 Sigma:%.2e', mean_outputs_for_histograms(kk)+std_outputs_for_histograms(kk)), sprintf('Median:%.2e', median_outputs_for_histograms(kk)), "Modes: " + join(formatted_modes, ", "), 'Location', 'best');
-        legend('Histogram', sprintf('Mean:%.2e', mean_outputs_for_histograms(kk)), sprintf('-1 Sigma:%.2e', mean_outputs_for_histograms(kk)-std_outputs_for_histograms(kk)), sprintf('+1 Sigma:%.2e', mean_outputs_for_histograms(kk)+std_outputs_for_histograms(kk)), sprintf('Median:%.2e', median_outputs_for_histograms(kk)), sprintf('Mode:%.2e', mode_estimate), 'Location', 'best');
-        set(gcf, 'Position',  [100, 100, 800, 800])
-        saveas(fig, fullfile(plotsfolderName, 'plots_uq', sprintf('qi_%u_histogram_surrogate_relative_error.png', kk)))
-        saveas(fig, fullfile(plotsfolderName, 'plots_uq', sprintf('qi_%u_histogram_surrogate_relative_error.fig', kk)))
+    if size(X_test, 1) > 1
+        for kk = 1:nOutputs
+            % for each QI, make a histogram given all the uncertain variables 
+            fig = figure();
+            h = histogram(relative_error_Y_test_surrogate(:, kk));
+            hold on;
+            % Kernel density estimation
+            [f_tmp, xi_tmp] = ksdensity(relative_error_Y_test_surrogate(:, kk));
+            % Find the local maxima (modes)
+            % [~, locs_tmp] = findpeaks(f_tmp);
+            % Extract the modes
+            % modes_tmp = xi_tmp(locs_tmp);
+            [~, idx_tmp] = max(f_tmp);       % Index of the maximum density
+            mode_estimate = xi_tmp(idx_tmp); % Corresponding value of the mode
+            % Plot mean line
+            xline(mean_outputs_for_histograms(kk), 'r--', 'LineWidth', 2, 'Label', 'Mean');
+            % Plot standard deviation lines
+            xline(mean_outputs_for_histograms(kk) - std_outputs_for_histograms(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', '-1 Sigma');
+            xline(mean_outputs_for_histograms(kk) + std_outputs_for_histograms(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', '+1 Sigma');
+            % Plot median line
+            xline(median_outputs_for_histograms(kk), 'g--', 'LineWidth', 2, 'Label', 'Median');
+            % plot(modes_tmp, f_tmp(locs_tmp), 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+            xline(mode_estimate, 'm--', 'LineWidth', 2, 'Label', 'Mode');  % Plot the main mode as a vertical line
+            title(sprintf('%s surrogate validation error: QI %d', surrogates.Options.MetaType, kk)); 
+            xlabel('Surrogate relative error on a validation set') 
+            % formatted_modes = compose('%.2e', modes_tmp);
+            % legend('Histogram', sprintf('Mean:%.2e', mean_outputs_for_histograms(kk)), sprintf('-1 Sigma:%.2e', mean_outputs_for_histograms(kk)-std_outputs_for_histograms(kk)), sprintf('+1 Sigma:%.2e', mean_outputs_for_histograms(kk)+std_outputs_for_histograms(kk)), sprintf('Median:%.2e', median_outputs_for_histograms(kk)), "Modes: " + join(formatted_modes, ", "), 'Location', 'best');
+            legend('Histogram', sprintf('Mean:%.2e', mean_outputs_for_histograms(kk)), sprintf('-1 Sigma:%.2e', mean_outputs_for_histograms(kk)-std_outputs_for_histograms(kk)), sprintf('+1 Sigma:%.2e', mean_outputs_for_histograms(kk)+std_outputs_for_histograms(kk)), sprintf('Median:%.2e', median_outputs_for_histograms(kk)), sprintf('Mode:%.2e', mode_estimate), 'Location', 'best');
+            set(gcf, 'Position',  [100, 100, 800, 800])
+            saveas(fig, fullfile(plotsfolderName, 'plots_uq', sprintf('qi_%u_histogram_surrogate_relative_error.png', kk)))
+            saveas(fig, fullfile(plotsfolderName, 'plots_uq', sprintf('qi_%u_histogram_surrogate_relative_error.fig', kk)))
+        end
     end
     mean_Y_test = mean(Y_test, 1);
     for ii = 1:size(X_test, 1)
