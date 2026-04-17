@@ -25,7 +25,7 @@ load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
 
 %% ground test case..G1.1
 
-angl = linspace(0, 90, 15)*pi/180;
+angl = linspace(0, 90, 30)*pi/180;
 
 %function in the groundTests folder, labelled based on the test, take in
 %the 'run' object and returns the test-specific measurements
@@ -37,11 +37,11 @@ The uncertain parameters can be varied using multiplicative scaling factors, as 
 [delta_LE, delta_TE, beta_y, beta_x] = G1_1(run, angl, 'EI', 1, 'GJ', 1);
 
 tip_dispFig = figure('Name', 'tip deflections'); 
-plot(angl*180/pi, delta_LE, 'r-'); hold on;
-plot(angl*180/pi, delta_TE, 'r--'); hold on;
-plot(exprData{1}.rootAngl, exprData{1}.delta_LE, 'rs', 'MarkerFaceColor',...
+plot(angl*180/pi, delta_LE-delta_LE(1), 'r-'); hold on;
+plot(angl*180/pi, delta_TE-delta_TE(1), 'r--'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_LE-exprData{1}.delta_LE(1), 'rs', 'MarkerFaceColor',...
     'r'); hold on;
-plot(exprData{1}.rootAngl, exprData{1}.delta_TE, 'rs'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_TE-exprData{1}.delta_TE(1), 'rs'); hold on;
 xlabel('Root angle, [deg]'); ylabel('\delta_{\bullet}, [m]'); hold on;
 grid minor;
 
@@ -66,14 +66,14 @@ The uncertain parameters can be varied using multiplicative scaling factors, as 
 * 'EI': scaling factor for out-of-plane EI ('EI'=1 corresponds to the tuned EI_{yy} value in Sanuja's paper)
 * 'GJ': scaling factor for GJ ('GJ'=1 corresponds to the tuned GJ value in Sanuja's paper)
 %}
-[delta_LE, delta_TE, beta_y, beta_x] = G1_2(run, angl, 'EI', 1, 'GJ', 1);
+[delta_LE_, delta_TE_, beta_y, beta_x] = G1_2(run, angl, 'EI', 1, 'GJ', 1);
 
 set(0, 'CurrentFigure', tip_dispFig)
-plot(angl*180/pi, delta_LE, 'b-'); hold on;
-plot(angl*180/pi, delta_TE, 'b--'); hold on;
-plot(exprData{2}.rootAngl, exprData{2}.delta_LE, 'bs', 'MarkerFaceColor',...
+plot(angl*180/pi, delta_LE_-delta_LE(1), 'b-'); hold on;
+plot(angl*180/pi, delta_TE_-delta_TE(1), 'b--'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_LE-exprData{1}.delta_LE(1), 'bs', 'MarkerFaceColor',...
     'b'); hold on;
-plot(exprData{2}.rootAngl, exprData{2}.delta_TE, 'bs'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_TE-exprData{1}.delta_TE(1), 'bs'); hold on;
 leg_stat = {'G1.1', [''], [''], [''], 'G1.2', [''], [''], ['']};
 legend(leg_stat)
 
