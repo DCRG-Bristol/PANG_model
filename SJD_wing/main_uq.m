@@ -2619,6 +2619,60 @@ relative_error_surrogates_model_update=abs(feval_opt_lse/true_objective_f_val_op
 
 save('particleswarm_mod_lse_optim.mat', 'true_objective_f_val_opt', 'feval_opt_lse', 'relative_error_surrogates_model_update', 'x_opt_lse')
 
+%% 19. Model update via least-squares error (LSE) optimisation (only G1 data considered for calibration) - shifted using alpha=0
+% the uncertain variables to be updated are (x1:=EI, x2:=GJ, x3:=Sxx=Szz)
+lb = [0.8, 0.8, 0.8]; 
+ub = [1.2, 1.2, 1.2];
+N_variables = length(ub);
+
+% the objective function has been constructed as a result of sensitivity analysis
+% i.e., for each term in the objective, only the important variables are retained
+% f1 = @(x) model_update_objective_function_mod_lse(x);          % no surrogates, more slow
+f1 = @(x) surrogates_model_update_objective_function_mod_lse_G1_only(x); % PCE surrogates (trained a-priori)
+options_lse_optim = optimoptions('particleswarm', ...
+            'Display', 'iter');
+[x_opt_lse, feval_opt_lse] = particleswarm(f1, N_variables, lb, ub, options_lse_optim);
+true_objective_f_val_opt = model_update_objective_function_mod_lse_G1_only(x_opt_lse);
+relative_error_surrogates_model_update=abs(feval_opt_lse/true_objective_f_val_opt-1);
+
+save('particleswarm_mod_lse_optim_G1_only.mat', 'true_objective_f_val_opt', 'feval_opt_lse', 'relative_error_surrogates_model_update', 'x_opt_lse')
+
+%% 20. Model update via least-squares error (LSE) optimisation (only G2 data considered for calibration) - shifted using alpha=0
+% the uncertain variables to be updated are (x1:=EI, x2:=GJ, x3:=Sxx=Szz)
+lb = [0.8, 0.8, 0.8]; 
+ub = [1.2, 1.2, 1.2];
+N_variables = length(ub);
+
+% the objective function has been constructed as a result of sensitivity analysis
+% i.e., for each term in the objective, only the important variables are retained
+% f1 = @(x) model_update_objective_function_mod_lse(x);          % no surrogates, more slow
+f1 = @(x) surrogates_model_update_objective_function_mod_lse_G2_only(x); % PCE surrogates (trained a-priori)
+options_lse_optim = optimoptions('particleswarm', ...
+            'Display', 'iter');
+[x_opt_lse, feval_opt_lse] = particleswarm(f1, N_variables, lb, ub, options_lse_optim);
+true_objective_f_val_opt = model_update_objective_function_mod_lse_G2_only(x_opt_lse);
+relative_error_surrogates_model_update=abs(feval_opt_lse/true_objective_f_val_opt-1);
+
+save('particleswarm_mod_lse_optim_G2_only.mat', 'true_objective_f_val_opt', 'feval_opt_lse', 'relative_error_surrogates_model_update', 'x_opt_lse')
+
+%% 21. Model update via least-squares error (LSE) optimisation (all data considered for calibration, except for torsional strain at 60deg) - shifted using alpha=0
+% the uncertain variables to be updated are (x1:=EI, x2:=GJ, x3:=Sxx=Szz)
+lb = [0.8, 0.8, 0.8]; 
+ub = [1.2, 1.2, 1.2];
+N_variables = length(ub);
+
+% the objective function has been constructed as a result of sensitivity analysis
+% i.e., for each term in the objective, only the important variables are retained
+% f1 = @(x) model_update_objective_function_mod_lse(x);          % no surrogates, more slow
+f1 = @(x) surrogates_model_update_objective_function_mod_lse_no_beta_x_60(x); % PCE surrogates (trained a-priori)
+options_lse_optim = optimoptions('particleswarm', ...
+            'Display', 'iter');
+[x_opt_lse, feval_opt_lse] = particleswarm(f1, N_variables, lb, ub, options_lse_optim);
+true_objective_f_val_opt = model_update_objective_function_mod_lse_no_beta_x_60(x_opt_lse);
+relative_error_surrogates_model_update=abs(feval_opt_lse/true_objective_f_val_opt-1);
+
+save('particleswarm_mod_lse_optim_no_beta_x_60.mat', 'true_objective_f_val_opt', 'feval_opt_lse', 'relative_error_surrogates_model_update', 'x_opt_lse')
+
 %%
 function F_val = model_update_objective_function_lse(x)
     load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
@@ -3250,3 +3304,466 @@ function F_val = surrogates_model_update_objective_function_mod_lse(x)
 
     F_val = G1_1_tip_deflection_LE_dim_red_mse+G1_1_tip_deflection_TE_dim_red_mse+G1_2_tip_deflection_LE_dim_red_mse+G1_2_tip_deflection_TE_dim_red_mse+G1_1_beta_y_dim_red_mse+G1_2_beta_y_dim_red_mse+G1_1_beta_x_mse+G1_2_beta_x_mse+G2_frq_1_dim_red_mse+G2_frq_2_dim_red_mse+G2_frq_3_dim_red_mse+G2_frq_4_dim_red_mse;
 end
+
+function F_val = model_update_objective_function_mod_lse_G1_only(x)
+    load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+    G1_1_tip_deflection_LE_dim_red_numeric = model_G1_1_tip_deflection_mod_LE_dim_red(x(1));
+    G1_1_tip_deflection_LE_dim_red_exp = exprData{1, 1}.delta_LE(2:end)-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_1_tip_deflection_LE_dim_red_exp)
+        G1_1_tip_deflection_LE_dim_red_se(ii) = (G1_1_tip_deflection_LE_dim_red_numeric(ii)-G1_1_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_LE_dim_red_se));
+    G1_1_tip_deflection_LE_dim_red_mse = G1_1_tip_deflection_LE_dim_red_mse/max(G1_1_tip_deflection_LE_dim_red_exp);
+
+    G1_1_tip_deflection_TE_dim_red_numeric = model_G1_1_tip_deflection_mod_TE_dim_red(x(1));
+    G1_1_tip_deflection_TE_dim_red_exp = exprData{1, 1}.delta_TE(2:end)-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_1_tip_deflection_TE_dim_red_exp)
+        G1_1_tip_deflection_TE_dim_red_se(ii) = (G1_1_tip_deflection_TE_dim_red_numeric(ii)-G1_1_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_TE_dim_red_se));
+    G1_1_tip_deflection_TE_dim_red_mse = G1_1_tip_deflection_TE_dim_red_mse/max(G1_1_tip_deflection_LE_dim_red_exp);
+
+    G1_2_tip_deflection_LE_dim_red_numeric = model_G1_2_tip_deflection_mod_LE_dim_red(x(1));
+    G1_2_tip_deflection_LE_dim_red_exp = exprData{1, 2}.delta_LE-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_2_tip_deflection_LE_dim_red_exp)
+        G1_2_tip_deflection_LE_dim_red_se(ii) = (G1_2_tip_deflection_LE_dim_red_numeric(ii)-G1_2_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_LE_dim_red_se));
+    G1_2_tip_deflection_LE_dim_red_mse = G1_2_tip_deflection_LE_dim_red_mse/(max(G1_2_tip_deflection_LE_dim_red_exp)-min(G1_2_tip_deflection_LE_dim_red_exp));
+
+    G1_2_tip_deflection_TE_dim_red_numeric = model_G1_2_tip_deflection_mod_TE_dim_red(x(1));
+    G1_2_tip_deflection_TE_dim_red_exp = exprData{1, 2}.delta_TE-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_2_tip_deflection_TE_dim_red_exp)
+        G1_2_tip_deflection_TE_dim_red_se(ii) = (G1_2_tip_deflection_TE_dim_red_numeric(ii)-G1_2_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_TE_dim_red_se));
+    G1_2_tip_deflection_TE_dim_red_mse = G1_2_tip_deflection_TE_dim_red_mse/(max(G1_2_tip_deflection_TE_dim_red_exp)-min(G1_2_tip_deflection_TE_dim_red_exp));
+
+    G1_1_beta_y_dim_red_numeric = model_G1_1_beta_y_dim_red(x(1));
+    G1_1_beta_y_dim_red_exp = exprData{1, 1}.beta_y(2:end); 
+    for ii = 1:length(G1_1_beta_y_dim_red_exp)
+        G1_1_beta_y_dim_red_se(ii) = (G1_1_beta_y_dim_red_numeric(ii)-G1_1_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_1_beta_y_dim_red_mse = sqrt(mean(G1_1_beta_y_dim_red_se));
+    G1_1_beta_y_dim_red_mse = G1_1_beta_y_dim_red_mse/(max(G1_1_beta_y_dim_red_exp)-min(G1_1_beta_y_dim_red_exp));
+
+    G1_2_beta_y_dim_red_numeric = model_G1_2_beta_y_dim_red(x(1));
+    G1_2_beta_y_dim_red_exp = exprData{1, 2}.beta_y(2:end); 
+    for ii = 1:length(G1_2_beta_y_dim_red_exp)
+        G1_2_beta_y_dim_red_se(ii) = (G1_2_beta_y_dim_red_numeric(ii)-G1_2_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_2_beta_y_dim_red_mse = sqrt(mean(G1_2_beta_y_dim_red_se));
+    G1_2_beta_y_dim_red_mse = G1_2_beta_y_dim_red_mse/(max(G1_2_beta_y_dim_red_exp)-min(G1_2_beta_y_dim_red_exp));
+
+    G1_1_beta_x_numeric = model_G1_1_beta_x_dim_red([x(1) x(2)]);
+    G1_1_beta_x_exp = exprData{1, 1}.beta_x(2:end); 
+    for ii = 1:length(G1_1_beta_x_exp)
+        G1_1_beta_x_se(ii) = (G1_1_beta_x_numeric(ii)-G1_1_beta_x_exp(ii))^2;
+    end
+    G1_1_beta_x_mse = sqrt(mean(G1_1_beta_x_se));
+    G1_1_beta_x_mse = G1_1_beta_x_mse/(max(G1_1_beta_x_exp)-min(G1_1_beta_x_exp));
+
+    G1_2_beta_x_numeric = model_G1_2_beta_x_dim_red([x(1) x(2)]);
+    G1_2_beta_x_exp = exprData{1, 2}.beta_x(2:end); 
+    for ii = 1:length(G1_2_beta_x_exp)
+        G1_2_beta_x_se(ii) = (G1_2_beta_x_numeric(ii)-G1_2_beta_x_exp(ii))^2;
+    end
+    G1_2_beta_x_mse = sqrt(mean(G1_2_beta_x_se));
+    G1_2_beta_x_mse = G1_2_beta_x_mse/(max(G1_2_beta_x_exp)-min(G1_2_beta_x_exp));
+
+    F_val = G1_1_tip_deflection_LE_dim_red_mse+G1_1_tip_deflection_TE_dim_red_mse+G1_2_tip_deflection_LE_dim_red_mse+G1_2_tip_deflection_TE_dim_red_mse+G1_1_beta_y_dim_red_mse+G1_2_beta_y_dim_red_mse+G1_1_beta_x_mse+G1_2_beta_x_mse;
+end
+
+function F_val = surrogates_model_update_objective_function_mod_lse_G1_only(x)
+    load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+    
+    surrogate_model_G1_1_tip_deflection_LE_dim_red = load('tip_deflection_LE_g1_1_mod_dim_red_uq\surrogates_tip_deflection_LE_g1_1_dim_red.mat');
+    surrogate_model_G1_1_tip_deflection_LE_dim_red = surrogate_model_G1_1_tip_deflection_LE_dim_red.elementToSave;
+    G1_1_tip_deflection_LE_dim_red_numeric = uq_evalModel(surrogate_model_G1_1_tip_deflection_LE_dim_red, [x(1)]);
+    G1_1_tip_deflection_LE_dim_red_exp = exprData{1, 1}.delta_LE(2:end)-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_1_tip_deflection_LE_dim_red_exp)
+        G1_1_tip_deflection_LE_dim_red_se(ii) = (G1_1_tip_deflection_LE_dim_red_numeric(ii)-G1_1_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_LE_dim_red_se));
+    G1_1_tip_deflection_LE_dim_red_mse = G1_1_tip_deflection_LE_dim_red_mse/max(G1_1_tip_deflection_LE_dim_red_exp);
+
+    surrogate_model_G1_1_tip_deflection_TE_dim_red = load('tip_deflection_TE_g1_1_mod_dim_red_uq\surrogates_tip_deflection_TE_g1_1_dim_red.mat');
+    surrogate_model_G1_1_tip_deflection_TE_dim_red = surrogate_model_G1_1_tip_deflection_TE_dim_red.elementToSave;
+    G1_1_tip_deflection_TE_dim_red_numeric = uq_evalModel(surrogate_model_G1_1_tip_deflection_TE_dim_red, [x(1)]);
+    G1_1_tip_deflection_TE_dim_red_exp = exprData{1, 1}.delta_TE(2:end)-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_1_tip_deflection_TE_dim_red_exp)
+        G1_1_tip_deflection_TE_dim_red_se(ii) = (G1_1_tip_deflection_TE_dim_red_numeric(ii)-G1_1_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_TE_dim_red_se));
+    G1_1_tip_deflection_TE_dim_red_mse = G1_1_tip_deflection_TE_dim_red_mse/max(G1_1_tip_deflection_TE_dim_red_exp);
+
+    surrogate_model_G1_2_tip_deflection_LE_dim_red = load('tip_deflection_LE_g1_2_mod_dim_red_uq\surrogates_tip_deflection_LE_g1_2_dim_red.mat');
+    surrogate_model_G1_2_tip_deflection_LE_dim_red = surrogate_model_G1_2_tip_deflection_LE_dim_red.elementToSave;
+    G1_2_tip_deflection_LE_dim_red_numeric = uq_evalModel(surrogate_model_G1_2_tip_deflection_LE_dim_red, [x(1)]);
+    G1_2_tip_deflection_LE_dim_red_exp = exprData{1, 2}.delta_LE-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_2_tip_deflection_LE_dim_red_exp)
+        G1_2_tip_deflection_LE_dim_red_se(ii) = (G1_2_tip_deflection_LE_dim_red_numeric(ii)-G1_2_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_LE_dim_red_se));
+    G1_2_tip_deflection_LE_dim_red_mse = G1_2_tip_deflection_LE_dim_red_mse/(max(G1_2_tip_deflection_LE_dim_red_exp)-min(G1_2_tip_deflection_LE_dim_red_exp));
+
+    surrogate_model_G1_2_tip_deflection_TE_dim_red = load('tip_deflection_TE_g1_2_mod_dim_red_uq\surrogates_tip_deflection_TE_g1_2_dim_red.mat');
+    surrogate_model_G1_2_tip_deflection_TE_dim_red = surrogate_model_G1_2_tip_deflection_TE_dim_red.elementToSave;
+    G1_2_tip_deflection_TE_dim_red_numeric = uq_evalModel(surrogate_model_G1_2_tip_deflection_TE_dim_red, [x(1)]);
+    G1_2_tip_deflection_TE_dim_red_exp = exprData{1, 2}.delta_TE-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_2_tip_deflection_TE_dim_red_exp)
+        G1_2_tip_deflection_TE_dim_red_se(ii) = (G1_2_tip_deflection_TE_dim_red_numeric(ii)-G1_2_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_TE_dim_red_se));
+    G1_2_tip_deflection_TE_dim_red_mse = G1_2_tip_deflection_TE_dim_red_mse/(max(G1_2_tip_deflection_TE_dim_red_exp)-min(G1_2_tip_deflection_TE_dim_red_exp));
+
+
+    surrogate_model_G1_1_beta_y_dim_red = load('bending_strain_g1_1_dim_red_uq\surrogates_bending_strain_g1_1_dim_red.mat');
+    surrogate_model_G1_1_beta_y_dim_red = surrogate_model_G1_1_beta_y_dim_red.elementToSave;
+    G1_1_beta_y_dim_red_numeric = uq_evalModel(surrogate_model_G1_1_beta_y_dim_red, [x(1)]);
+    G1_1_beta_y_dim_red_exp = exprData{1, 1}.beta_y(2:end); 
+    for ii = 1:length(G1_1_beta_y_dim_red_exp)
+        G1_1_beta_y_dim_red_se(ii) = (G1_1_beta_y_dim_red_numeric(ii)-G1_1_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_1_beta_y_dim_red_mse = sqrt(mean(G1_1_beta_y_dim_red_se));
+    G1_1_beta_y_dim_red_mse = G1_1_beta_y_dim_red_mse/(max(G1_1_beta_y_dim_red_exp)-min(G1_1_beta_y_dim_red_exp)); 
+    
+    surrogate_model_G1_2_beta_y_dim_red = load('bending_strain_g1_2_dim_red_uq\surrogates_bending_strain_g1_2_dim_red.mat');
+    surrogate_model_G1_2_beta_y_dim_red = surrogate_model_G1_2_beta_y_dim_red.elementToSave;
+    G1_2_beta_y_dim_red_numeric = uq_evalModel(surrogate_model_G1_2_beta_y_dim_red, [x(1)]);
+    G1_2_beta_y_dim_red_exp = exprData{1, 2}.beta_y(2:end); 
+    for ii = 1:length(G1_2_beta_y_dim_red_exp)
+        G1_2_beta_y_dim_red_se(ii) = (G1_2_beta_y_dim_red_numeric(ii)-G1_2_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_2_beta_y_dim_red_mse = sqrt(mean(G1_2_beta_y_dim_red_se));
+    G1_2_beta_y_dim_red_mse = G1_2_beta_y_dim_red_mse/(max(G1_2_beta_y_dim_red_exp)-min(G1_2_beta_y_dim_red_exp));
+ 
+    surrogate_model_G1_1_beta_x_dim_red = load('torsional_strain_g1_1_dim_red_uq\surrogates_torsional_strain_g1_1_dim_red.mat');
+    surrogate_model_G1_1_beta_x_dim_red = surrogate_model_G1_1_beta_x_dim_red.elementToSave;
+    G1_1_beta_x_numeric = uq_evalModel(surrogate_model_G1_1_beta_x_dim_red, [x(1) x(2)]);
+    G1_1_beta_x_exp = exprData{1, 1}.beta_x(2:end); 
+    for ii = 1:length(G1_1_beta_x_exp)
+        G1_1_beta_x_se(ii) = (G1_1_beta_x_numeric(ii)-G1_1_beta_x_exp(ii))^2;
+    end
+    G1_1_beta_x_mse = sqrt(mean(G1_1_beta_x_se));
+    G1_1_beta_x_mse = G1_1_beta_x_mse/(max(G1_1_beta_x_exp)-min(G1_1_beta_x_exp));
+
+    surrogate_model_G1_2_beta_x_dim_red = load('torsional_strain_g1_2_dim_red_uq\surrogates_torsional_strain_g1_2_dim_red.mat');
+    surrogate_model_G1_2_beta_x_dim_red = surrogate_model_G1_2_beta_x_dim_red.elementToSave;
+    G1_2_beta_x_numeric = uq_evalModel(surrogate_model_G1_2_beta_x_dim_red, [x(1) x(2)]);
+    G1_2_beta_x_exp = exprData{1, 2}.beta_x(2:end); 
+    for ii = 1:length(G1_2_beta_x_exp)
+        G1_2_beta_x_se(ii) = (G1_2_beta_x_numeric(ii)-G1_2_beta_x_exp(ii))^2;
+    end
+    G1_2_beta_x_mse = sqrt(mean(G1_2_beta_x_se));
+    G1_2_beta_x_mse = G1_2_beta_x_mse/(max(G1_2_beta_x_exp)-min(G1_2_beta_x_exp));
+
+    F_val = G1_1_tip_deflection_LE_dim_red_mse+G1_1_tip_deflection_TE_dim_red_mse+G1_2_tip_deflection_LE_dim_red_mse+G1_2_tip_deflection_TE_dim_red_mse+G1_1_beta_y_dim_red_mse+G1_2_beta_y_dim_red_mse+G1_1_beta_x_mse+G1_2_beta_x_mse;
+end
+
+function F_val = model_update_objective_function_mod_lse_G2_only(x)
+    load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+    G2_frq_1_dim_red_numeric = model_G2_frq_1_dim_red(x(1));
+    G2_frq_1_dim_red_exp = exprData{1, 3}.frequencies(1, :);
+    for ii = 1:length(G2_frq_1_dim_red_exp)
+        G2_frq_1_dim_red_se(ii) = (G2_frq_1_dim_red_numeric(ii)-G2_frq_1_dim_red_exp(ii))^2;
+    end
+    G2_frq_1_dim_red_mse = sqrt(mean(G2_frq_1_dim_red_se));
+    G2_frq_1_dim_red_mse = G2_frq_1_dim_red_mse/max(G2_frq_1_dim_red_exp);
+
+    G2_frq_2_dim_red_numeric = model_G2_frq_2_dim_red(x(1));
+    G2_frq_2_dim_red_exp = exprData{1, 3}.frequencies(2, :);
+    for ii = 1:length(G2_frq_2_dim_red_exp)
+        G2_frq_2_dim_red_se(ii) = (G2_frq_2_dim_red_numeric(ii)-G2_frq_2_dim_red_exp(ii))^2;
+    end
+    G2_frq_2_dim_red_mse = sqrt(mean(G2_frq_2_dim_red_se));
+    G2_frq_2_dim_red_mse = G2_frq_2_dim_red_mse/max(G2_frq_2_dim_red_exp);
+
+    G2_frq_3_dim_red_numeric = model_G2_frq_3_dim_red(x(1));
+    G2_frq_3_dim_red_exp = exprData{1, 3}.frequencies(3, :);
+    for ii = 1:length(G2_frq_3_dim_red_exp)
+        G2_frq_3_dim_red_se(ii) = (G2_frq_3_dim_red_numeric(ii)-G2_frq_3_dim_red_exp(ii))^2;
+    end
+    G2_frq_3_dim_red_mse = sqrt(mean(G2_frq_3_dim_red_se));
+    G2_frq_3_dim_red_mse = G2_frq_3_dim_red_mse/max(G2_frq_3_dim_red_exp);
+
+    G2_frq_4_dim_red_numeric = model_G2_frq_4_dim_red([x(2), x(3)]);
+    G2_frq_4_dim_red_exp = exprData{1, 3}.frequencies(4, :);
+    for ii = 1:length(G2_frq_4_dim_red_exp)
+        G2_frq_4_dim_red_se(ii) = (G2_frq_4_dim_red_numeric(ii)-G2_frq_4_dim_red_exp(ii))^2/G2_frq_4_dim_red_exp(ii)^2;
+    end
+    G2_frq_4_dim_red_mse = sqrt(mean(G2_frq_4_dim_red_se));
+    G2_frq_4_dim_red_mse = G2_frq_4_dim_red_mse/max(G2_frq_4_dim_red_exp);
+
+    F_val = G2_frq_1_dim_red_mse+G2_frq_2_dim_red_mse+G2_frq_3_dim_red_mse+G2_frq_4_dim_red_mse;
+end
+
+function F_val = surrogates_model_update_objective_function_mod_lse_G2_only(x)
+    load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+    
+    surrogate_model_G2_frq_1_dim_red = load('frq_1_g2_dim_red_uq\surrogates_frq_1_g2_dim_red.mat');
+    surrogate_model_G2_frq_1_dim_red = surrogate_model_G2_frq_1_dim_red.elementToSave;
+    G2_frq_1_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_1_dim_red, [x(1)]);
+    G2_frq_1_dim_red_exp = exprData{1, 3}.frequencies(1, :);
+    for ii = 1:length(G2_frq_1_dim_red_exp)
+        G2_frq_1_dim_red_se(ii) = (G2_frq_1_dim_red_numeric(ii)-G2_frq_1_dim_red_exp(ii))^2;
+    end
+    G2_frq_1_dim_red_mse = sqrt(mean(G2_frq_1_dim_red_se));
+    G2_frq_1_dim_red_mse = G2_frq_1_dim_red_mse/max(G2_frq_1_dim_red_exp);
+
+    surrogate_model_G2_frq_2_dim_red = load('frq_2_g2_dim_red_uq\surrogates_frq_2_g2_dim_red.mat');
+    surrogate_model_G2_frq_2_dim_red = surrogate_model_G2_frq_2_dim_red.elementToSave;
+    G2_frq_2_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_2_dim_red, [x(1)]);
+    G2_frq_2_dim_red_exp = exprData{1, 3}.frequencies(2, :);
+    for ii = 1:length(G2_frq_2_dim_red_exp)
+        G2_frq_2_dim_red_se(ii) = (G2_frq_2_dim_red_numeric(ii)-G2_frq_2_dim_red_exp(ii))^2;
+    end
+    G2_frq_2_dim_red_mse = sqrt(mean(G2_frq_2_dim_red_se))/max(G2_frq_2_dim_red_exp);
+
+    surrogate_model_G2_frq_3_dim_red = load('frq_3_g2_dim_red_uq\surrogates_frq_3_g2_dim_red.mat');
+    surrogate_model_G2_frq_3_dim_red = surrogate_model_G2_frq_3_dim_red.elementToSave;
+    G2_frq_3_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_3_dim_red, [x(1)]);
+    G2_frq_3_dim_red_exp = exprData{1, 3}.frequencies(3, :);
+    for ii = 1:length(G2_frq_3_dim_red_exp)
+        G2_frq_3_dim_red_se(ii) = (G2_frq_3_dim_red_numeric(ii)-G2_frq_3_dim_red_exp(ii))^2;
+    end
+    G2_frq_3_dim_red_mse = sqrt(mean(G2_frq_3_dim_red_se))/max(G2_frq_3_dim_red_exp);
+
+    surrogate_model_G2_frq_4_dim_red = load('frq_4_g2_dim_red_uq\surrogates_frq_4_g2_dim_red.mat');
+    surrogate_model_G2_frq_4_dim_red = surrogate_model_G2_frq_4_dim_red.elementToSave;
+    G2_frq_4_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_4_dim_red, [x(2), x(3)]);
+    G2_frq_4_dim_red_exp = exprData{1, 3}.frequencies(4, :);
+    for ii = 1:length(G2_frq_4_dim_red_exp)
+        G2_frq_4_dim_red_se(ii) = (G2_frq_4_dim_red_numeric(ii)-G2_frq_4_dim_red_exp(ii))^2;
+    end
+    G2_frq_4_dim_red_mse = sqrt(mean(G2_frq_4_dim_red_se))/max(G2_frq_4_dim_red_exp);
+
+    F_val = G2_frq_1_dim_red_mse+G2_frq_2_dim_red_mse+G2_frq_3_dim_red_mse+G2_frq_4_dim_red_mse;
+end
+
+function F_val = model_update_objective_function_mod_lse_no_beta_x_60(x)
+    load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+    G1_1_tip_deflection_LE_dim_red_numeric = model_G1_1_tip_deflection_mod_LE_dim_red(x(1));
+    G1_1_tip_deflection_LE_dim_red_exp = exprData{1, 1}.delta_LE(2:end)-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_1_tip_deflection_LE_dim_red_exp)
+        G1_1_tip_deflection_LE_dim_red_se(ii) = (G1_1_tip_deflection_LE_dim_red_numeric(ii)-G1_1_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_LE_dim_red_se));
+    G1_1_tip_deflection_LE_dim_red_mse = G1_1_tip_deflection_LE_dim_red_mse/max(G1_1_tip_deflection_LE_dim_red_exp);
+
+    G1_1_tip_deflection_TE_dim_red_numeric = model_G1_1_tip_deflection_mod_TE_dim_red(x(1));
+    G1_1_tip_deflection_TE_dim_red_exp = exprData{1, 1}.delta_TE(2:end)-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_1_tip_deflection_TE_dim_red_exp)
+        G1_1_tip_deflection_TE_dim_red_se(ii) = (G1_1_tip_deflection_TE_dim_red_numeric(ii)-G1_1_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_TE_dim_red_se));
+    G1_1_tip_deflection_TE_dim_red_mse = G1_1_tip_deflection_TE_dim_red_mse/max(G1_1_tip_deflection_LE_dim_red_exp);
+
+    G1_2_tip_deflection_LE_dim_red_numeric = model_G1_2_tip_deflection_mod_LE_dim_red(x(1));
+    G1_2_tip_deflection_LE_dim_red_exp = exprData{1, 2}.delta_LE-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_2_tip_deflection_LE_dim_red_exp)
+        G1_2_tip_deflection_LE_dim_red_se(ii) = (G1_2_tip_deflection_LE_dim_red_numeric(ii)-G1_2_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_LE_dim_red_se));
+    G1_2_tip_deflection_LE_dim_red_mse = G1_2_tip_deflection_LE_dim_red_mse/(max(G1_2_tip_deflection_LE_dim_red_exp)-min(G1_2_tip_deflection_LE_dim_red_exp));
+
+    G1_2_tip_deflection_TE_dim_red_numeric = model_G1_2_tip_deflection_mod_TE_dim_red(x(1));
+    G1_2_tip_deflection_TE_dim_red_exp = exprData{1, 2}.delta_TE-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_2_tip_deflection_TE_dim_red_exp)
+        G1_2_tip_deflection_TE_dim_red_se(ii) = (G1_2_tip_deflection_TE_dim_red_numeric(ii)-G1_2_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_TE_dim_red_se));
+    G1_2_tip_deflection_TE_dim_red_mse = G1_2_tip_deflection_TE_dim_red_mse/(max(G1_2_tip_deflection_TE_dim_red_exp)-min(G1_2_tip_deflection_TE_dim_red_exp));
+
+    G1_1_beta_y_dim_red_numeric = model_G1_1_beta_y_dim_red(x(1));
+    G1_1_beta_y_dim_red_exp = exprData{1, 1}.beta_y(2:end); 
+    for ii = 1:length(G1_1_beta_y_dim_red_exp)
+        G1_1_beta_y_dim_red_se(ii) = (G1_1_beta_y_dim_red_numeric(ii)-G1_1_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_1_beta_y_dim_red_mse = sqrt(mean(G1_1_beta_y_dim_red_se));
+    G1_1_beta_y_dim_red_mse = G1_1_beta_y_dim_red_mse/(max(G1_1_beta_y_dim_red_exp)-min(G1_1_beta_y_dim_red_exp));
+
+    G1_2_beta_y_dim_red_numeric = model_G1_2_beta_y_dim_red(x(1));
+    G1_2_beta_y_dim_red_exp = exprData{1, 2}.beta_y(2:end); 
+    for ii = 1:length(G1_2_beta_y_dim_red_exp)
+        G1_2_beta_y_dim_red_se(ii) = (G1_2_beta_y_dim_red_numeric(ii)-G1_2_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_2_beta_y_dim_red_mse = sqrt(mean(G1_2_beta_y_dim_red_se));
+    G1_2_beta_y_dim_red_mse = G1_2_beta_y_dim_red_mse/(max(G1_2_beta_y_dim_red_exp)-min(G1_2_beta_y_dim_red_exp));
+
+    G1_1_beta_x_numeric = model_G1_1_beta_x_dim_red([x(1) x(2)]);
+    G1_1_beta_x_exp = exprData{1, 1}.beta_x(2:end-1); 
+    for ii = 1:length(G1_1_beta_x_exp)
+        G1_1_beta_x_se(ii) = (G1_1_beta_x_numeric(ii)-G1_1_beta_x_exp(ii))^2;
+    end
+    G1_1_beta_x_mse = sqrt(mean(G1_1_beta_x_se));
+    G1_1_beta_x_mse = G1_1_beta_x_mse/(max(G1_1_beta_x_exp)-min(G1_1_beta_x_exp));
+
+    G1_2_beta_x_numeric = model_G1_2_beta_x_dim_red([x(1) x(2)]);
+    G1_2_beta_x_exp = exprData{1, 2}.beta_x(2:end-1); 
+    for ii = 1:length(G1_2_beta_x_exp)
+        G1_2_beta_x_se(ii) = (G1_2_beta_x_numeric(ii)-G1_2_beta_x_exp(ii))^2;
+    end
+    G1_2_beta_x_mse = sqrt(mean(G1_2_beta_x_se));
+    G1_2_beta_x_mse = G1_2_beta_x_mse/(max(G1_2_beta_x_exp)-min(G1_2_beta_x_exp));
+
+    G2_frq_1_dim_red_numeric = model_G2_frq_1_dim_red(x(1));
+    G2_frq_1_dim_red_exp = exprData{1, 3}.frequencies(1, :);
+    for ii = 1:length(G2_frq_1_dim_red_exp)
+        G2_frq_1_dim_red_se(ii) = (G2_frq_1_dim_red_numeric(ii)-G2_frq_1_dim_red_exp(ii))^2;
+    end
+    G2_frq_1_dim_red_mse = sqrt(mean(G2_frq_1_dim_red_se));
+    G2_frq_1_dim_red_mse = G2_frq_1_dim_red_mse/max(G2_frq_1_dim_red_exp);
+
+    G2_frq_2_dim_red_numeric = model_G2_frq_2_dim_red(x(1));
+    G2_frq_2_dim_red_exp = exprData{1, 3}.frequencies(2, :);
+    for ii = 1:length(G2_frq_2_dim_red_exp)
+        G2_frq_2_dim_red_se(ii) = (G2_frq_2_dim_red_numeric(ii)-G2_frq_2_dim_red_exp(ii))^2;
+    end
+    G2_frq_2_dim_red_mse = sqrt(mean(G2_frq_2_dim_red_se));
+    G2_frq_2_dim_red_mse = G2_frq_2_dim_red_mse/max(G2_frq_2_dim_red_exp);
+
+    G2_frq_3_dim_red_numeric = model_G2_frq_3_dim_red(x(1));
+    G2_frq_3_dim_red_exp = exprData{1, 3}.frequencies(3, :);
+    for ii = 1:length(G2_frq_3_dim_red_exp)
+        G2_frq_3_dim_red_se(ii) = (G2_frq_3_dim_red_numeric(ii)-G2_frq_3_dim_red_exp(ii))^2;
+    end
+    G2_frq_3_dim_red_mse = sqrt(mean(G2_frq_3_dim_red_se));
+    G2_frq_3_dim_red_mse = G2_frq_3_dim_red_mse/max(G2_frq_3_dim_red_exp);
+
+    G2_frq_4_dim_red_numeric = model_G2_frq_4_dim_red([x(2), x(3)]);
+    G2_frq_4_dim_red_exp = exprData{1, 3}.frequencies(4, :);
+    for ii = 1:length(G2_frq_4_dim_red_exp)
+        G2_frq_4_dim_red_se(ii) = (G2_frq_4_dim_red_numeric(ii)-G2_frq_4_dim_red_exp(ii))^2/G2_frq_4_dim_red_exp(ii)^2;
+    end
+    G2_frq_4_dim_red_mse = sqrt(mean(G2_frq_4_dim_red_se));
+    G2_frq_4_dim_red_mse = G2_frq_4_dim_red_mse/max(G2_frq_4_dim_red_exp);
+
+    F_val = G1_1_tip_deflection_LE_dim_red_mse+G1_1_tip_deflection_TE_dim_red_mse+G1_2_tip_deflection_LE_dim_red_mse+G1_2_tip_deflection_TE_dim_red_mse+G1_1_beta_y_dim_red_mse+G1_2_beta_y_dim_red_mse+G1_1_beta_x_mse+G1_2_beta_x_mse+G2_frq_1_dim_red_mse+G2_frq_2_dim_red_mse+G2_frq_3_dim_red_mse+G2_frq_4_dim_red_mse;
+end
+
+function F_val = surrogates_model_update_objective_function_mod_lse_no_beta_x_60(x)
+    load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+    
+    surrogate_model_G1_1_tip_deflection_LE_dim_red = load('tip_deflection_LE_g1_1_mod_dim_red_uq\surrogates_tip_deflection_LE_g1_1_dim_red.mat');
+    surrogate_model_G1_1_tip_deflection_LE_dim_red = surrogate_model_G1_1_tip_deflection_LE_dim_red.elementToSave;
+    G1_1_tip_deflection_LE_dim_red_numeric = uq_evalModel(surrogate_model_G1_1_tip_deflection_LE_dim_red, [x(1)]);
+    G1_1_tip_deflection_LE_dim_red_exp = exprData{1, 1}.delta_LE(2:end)-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_1_tip_deflection_LE_dim_red_exp)
+        G1_1_tip_deflection_LE_dim_red_se(ii) = (G1_1_tip_deflection_LE_dim_red_numeric(ii)-G1_1_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_LE_dim_red_se));
+    G1_1_tip_deflection_LE_dim_red_mse = G1_1_tip_deflection_LE_dim_red_mse/max(G1_1_tip_deflection_LE_dim_red_exp);
+
+    surrogate_model_G1_1_tip_deflection_TE_dim_red = load('tip_deflection_TE_g1_1_mod_dim_red_uq\surrogates_tip_deflection_TE_g1_1_dim_red.mat');
+    surrogate_model_G1_1_tip_deflection_TE_dim_red = surrogate_model_G1_1_tip_deflection_TE_dim_red.elementToSave;
+    G1_1_tip_deflection_TE_dim_red_numeric = uq_evalModel(surrogate_model_G1_1_tip_deflection_TE_dim_red, [x(1)]);
+    G1_1_tip_deflection_TE_dim_red_exp = exprData{1, 1}.delta_TE(2:end)-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_1_tip_deflection_TE_dim_red_exp)
+        G1_1_tip_deflection_TE_dim_red_se(ii) = (G1_1_tip_deflection_TE_dim_red_numeric(ii)-G1_1_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_1_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_1_tip_deflection_TE_dim_red_se));
+    G1_1_tip_deflection_TE_dim_red_mse = G1_1_tip_deflection_TE_dim_red_mse/max(G1_1_tip_deflection_TE_dim_red_exp);
+
+    surrogate_model_G1_2_tip_deflection_LE_dim_red = load('tip_deflection_LE_g1_2_mod_dim_red_uq\surrogates_tip_deflection_LE_g1_2_dim_red.mat');
+    surrogate_model_G1_2_tip_deflection_LE_dim_red = surrogate_model_G1_2_tip_deflection_LE_dim_red.elementToSave;
+    G1_2_tip_deflection_LE_dim_red_numeric = uq_evalModel(surrogate_model_G1_2_tip_deflection_LE_dim_red, [x(1)]);
+    G1_2_tip_deflection_LE_dim_red_exp = exprData{1, 2}.delta_LE-exprData{1, 1}.delta_LE(1);
+    for ii = 1:length(G1_2_tip_deflection_LE_dim_red_exp)
+        G1_2_tip_deflection_LE_dim_red_se(ii) = (G1_2_tip_deflection_LE_dim_red_numeric(ii)-G1_2_tip_deflection_LE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_LE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_LE_dim_red_se));
+    G1_2_tip_deflection_LE_dim_red_mse = G1_2_tip_deflection_LE_dim_red_mse/(max(G1_2_tip_deflection_LE_dim_red_exp)-min(G1_2_tip_deflection_LE_dim_red_exp));
+
+    surrogate_model_G1_2_tip_deflection_TE_dim_red = load('tip_deflection_TE_g1_2_mod_dim_red_uq\surrogates_tip_deflection_TE_g1_2_dim_red.mat');
+    surrogate_model_G1_2_tip_deflection_TE_dim_red = surrogate_model_G1_2_tip_deflection_TE_dim_red.elementToSave;
+    G1_2_tip_deflection_TE_dim_red_numeric = uq_evalModel(surrogate_model_G1_2_tip_deflection_TE_dim_red, [x(1)]);
+    G1_2_tip_deflection_TE_dim_red_exp = exprData{1, 2}.delta_TE-exprData{1, 1}.delta_TE(1);
+    for ii = 1:length(G1_2_tip_deflection_TE_dim_red_exp)
+        G1_2_tip_deflection_TE_dim_red_se(ii) = (G1_2_tip_deflection_TE_dim_red_numeric(ii)-G1_2_tip_deflection_TE_dim_red_exp(ii))^2;
+    end
+    G1_2_tip_deflection_TE_dim_red_mse = sqrt(mean(G1_2_tip_deflection_TE_dim_red_se));
+    G1_2_tip_deflection_TE_dim_red_mse = G1_2_tip_deflection_TE_dim_red_mse/(max(G1_2_tip_deflection_TE_dim_red_exp)-min(G1_2_tip_deflection_TE_dim_red_exp));
+
+
+    surrogate_model_G1_1_beta_y_dim_red = load('bending_strain_g1_1_dim_red_uq\surrogates_bending_strain_g1_1_dim_red.mat');
+    surrogate_model_G1_1_beta_y_dim_red = surrogate_model_G1_1_beta_y_dim_red.elementToSave;
+    G1_1_beta_y_dim_red_numeric = uq_evalModel(surrogate_model_G1_1_beta_y_dim_red, [x(1)]);
+    G1_1_beta_y_dim_red_exp = exprData{1, 1}.beta_y(2:end); 
+    for ii = 1:length(G1_1_beta_y_dim_red_exp)
+        G1_1_beta_y_dim_red_se(ii) = (G1_1_beta_y_dim_red_numeric(ii)-G1_1_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_1_beta_y_dim_red_mse = sqrt(mean(G1_1_beta_y_dim_red_se));
+    G1_1_beta_y_dim_red_mse = G1_1_beta_y_dim_red_mse/(max(G1_1_beta_y_dim_red_exp)-min(G1_1_beta_y_dim_red_exp)); 
+    
+    surrogate_model_G1_2_beta_y_dim_red = load('bending_strain_g1_2_dim_red_uq\surrogates_bending_strain_g1_2_dim_red.mat');
+    surrogate_model_G1_2_beta_y_dim_red = surrogate_model_G1_2_beta_y_dim_red.elementToSave;
+    G1_2_beta_y_dim_red_numeric = uq_evalModel(surrogate_model_G1_2_beta_y_dim_red, [x(1)]);
+    G1_2_beta_y_dim_red_exp = exprData{1, 2}.beta_y(2:end); 
+    for ii = 1:length(G1_2_beta_y_dim_red_exp)
+        G1_2_beta_y_dim_red_se(ii) = (G1_2_beta_y_dim_red_numeric(ii)-G1_2_beta_y_dim_red_exp(ii))^2;
+    end
+    G1_2_beta_y_dim_red_mse = sqrt(mean(G1_2_beta_y_dim_red_se));
+    G1_2_beta_y_dim_red_mse = G1_2_beta_y_dim_red_mse/(max(G1_2_beta_y_dim_red_exp)-min(G1_2_beta_y_dim_red_exp));
+ 
+    surrogate_model_G1_1_beta_x_dim_red = load('torsional_strain_g1_1_dim_red_uq\surrogates_torsional_strain_g1_1_dim_red.mat');
+    surrogate_model_G1_1_beta_x_dim_red = surrogate_model_G1_1_beta_x_dim_red.elementToSave;
+    G1_1_beta_x_numeric = uq_evalModel(surrogate_model_G1_1_beta_x_dim_red, [x(1) x(2)]);
+    G1_1_beta_x_exp = exprData{1, 1}.beta_x(2:end-1); 
+    for ii = 1:length(G1_1_beta_x_exp)
+        G1_1_beta_x_se(ii) = (G1_1_beta_x_numeric(ii)-G1_1_beta_x_exp(ii))^2;
+    end
+    G1_1_beta_x_mse = sqrt(mean(G1_1_beta_x_se));
+    G1_1_beta_x_mse = G1_1_beta_x_mse/(max(G1_1_beta_x_exp)-min(G1_1_beta_x_exp));
+
+    surrogate_model_G1_2_beta_x_dim_red = load('torsional_strain_g1_2_dim_red_uq\surrogates_torsional_strain_g1_2_dim_red.mat');
+    surrogate_model_G1_2_beta_x_dim_red = surrogate_model_G1_2_beta_x_dim_red.elementToSave;
+    G1_2_beta_x_numeric = uq_evalModel(surrogate_model_G1_2_beta_x_dim_red, [x(1) x(2)]);
+    G1_2_beta_x_exp = exprData{1, 2}.beta_x(2:end-1); 
+    for ii = 1:length(G1_2_beta_x_exp)
+        G1_2_beta_x_se(ii) = (G1_2_beta_x_numeric(ii)-G1_2_beta_x_exp(ii))^2;
+    end
+    G1_2_beta_x_mse = sqrt(mean(G1_2_beta_x_se));
+    G1_2_beta_x_mse = G1_2_beta_x_mse/(max(G1_2_beta_x_exp)-min(G1_2_beta_x_exp));
+    
+    surrogate_model_G2_frq_1_dim_red = load('frq_1_g2_dim_red_uq\surrogates_frq_1_g2_dim_red.mat');
+    surrogate_model_G2_frq_1_dim_red = surrogate_model_G2_frq_1_dim_red.elementToSave;
+    G2_frq_1_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_1_dim_red, [x(1)]);
+    G2_frq_1_dim_red_exp = exprData{1, 3}.frequencies(1, :);
+    for ii = 1:length(G2_frq_1_dim_red_exp)
+        G2_frq_1_dim_red_se(ii) = (G2_frq_1_dim_red_numeric(ii)-G2_frq_1_dim_red_exp(ii))^2;
+    end
+    G2_frq_1_dim_red_mse = sqrt(mean(G2_frq_1_dim_red_se));
+    G2_frq_1_dim_red_mse = G2_frq_1_dim_red_mse/max(G2_frq_1_dim_red_exp);
+
+    surrogate_model_G2_frq_2_dim_red = load('frq_2_g2_dim_red_uq\surrogates_frq_2_g2_dim_red.mat');
+    surrogate_model_G2_frq_2_dim_red = surrogate_model_G2_frq_2_dim_red.elementToSave;
+    G2_frq_2_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_2_dim_red, [x(1)]);
+    G2_frq_2_dim_red_exp = exprData{1, 3}.frequencies(2, :);
+    for ii = 1:length(G2_frq_2_dim_red_exp)
+        G2_frq_2_dim_red_se(ii) = (G2_frq_2_dim_red_numeric(ii)-G2_frq_2_dim_red_exp(ii))^2;
+    end
+    G2_frq_2_dim_red_mse = sqrt(mean(G2_frq_2_dim_red_se))/max(G2_frq_2_dim_red_exp);
+
+    surrogate_model_G2_frq_3_dim_red = load('frq_3_g2_dim_red_uq\surrogates_frq_3_g2_dim_red.mat');
+    surrogate_model_G2_frq_3_dim_red = surrogate_model_G2_frq_3_dim_red.elementToSave;
+    G2_frq_3_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_3_dim_red, [x(1)]);
+    G2_frq_3_dim_red_exp = exprData{1, 3}.frequencies(3, :);
+    for ii = 1:length(G2_frq_3_dim_red_exp)
+        G2_frq_3_dim_red_se(ii) = (G2_frq_3_dim_red_numeric(ii)-G2_frq_3_dim_red_exp(ii))^2;
+    end
+    G2_frq_3_dim_red_mse = sqrt(mean(G2_frq_3_dim_red_se))/max(G2_frq_3_dim_red_exp);
+
+    surrogate_model_G2_frq_4_dim_red = load('frq_4_g2_dim_red_uq\surrogates_frq_4_g2_dim_red.mat');
+    surrogate_model_G2_frq_4_dim_red = surrogate_model_G2_frq_4_dim_red.elementToSave;
+    G2_frq_4_dim_red_numeric = uq_evalModel(surrogate_model_G2_frq_4_dim_red, [x(2), x(3)]);
+    G2_frq_4_dim_red_exp = exprData{1, 3}.frequencies(4, :);
+    for ii = 1:length(G2_frq_4_dim_red_exp)
+        G2_frq_4_dim_red_se(ii) = (G2_frq_4_dim_red_numeric(ii)-G2_frq_4_dim_red_exp(ii))^2;
+    end
+    G2_frq_4_dim_red_mse = sqrt(mean(G2_frq_4_dim_red_se))/max(G2_frq_4_dim_red_exp);
+
+    F_val = G1_1_tip_deflection_LE_dim_red_mse+G1_1_tip_deflection_TE_dim_red_mse+G1_2_tip_deflection_LE_dim_red_mse+G1_2_tip_deflection_TE_dim_red_mse+G1_1_beta_y_dim_red_mse+G1_2_beta_y_dim_red_mse+G1_1_beta_x_mse+G1_2_beta_x_mse+G2_frq_1_dim_red_mse+G2_frq_2_dim_red_mse+G2_frq_3_dim_red_mse+G2_frq_4_dim_red_mse;
+end
+
+
