@@ -1,4 +1,4 @@
-function uncertain_variables_exploration(surrogates, inputs_names, outputs_names, plots_title, N_eval, seed, plotsfolderName, experimental_data_set)
+function uncertain_variables_exploration(surrogates, inputs_names, outputs_names, plots_title, N_eval, seed, plotsfolderName, experimental_data_set, experimental_data_set_lower_bounds, experimental_data_set_upper_bounds)
 %% Title section - Plots generator for parameter sweeps for the uncertain variables
 %{
 --------------------------------------------------------
@@ -76,6 +76,12 @@ for ii = 1:N_variables
         if N_variables == 1 & ~isempty(experimental_data_set)
             hold on 
             yline(experimental_data_set(kk), 'k', 'LineWidth', 2, 'Label', sprintf('ExData (%.2e)', experimental_data_set(kk)));  % Plot the experimental data as a vertical line
+            if ~isempty(experimental_data_set_lower_bounds)
+                yline(experimental_data_set_lower_bounds(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', sprintf('ExDataLB (%.2e)', experimental_data_set_lower_bounds(kk)));
+            end
+            if ~isempty(experimental_data_set_upper_bounds)
+                yline(experimental_data_set_upper_bounds(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', sprintf('ExDataUB (%.2e)', experimental_data_set_upper_bounds(kk)));
+            end
         end
         title(plots_title)         % description of the surrogate
         xlabel(inputs_names(ii))   % name of the uncertain variable

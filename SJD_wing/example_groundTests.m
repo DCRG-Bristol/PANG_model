@@ -23,6 +23,86 @@ run = run.setTransform('modal', 14);
 %explanatory, test cases are referenced as per the document
 load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
 
+%% ground test case..G1.1..error bars
+
+angl = linspace(0, 90, 30)*pi/180;
+
+%function in the groundTests folder, labelled based on the test, take in
+%the 'run' object and returns the test-specific measurements
+%{
+The uncertain parameters can be varied using multiplicative scaling factors, as follows:
+* 'EI': scaling factor for out-of-plane EI ('EI'=1 corresponds to the tuned EI_{yy} value in Sanuja's paper)
+* 'GJ': scaling factor for GJ ('GJ'=1 corresponds to the tuned GJ value in Sanuja's paper)
+%}
+[delta_LE, delta_TE, beta_y, beta_x] = G1_1(run, angl, 'EI', 1, 'GJ', 1);
+
+tip_dispFig = figure('Name', 'tip deflections'); 
+plot(angl*180/pi, delta_LE-delta_LE(1), 'r-'); hold on;
+plot(angl*180/pi, delta_TE-delta_TE(1), 'r--'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_LE-exprData{1}.delta_LE(1), 'rs', 'MarkerFaceColor',...
+    'r'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_LE-exprData{1}.delta_LE(1)-2e-3, 'ks', 'MarkerFaceColor',...
+    'k'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_LE-exprData{1}.delta_LE(1)+2e-3, 'ks', 'MarkerFaceColor',...
+    'k'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_TE-exprData{1}.delta_TE(1), 'rs'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_TE-exprData{1}.delta_TE(1)-2e-3, 'ks'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.delta_TE-exprData{1}.delta_TE(1)+2e-3, 'ks'); hold on;
+xlabel('Root angle, [deg]'); ylabel('\delta_{\bullet}, [m]'); hold on;
+grid minor;
+
+rootLoadFig = figure('Name', 'scaled load measurments');
+subplot(1,2,1)
+plot(angl*180/pi, beta_y, 'r-'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.beta_y, 'rs'); hold on;
+xlabel('Root angle, [deg]'); ylabel('\beta_y, [1/m]'); hold on;
+grid minor;
+
+subplot(1,2,2)
+plot(angl*180/pi, beta_x, 'r-'); hold on;
+plot(exprData{1}.rootAngl, exprData{1}.beta_x, 'rs'); hold on;
+xlabel('Root angle, [deg]'); ylabel('\beta_x, [1/m]'); hold on;
+grid minor;
+
+drawnow;
+
+%% G1.2..error bars
+%{
+The uncertain parameters can be varied using multiplicative scaling factors, as follows:
+* 'EI': scaling factor for out-of-plane EI ('EI'=1 corresponds to the tuned EI_{yy} value in Sanuja's paper)
+* 'GJ': scaling factor for GJ ('GJ'=1 corresponds to the tuned GJ value in Sanuja's paper)
+%}
+[delta_LE_, delta_TE_, beta_y, beta_x] = G1_2(run, angl, 'EI', 1, 'GJ', 1);
+
+set(0, 'CurrentFigure', tip_dispFig)
+plot(angl*180/pi, delta_LE_-delta_LE(1), 'b-'); hold on;
+plot(angl*180/pi, delta_TE_-delta_TE(1), 'b--'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_LE-exprData{1}.delta_LE(1), 'bs', 'MarkerFaceColor',...
+    'b'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_LE-exprData{1}.delta_LE(1)-2e-3, 'ks', 'MarkerFaceColor',...
+    'k'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_LE-exprData{1}.delta_LE(1)+2e-3, 'ks', 'MarkerFaceColor',...
+    'k'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_TE-exprData{1}.delta_TE(1), 'bs'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_TE-exprData{1}.delta_TE(1)-2e-3, 'ks'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.delta_TE-exprData{1}.delta_TE(1)+2e-3, 'ks'); hold on;
+leg_stat = {'G1.1', [''], [''], [''], [''], [''], [''], [''], 'G1.2', [''], [''], [''], [''], [''], [''], ['']};
+legend(leg_stat)
+
+set(0, 'CurrentFigure', rootLoadFig)
+subplot(1,2,1)
+plot(angl*180/pi, beta_y, 'b-'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.beta_y, 'bs'); hold on;
+leg_statload = {'G1.1', [''], 'G1.2', ['']};
+legend(leg_statload)
+
+subplot(1,2,2)
+plot(angl*180/pi, beta_x, 'b-'); hold on;
+plot(exprData{2}.rootAngl, exprData{2}.beta_x, 'bs'); hold on;
+legend(leg_statload)
+
+drawnow;
+
 %% ground test case..G1.1
 
 angl = linspace(0, 90, 30)*pi/180;
@@ -90,7 +170,6 @@ plot(exprData{2}.rootAngl, exprData{2}.beta_x, 'bs'); hold on;
 legend(leg_statload)
 
 drawnow;
-
 
 %% G2
 %{
