@@ -77,10 +77,12 @@ for ii = 1:N_variables
             hold on 
             yline(experimental_data_set(kk), 'k', 'LineWidth', 2, 'Label', sprintf('ExData (%.2e)', experimental_data_set(kk)));  % Plot the experimental data as a vertical line
             if ~isempty(experimental_data_set_lower_bounds)
-                yline(experimental_data_set_lower_bounds(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', sprintf('ExDataLB (%.2e)', experimental_data_set_lower_bounds(kk)));
+                yline(experimental_data_set_lower_bounds(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', sprintf('ExDataLB (%.2e)', experimental_data_set_lower_bounds(kk)), ...
+                    'LabelHorizontalAlignment', 'left', 'LabelVerticalAlignment', 'bottom');
             end
             if ~isempty(experimental_data_set_upper_bounds)
-                yline(experimental_data_set_upper_bounds(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', sprintf('ExDataUB (%.2e)', experimental_data_set_upper_bounds(kk)));
+                yline(experimental_data_set_upper_bounds(kk), '--', 'Color', [1 0.5 0], 'LineWidth', 2, 'Label', sprintf('ExDataUB (%.2e)', experimental_data_set_upper_bounds(kk)), ...
+                    'LabelHorizontalAlignment', 'left', 'LabelVerticalAlignment', 'top');
             end
         end
         title(plots_title)         % description of the surrogate
