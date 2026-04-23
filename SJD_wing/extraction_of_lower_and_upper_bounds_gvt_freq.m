@@ -860,6 +860,12 @@ tor1_mode_freq_ub = [tor1_mode_freq_angle_0_ub, tor1_mode_freq_angle_10_ub, tor1
 save('GVT_freq_lower_and_upper_bounds.mat', 'oop1_mode_freq_lb', 'oop1_mode_freq_ub', 'oop2_mode_freq_lb', 'oop2_mode_freq_ub', 'ip1_mode_freq_lb', 'ip1_mode_freq_ub', 'tor1_mode_freq_lb', 'tor1_mode_freq_ub')
 
 %%
+load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+beta_y_g1_1_experimental_data_set = exprData{1, 1}.beta_y(2:end);  
+beta_y_g1_1_lb = 0.99*beta_y_g1_1_experimental_data_set-0.01*;
+
+
+%%
 % load('WTTests\WT_testData\SJD_wing_proc_modalData.mat');
 % modal_data_idx_angle_5_idx_speed_6 = modalData.stabPls{5, 6};
 % figure; plot(modal_data_idx_angle_5_idx_speed_6, 'k.')

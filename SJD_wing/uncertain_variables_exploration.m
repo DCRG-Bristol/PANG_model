@@ -131,14 +131,21 @@ if N_variables >= 2
             contourf(Eval_locations_x, Eval_locations_y, reshape(surrogates_output(:, kk), [N_eval, N_eval]), 40);
             hold on
             scatter(filteredMatrix_sample(:, pairwise_combinations(ii, 1)), filteredMatrix_sample(:, pairwise_combinations(ii, 2)), 100, 'r', 'filled', 'DisplayName', 'Training Data');
-            if ~isempty(experimental_data_set)
+            if ~isempty(experimental_data_set) & ~isempty(experimental_data_set_lower_bounds)
+                hold on 
+                contour(Eval_locations_x, Eval_locations_y, reshape(surrogates_output(:, kk), [N_eval, N_eval]), [experimental_data_set(kk) experimental_data_set(kk)], 'LineColor', 'k', 'LineWidth', 2, 'DisplayName', 'ExData');
+                contour(Eval_locations_x, Eval_locations_y, reshape(surrogates_output(:, kk), [N_eval, N_eval]), [experimental_data_set_lower_bounds(kk) experimental_data_set_lower_bounds(kk)], 'LineColor', 'k', 'LineWidth', 2, 'LineStyle', '--', 'DisplayName', 'ExDataLB');
+                contour(Eval_locations_x, Eval_locations_y, reshape(surrogates_output(:, kk), [N_eval, N_eval]), [experimental_data_set_upper_bounds(kk) experimental_data_set_upper_bounds(kk)], 'LineColor', 'k', 'LineWidth', 2, 'LineStyle', '-.', 'DisplayName', 'ExDataUB');
+            elseif ~isempty(experimental_data_set)
                 hold on 
                 contour(Eval_locations_x, Eval_locations_y, reshape(surrogates_output(:, kk), [N_eval, N_eval]), [experimental_data_set(kk) experimental_data_set(kk)], 'LineColor', 'k', 'LineWidth', 2, 'DisplayName', 'ExData');
             end
             title(sprintf('%s; %s', outputs_names(kk), plots_title))                                 % description of the surrogate
             xlabel(inputs_names(pairwise_combinations(ii, 1))) % name of the uncertain variable to be ploted on the x-axis
             ylabel(inputs_names(pairwise_combinations(ii, 2))) % name of the uncertain variable to be ploted on the y-axis
-            if ~isempty(experimental_data_set)
+            if ~isempty(experimental_data_set) & ~isempty(experimental_data_set_lower_bounds)
+                legend('Contour Lines', 'Training Data', sprintf('ExData (%.2e)', experimental_data_set(kk)), sprintf('ExDataLB (%.2e)', experimental_data_set_lower_bounds(kk)), sprintf('ExDataUB (%.2e)', experimental_data_set_upper_bounds(kk)), 'Location', 'best');
+            elseif ~isempty(experimental_data_set)
                 legend('Contour Lines', 'Training Data', sprintf('ExData (%.2e)', experimental_data_set(kk)), 'Location', 'best');
             else
                 legend('Contour Lines', 'Training Data', 'Location', 'best');

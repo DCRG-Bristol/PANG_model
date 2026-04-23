@@ -2537,6 +2537,7 @@ flag_test_for_mean_and_sigma = false;
 flag_test_set = true;           % will a test set be generated for further surrogate validation?
 load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
 experimental_data_set = exprData{1, 3}.frequencies(4, :);   
+load('GVT_freq_lower_and_upper_bounds.mat', 'tor1_mode_freq_lb', 'tor1_mode_freq_ub')
 
 % Plots generator for parameter sweeps for the uncertain variables
 inputs_name = ["GJ scaling factor", "Sxx scaling factor"];  % list of the names of the uncertain variables
@@ -2553,7 +2554,7 @@ fprintf('Total surrogate building time: %.4f seconds\n', totalTime);
 elementToSave = surrogates;
 save(fullfile(plotsfolderName, 'surrogates_frq_4_g2_dim_red.mat'), 'elementToSave'); % save the surrogate
 tic;
-uncertain_variables_exploration(elementToSave, inputs_name, outputs_name, descriptive_title_for_plots, N_eval, seed, plotsfolderName, experimental_data_set); % plots generator using the surrogates 
+uncertain_variables_exploration(elementToSave, inputs_name, outputs_name, descriptive_title_for_plots, N_eval, seed, plotsfolderName, experimental_data_set, tor1_mode_freq_lb, tor1_mode_freq_ub); % plots generator using the surrogates 
 totalTime = toc;
 fprintf('Total design space exploration time: %.4f seconds\n', totalTime);
 
