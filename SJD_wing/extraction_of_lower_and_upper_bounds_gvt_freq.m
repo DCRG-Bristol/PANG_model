@@ -862,8 +862,94 @@ save('GVT_freq_lower_and_upper_bounds.mat', 'oop1_mode_freq_lb', 'oop1_mode_freq
 %%
 load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
 beta_y_g1_1_experimental_data_set = exprData{1, 1}.beta_y(2:end);  
-beta_y_g1_1_lb = 0.99*beta_y_g1_1_experimental_data_set-0.01*;
+beta_y_g1_1_bending_moment_at_0 = -2.07;
+beta_y_g1_1_at_0 = beta_y_g1_1_bending_moment_at_0/2.268;
+beta_x_g1_1_torsional_moment_at_0 = -0.009;
+beta_x_g1_1_at_0 = beta_x_g1_1_torsional_moment_at_0/3.3843;
+beta_y_g1_2_bending_moment_at_0 = -3.04;
+beta_y_g1_2_at_0 = beta_y_g1_2_bending_moment_at_0/2.268;
+beta_x_g1_2_torsional_moment_at_0 = 0.0714;
+beta_x_g1_2_at_0 = beta_x_g1_2_torsional_moment_at_0/3.3843;
 
+%%
+
+beta_y_g1_1_at_10 = beta_y_g1_1_experimental_data_set(1)+beta_y_g1_1_at_0;
+beta_y_g1_1_at_10_lb = beta_y_g1_1_experimental_data_set(1)-0.01*abs(beta_y_g1_1_at_10)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_g1_1_at_10_ub = beta_y_g1_1_experimental_data_set(1)+0.01*abs(beta_y_g1_1_at_10)+0.01*abs(beta_y_g1_1_at_0);
+
+beta_y_g1_1_at_20 = beta_y_g1_1_experimental_data_set(2)+beta_y_g1_1_at_0;
+beta_y_g1_1_at_20_lb = beta_y_g1_1_experimental_data_set(2)-0.01*abs(beta_y_g1_1_at_20)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_g1_1_at_20_ub = beta_y_g1_1_experimental_data_set(2)+0.01*abs(beta_y_g1_1_at_20)+0.01*abs(beta_y_g1_1_at_0);
+
+beta_y_g1_1_at_30 = beta_y_g1_1_experimental_data_set(3)+beta_y_g1_1_at_0;
+beta_y_g1_1_at_30_lb = beta_y_g1_1_experimental_data_set(3)-0.01*abs(beta_y_g1_1_at_30)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_g1_1_at_30_ub = beta_y_g1_1_experimental_data_set(3)+0.01*abs(beta_y_g1_1_at_30)+0.01*abs(beta_y_g1_1_at_0);
+
+beta_y_g1_1_at_60 = beta_y_g1_1_experimental_data_set(end)+beta_y_g1_1_at_0;
+beta_y_g1_1_at_60_lb = beta_y_g1_1_experimental_data_set(end)-0.01*abs(beta_y_g1_1_at_60)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_g1_1_at_60_ub = beta_y_g1_1_experimental_data_set(end)+0.01*abs(beta_y_g1_1_at_60)+0.01*abs(beta_y_g1_1_at_0);
+
+beta_y_g1_2_experimental_data_set = exprData{1, 2}.beta_y(2:end);
+beta_y_g1_2_at_10 = beta_y_g1_2_experimental_data_set(1)+beta_y_g1_2_at_0;
+beta_y_g1_2_at_10_lb = beta_y_g1_2_experimental_data_set(1)-0.01*abs(beta_y_g1_2_at_10)-0.01*abs(beta_y_g1_2_at_0);
+beta_y_g1_2_at_10_ub = beta_y_g1_2_experimental_data_set(1)+0.01*abs(beta_y_g1_2_at_10)+0.01*abs(beta_y_g1_2_at_0);
+
+beta_y_g1_2_at_20 = beta_y_g1_2_experimental_data_set(2)+beta_y_g1_2_at_0;
+beta_y_g1_2_at_20_lb = beta_y_g1_2_experimental_data_set(2)-0.01*abs(beta_y_g1_2_at_20)-0.01*abs(beta_y_g1_2_at_0);
+beta_y_g1_2_at_20_ub = beta_y_g1_2_experimental_data_set(2)+0.01*abs(beta_y_g1_2_at_20)+0.01*abs(beta_y_g1_2_at_0);
+
+beta_y_g1_2_at_30 = beta_y_g1_2_experimental_data_set(3)+beta_y_g1_2_at_0;
+beta_y_g1_2_at_30_lb = beta_y_g1_2_experimental_data_set(3)-0.01*abs(beta_y_g1_2_at_30)-0.01*abs(beta_y_g1_2_at_0);
+beta_y_g1_2_at_30_ub = beta_y_g1_2_experimental_data_set(3)+0.01*abs(beta_y_g1_2_at_30)+0.01*abs(beta_y_g1_2_at_0);
+
+beta_y_g1_2_at_60 = beta_y_g1_2_experimental_data_set(end)+beta_y_g1_2_at_0;
+beta_y_g1_2_at_60_lb = beta_y_g1_2_experimental_data_set(end)-0.01*abs(beta_y_g1_2_at_60)-0.01*abs(beta_y_g1_2_at_0);
+beta_y_g1_2_at_60_ub = beta_y_g1_2_experimental_data_set(end)+0.01*abs(beta_y_g1_2_at_60)+0.01*abs(beta_y_g1_2_at_0);
+
+beta_x_g1_1_experimental_data_set = exprData{1, 1}.beta_x(2:end); 
+beta_x_g1_1_at_10 = beta_x_g1_1_experimental_data_set(1)+beta_x_g1_1_at_0;
+beta_x_g1_1_at_10_lb = beta_x_g1_1_experimental_data_set(1)-0.02*abs(beta_x_g1_1_at_10)-0.02*abs(beta_x_g1_1_at_0);
+beta_x_g1_1_at_10_ub = beta_x_g1_1_experimental_data_set(1)+0.02*abs(beta_x_g1_1_at_10)+0.02*abs(beta_x_g1_1_at_0);
+
+beta_x_g1_1_at_20 = beta_x_g1_1_experimental_data_set(2)+beta_x_g1_1_at_0;
+beta_x_g1_1_at_20_lb = beta_x_g1_1_experimental_data_set(2)-0.02*abs(beta_x_g1_1_at_20)-0.02*abs(beta_x_g1_1_at_0);
+beta_x_g1_1_at_20_ub = beta_x_g1_1_experimental_data_set(2)+0.02*abs(beta_x_g1_1_at_20)+0.02*abs(beta_x_g1_1_at_0);
+
+beta_x_g1_1_at_30 = beta_x_g1_1_experimental_data_set(3)+beta_x_g1_1_at_0;
+beta_x_g1_1_at_30_lb = beta_x_g1_1_experimental_data_set(3)-0.02*abs(beta_x_g1_1_at_30)-0.02*abs(beta_x_g1_1_at_0);
+beta_x_g1_1_at_30_ub = beta_x_g1_1_experimental_data_set(3)+0.02*abs(beta_x_g1_1_at_30)+0.02*abs(beta_x_g1_1_at_0);
+
+beta_x_g1_1_at_60 = beta_x_g1_1_experimental_data_set(end)+beta_x_g1_1_at_0;
+beta_x_g1_1_at_60_lb = beta_x_g1_1_experimental_data_set(end)-0.02*abs(beta_x_g1_1_at_60)-0.02*abs(beta_x_g1_1_at_0);
+beta_x_g1_1_at_60_ub = beta_x_g1_1_experimental_data_set(end)+0.02*abs(beta_x_g1_1_at_60)+0.02*abs(beta_x_g1_1_at_0);
+
+beta_x_g1_2_experimental_data_set = exprData{1, 2}.beta_x(2:end); 
+beta_x_g1_2_at_10 = beta_x_g1_2_experimental_data_set(1)+beta_x_g1_2_at_0;
+beta_x_g1_2_at_10_lb = beta_x_g1_2_experimental_data_set(1)-0.02*abs(beta_x_g1_2_at_10)-0.02*abs(beta_x_g1_2_at_0);
+beta_x_g1_2_at_10_ub = beta_x_g1_2_experimental_data_set(1)+0.02*abs(beta_x_g1_2_at_10)+0.02*abs(beta_x_g1_2_at_0);
+
+beta_x_g1_2_at_20 = beta_x_g1_2_experimental_data_set(2)+beta_x_g1_2_at_0;
+beta_x_g1_2_at_20_lb = beta_x_g1_2_experimental_data_set(2)-0.02*abs(beta_x_g1_2_at_20)-0.02*abs(beta_x_g1_2_at_0);
+beta_x_g1_2_at_20_ub = beta_x_g1_2_experimental_data_set(2)+0.02*abs(beta_x_g1_2_at_20)+0.02*abs(beta_x_g1_2_at_0);
+
+beta_x_g1_2_at_30 = beta_x_g1_2_experimental_data_set(3)+beta_x_g1_2_at_0;
+beta_x_g1_2_at_30_lb = beta_x_g1_2_experimental_data_set(3)-0.02*abs(beta_x_g1_2_at_30)-0.02*abs(beta_x_g1_2_at_0);
+beta_x_g1_2_at_30_ub = beta_x_g1_2_experimental_data_set(3)+0.02*abs(beta_x_g1_2_at_30)+0.02*abs(beta_x_g1_2_at_0);
+
+beta_x_g1_2_at_60 = beta_x_g1_2_experimental_data_set(end)+beta_x_g1_2_at_0;
+beta_x_g1_2_at_60_lb = beta_x_g1_2_experimental_data_set(end)-0.02*abs(beta_x_g1_2_at_60)-0.02*abs(beta_x_g1_2_at_0);
+beta_x_g1_2_at_60_ub = beta_x_g1_2_experimental_data_set(end)+0.02*abs(beta_x_g1_2_at_60)+0.02*abs(beta_x_g1_2_at_0);
+
+beta_y_g1_1_lb = [beta_y_g1_1_at_10_lb, beta_y_g1_1_at_20_lb, beta_y_g1_1_at_30_lb, beta_y_g1_1_at_60_lb];
+beta_y_g1_1_ub = [beta_y_g1_1_at_10_ub, beta_y_g1_1_at_20_ub, beta_y_g1_1_at_30_ub, beta_y_g1_1_at_60_ub];
+beta_y_g1_2_lb = [beta_y_g1_2_at_10_lb, beta_y_g1_2_at_20_lb, beta_y_g1_2_at_30_lb, beta_y_g1_2_at_60_lb];
+beta_y_g1_2_ub = [beta_y_g1_2_at_10_ub, beta_y_g1_2_at_20_ub, beta_y_g1_2_at_30_ub, beta_y_g1_2_at_60_ub];
+beta_x_g1_1_lb = [beta_x_g1_1_at_10_lb, beta_x_g1_1_at_20_lb, beta_x_g1_1_at_30_lb, beta_x_g1_1_at_60_lb];
+beta_x_g1_1_ub = [beta_x_g1_1_at_10_ub, beta_x_g1_1_at_20_ub, beta_x_g1_1_at_30_ub, beta_x_g1_1_at_60_ub];
+beta_x_g1_2_lb = [beta_x_g1_2_at_10_lb, beta_x_g1_2_at_20_lb, beta_x_g1_2_at_30_lb, beta_x_g1_2_at_60_lb];
+beta_x_g1_2_ub = [beta_x_g1_2_at_10_ub, beta_x_g1_2_at_20_ub, beta_x_g1_2_at_30_ub, beta_x_g1_2_at_60_ub];
+
+save('ground_strains_lower_and_upper_bounds.mat', 'beta_y_g1_1_lb', 'beta_y_g1_1_ub', 'beta_y_g1_2_lb', 'beta_y_g1_2_ub', 'beta_x_g1_1_lb', 'beta_x_g1_1_ub', 'beta_x_g1_2_lb', 'beta_x_g1_2_ub')
 
 %%
 % load('WTTests\WT_testData\SJD_wing_proc_modalData.mat');

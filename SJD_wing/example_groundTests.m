@@ -7,7 +7,7 @@ Comments:
 * Finally, the numerical predictions and the experimental data are plotted together (for comparison).
 %}
 
-clear all; close all;
+% clear all; close all;
 
 %add folder below to path - contains functions relating to the experimental
 %data and test-specific computations
@@ -167,6 +167,8 @@ legend(leg_statload)
 subplot(1,2,2)
 plot(angl*180/pi, beta_x, 'b-'); hold on;
 plot(exprData{2}.rootAngl, exprData{2}.beta_x, 'bs'); hold on;
+plot(exprData{2}.rootAngl, [0, beta_x_g1_2_lb], 'bs'); hold on;
+plot(exprData{2}.rootAngl, [0, beta_x_g1_2_ub], 'bs'); hold on;
 legend(leg_statload)
 
 drawnow;
