@@ -2980,6 +2980,84 @@ disp('Readme file for the surrogates has been created successfully.');
 
 set(0, 'DefaultFigureVisible', 'on');
 
+%% 14.2. Surrogates and parameter sweeps for the 3rd modal damping ratio (2nd OOP bending) as a function of EI only (G2 test) - no outliers
+
+% This section generates many plots, which are saved rather than displayed on the screen
+set(0, 'DefaultFigureVisible', 'off'); 
+
+% Description of the uncertain variables for UQLab
+InputOpts.Marginals(1).Type = 'Uniform';
+InputOpts.Marginals(1).Parameters = [0.8, 1.2]; % (multiplicative scaling factor for EI) lower and upper uncertainty bound
+% The uncertain variables are inputs for physical maps that output QIs
+myInput = uq_createInput(InputOpts); 
+
+plotsfolderName = 'damp_3_g2_no_outliers_dim_red_uq'; 
+mkdir(plotsfolderName)
+
+% Description of the physical model for UQLab
+ModelOpts.mFile = 'model_G2_damp_3_dim_red';
+ModelOpts.isVectorized = false;
+myModel = uq_createModel(ModelOpts);
+
+N_train = 5;                                        % initial training set size (the set will be updated until the surrogate validation error is low enough)
+MetaOpts.Type = 'Metamodel';                        % 'metamodel': another word for 'surrogate'
+MetaOpts.MetaType = 'PCE';
+MetaOpts.Input = myInput;                           % probability distribution for the uncertain variables
+MetaOpts.FullModel = myModel;                       % the physical model as a UQLab object
+MetaOpts.ExpDesign.NSamples = N_train;              % 'experimental design' (ExpDesign): another word for 'training set'
+if strcmp(MetaOpts.MetaType, 'Kriging')
+    MetaOpts.ExpDesign.Sampling = 'User';
+end
+
+flag_parfor = false;            % can we run the physical model in parallel to build the training set? (True/False)
+seed = 100;                     % seed for reproducibility due to randomness in sampling the training set
+N_train_increment = 8;          % we will increment the training set size until we reach convergence
+N_train_max = 50;               % training budget (i.e., maximum number of training points allowed)
+% run a test to check if surrogates are actually faster than classical MC for mean and sigma estimation  
+% recommended only for cheap models (to find the true mean and sigma, we need a large MC with the physical model) 
+flag_test_for_mean_and_sigma = false;
+flag_test_set = true;           % will a test set be generated for further surrogate validation?
+load('GVT_damp_no_outliers_lower_and_upper_bounds.mat', 'oop2_mode_damp_no_outliers_lb', 'oop2_mode_damp_no_outliers_ub')
+experimental_data_set = oop2_mode_damp_no_outliers_lb+(oop2_mode_damp_no_outliers_ub-oop2_mode_damp_no_outliers_lb)/2;
+
+% Plots generator for parameter sweeps for the uncertain variables
+inputs_name = ["EI scaling factor"];  % list of the names of the uncertain variables
+outputs_name = ["3rd damp.ratio at 0deg", "3rd damp.ratio at 10deg", "3rd damp.ratio at 20deg", "3rd damp.ratio at 30deg", "3rd damp.ratio at 60deg", "3rd damp.ratio at 90deg"]; % list of the names of the QIs
+N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
+descriptive_title_for_plots = sprintf('%s surrogate', MetaOpts.MetaType);
+N_eval = 100;                                                        % number of discretisation points for each uncertain variable (for plots)
+plotsfolderName = 'damp_3_g2_no_outliers_dim_red_uq';   
+mkdir(plotsfolderName, 'plots_uq');
+tic;
+surrogates =  surrogates_uq(MetaOpts, N_outputs, N_train_increment, N_train_max, flag_parfor, seed, plotsfolderName, flag_test_for_mean_and_sigma, flag_test_set); % Generates training points and builds the surrogates 
+totalTime = toc;
+fprintf('Total surrogate building time: %.4f seconds\n', totalTime);
+elementToSave = surrogates;
+save(fullfile(plotsfolderName, 'surrogates_damp_3_g2_dim_red.mat'), 'elementToSave'); % save the surrogate
+tic;
+uncertain_variables_exploration(elementToSave, inputs_name, outputs_name, descriptive_title_for_plots, N_eval, seed, plotsfolderName, experimental_data_set, oop2_mode_damp_no_outliers_lb, oop2_mode_damp_no_outliers_ub); % plots generator using the surrogates 
+totalTime = toc;
+fprintf('Total design space exploration time: %.4f seconds\n', totalTime);
+
+% add readme to explain each 'case' (i.e., each fixed combination (ii, jj) of deterministic variables)
+fileID = fopen(fullfile(plotsfolderName, 'readme.txt'), 'w');
+fprintf(fileID, 'Surrogates for each quantity of interest (QI) as a function of the uncertain variables.\n\n');
+fprintf(fileID, 'Legend:\n');
+N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
+N_variables = length(inputs_name);            % number of uncertain variables
+for kk = 1:N_outputs
+    fprintf(fileID, 'QI %d: %s\n', kk, outputs_name(kk));
+end   
+for kk = 1:N_variables
+    fprintf(fileID, 'Uncertain variable %d: %s\n', kk, inputs_name(kk));
+end    
+fprintf(fileID, 'Methodology: %s\n\n', descriptive_title_for_plots); 
+fprintf(fileID, 'The trained surrogates and most of the design exploration figures are stored externally due to size limits.\n'); 
+fclose(fileID);
+disp('Readme file for the surrogates has been created successfully.'); 
+
+set(0, 'DefaultFigureVisible', 'on');
+
 %% 15. Surrogates and parameter sweeps for the 4th modal frequency (torsion) as a function of GJ, Sxx, Szz only (G2 test)
 
 % This section generates many plots, which are saved rather than displayed on the screen
@@ -3119,6 +3197,86 @@ elementToSave = surrogates;
 save(fullfile(plotsfolderName, 'surrogates_damp_4_g2_dim_red.mat'), 'elementToSave'); % save the surrogate
 tic;
 uncertain_variables_exploration(elementToSave, inputs_name, outputs_name, descriptive_title_for_plots, N_eval, seed, plotsfolderName, experimental_data_set, tor1_mode_damp_lb, tor1_mode_damp_ub); % plots generator using the surrogates 
+totalTime = toc;
+fprintf('Total design space exploration time: %.4f seconds\n', totalTime);
+
+% add readme to explain each 'case' (i.e., each fixed combination (ii, jj) of deterministic variables)
+fileID = fopen(fullfile(plotsfolderName, 'readme.txt'), 'w');
+fprintf(fileID, 'Surrogates for each quantity of interest (QI) as a function of the uncertain variables.\n\n');
+fprintf(fileID, 'Legend:\n');
+N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
+N_variables = length(inputs_name);            % number of uncertain variables
+for kk = 1:N_outputs
+    fprintf(fileID, 'QI %d: %s\n', kk, outputs_name(kk));
+end   
+for kk = 1:N_variables
+    fprintf(fileID, 'Uncertain variable %d: %s\n', kk, inputs_name(kk));
+end    
+fprintf(fileID, 'Methodology: %s\n\n', descriptive_title_for_plots); 
+fprintf(fileID, 'The trained surrogates and most of the design exploration figures are stored externally due to size limits.\n'); 
+fclose(fileID);
+disp('Readme file for the surrogates has been created successfully.'); 
+
+set(0, 'DefaultFigureVisible', 'on');
+
+%% 15.2. Surrogates and parameter sweeps for the 4th modal damping ratio (torsion) as a function of GJ, Sxx, Szz only (G2 test) - no outliers
+
+% This section generates many plots, which are saved rather than displayed on the screen
+set(0, 'DefaultFigureVisible', 'off'); 
+
+% Description of the uncertain variables for UQLab
+InputOpts.Marginals(1).Type = 'Uniform';
+InputOpts.Marginals(1).Parameters = [0.8, 1.2]; % (multiplicative scaling factor for GJ) lower and upper uncertainty bound
+InputOpts.Marginals(2).Type = 'Uniform';
+InputOpts.Marginals(2).Parameters = [0.8, 1.2]; % (multiplicative scaling factor for Sxx) lower and upper uncertainty bound
+% The uncertain variables are inputs for physical maps that output QIs
+myInput = uq_createInput(InputOpts); 
+
+plotsfolderName = 'damp_4_g2_no_outliers_dim_red_uq'; 
+mkdir(plotsfolderName)
+
+% Description of the physical model for UQLab
+ModelOpts.mFile = 'model_G2_damp_4_dim_red';
+ModelOpts.isVectorized = false;
+myModel = uq_createModel(ModelOpts);
+
+N_train = 5;                                        % initial training set size (the set will be updated until the surrogate validation error is low enough)
+MetaOpts.Type = 'Metamodel';                        % 'metamodel': another word for 'surrogate'
+MetaOpts.MetaType = 'PCE';
+MetaOpts.Input = myInput;                           % probability distribution for the uncertain variables
+MetaOpts.FullModel = myModel;                       % the physical model as a UQLab object
+MetaOpts.ExpDesign.NSamples = N_train;              % 'experimental design' (ExpDesign): another word for 'training set'
+if strcmp(MetaOpts.MetaType, 'Kriging')
+    MetaOpts.ExpDesign.Sampling = 'User';
+end
+
+flag_parfor = false;            % can we run the physical model in parallel to build the training set? (True/False)
+seed = 100;                     % seed for reproducibility due to randomness in sampling the training set
+N_train_increment = 8;          % we will increment the training set size until we reach convergence
+N_train_max = 50;               % training budget (i.e., maximum number of training points allowed)
+% run a test to check if surrogates are actually faster than classical MC for mean and sigma estimation  
+% recommended only for cheap models (to find the true mean and sigma, we need a large MC with the physical model) 
+flag_test_for_mean_and_sigma = false;
+flag_test_set = true;           % will a test set be generated for further surrogate validation?
+load('GVT_damp_no_outliers_lower_and_upper_bounds.mat', 'tor1_mode_damp_no_outliers_lb', 'tor1_mode_damp_no_outliers_ub')
+experimental_data_set = tor1_mode_damp_no_outliers_lb+(tor1_mode_damp_no_outliers_ub-tor1_mode_damp_no_outliers_lb)/2;
+
+% Plots generator for parameter sweeps for the uncertain variables
+inputs_name = ["GJ scaling factor", "Sxx scaling factor"];  % list of the names of the uncertain variables
+outputs_name = ["4th damp.ratio at 0deg", "4th damp.ratio at 10deg", "4th damp.ratio at 20deg", "4th damp.ratio at 30deg", "4th damp.ratio at 60deg", "4th damp.ratio at 90deg"]; % list of the names of the QIs
+N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
+descriptive_title_for_plots = sprintf('%s surrogate', MetaOpts.MetaType);
+N_eval = 100;                                                        % number of discretisation points for each uncertain variable (for plots)
+plotsfolderName = 'damp_4_g2_no_outliers_dim_red_uq';   
+mkdir(plotsfolderName, 'plots_uq');
+tic;
+surrogates =  surrogates_uq(MetaOpts, N_outputs, N_train_increment, N_train_max, flag_parfor, seed, plotsfolderName, flag_test_for_mean_and_sigma, flag_test_set); % Generates training points and builds the surrogates 
+totalTime = toc;
+fprintf('Total surrogate building time: %.4f seconds\n', totalTime);
+elementToSave = surrogates;
+save(fullfile(plotsfolderName, 'surrogates_damp_4_g2_dim_red.mat'), 'elementToSave'); % save the surrogate
+tic;
+uncertain_variables_exploration(elementToSave, inputs_name, outputs_name, descriptive_title_for_plots, N_eval, seed, plotsfolderName, experimental_data_set, tor1_mode_damp_no_outliers_lb, tor1_mode_damp_no_outliers_ub); % plots generator using the surrogates 
 totalTime = toc;
 fprintf('Total design space exploration time: %.4f seconds\n', totalTime);
 

@@ -56,6 +56,8 @@ octave-workspace
 !SJD_wing/gvt_poles.mat
 !SJD_wing/GVT_freq_lower_and_upper_bounds.mat
 !SJD_wing/ground_strains_lower_and_upper_bounds.mat
+!SJD_wing/GVT_damp_lower_and_upper_bounds.mat
+!SJD_wing/GVT_damp_no_outliers_lower_and_upper_bounds.mat
 *.fig
 !SJD_wing/freq_matching_freq_alpha_0_calibration.fig
 !SJD_wing/freq_matching_full_calibration.fig
