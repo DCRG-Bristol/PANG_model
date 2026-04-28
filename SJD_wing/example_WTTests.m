@@ -41,6 +41,8 @@ plot(exp_statResp.U, exp_statResp.beta_y, 'bx-'); hold on;
 plot(exp_Uf, exp_beta_yf, 'r^'); hold on;
 xlabel('U, [m/s]'); ylabel('\beta_y, [1/m]');
 legend({'Static response (model)', 'Hopf Bifurcations (model)', 'Static response (expr)', 'Hopf Bifurcations (expr.)'})
+load('OMA_freq_lower_and_upper_bounds.mat');
+load('OMA_damp_lower_and_upper_bounds.mat');
 
 exp_mkrs = {'mx', 'ko', 'b^', 'rs'};
 clrs = {'m', 'k', 'b', 'r'};
@@ -50,11 +52,17 @@ for mode=1:4
     plot(statResp.U, statResp.damp(mode,:), 'color', clrs{mode}); hold on;
     plot(exp_statResp.U, exp_statResp.damp(mode,:), exp_mkrs{mode},...
         'markerFaceColor', clrs{mode}); hold on;
+    if ang_expr == 1.4 & mode == 4
+        errorbar(exp_statResp.U([1,5,6,7,8,9,10,11,12,18]), exp_statResp.damp(mode,[1,5,6,7,8,9,10,11,12,18]), exp_statResp.damp(mode,[1,5,6,7,8,9,10,11,12,18])-tor1_mode_angle_5_damp_lb, tor1_mode_angle_5_damp_ub-exp_statResp.damp(mode,[1,5,6,7,8,9,10,11,12,18]), 'rx'); hold on;
+    end
 
     subplot(2,1,2);
     plot(statResp.U, statResp.frqs(mode,:), clrs{mode}); hold on;
     plot(exp_statResp.U, exp_statResp.frqs(mode,:), exp_mkrs{mode},...
         'markerFaceColor', clrs{mode}); hold on;
+    if ang_expr == 1.4 & mode == 4
+        errorbar(exp_statResp.U([1,5,6,7,8,9,10,11,12,18]), exp_statResp.frqs(mode,[1,5,6,7,8,9,10,11,12,18]), exp_statResp.frqs(mode,[1,5,6,7,8,9,10,11,12,18])-tor1_mode_angle_5_freq_lb, tor1_mode_angle_5_freq_ub-exp_statResp.frqs(mode,[1,5,6,7,8,9,10,11,12,18]), 'rx'); hold on;
+    end
 end
 subplot(2,1,1); xline(Uf); xlabel('U, [m/s]'); ylabel('\zeta, [-]');
 set(gca, 'xAxisLocation', 'origin')
