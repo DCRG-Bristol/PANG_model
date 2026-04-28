@@ -1,0 +1,39 @@
+function Y = model_G2_damp_3_dim_red(X)
+%% Title section - Third damping ratio versus wing root pitch angles and EI (G2 test)
+%{
+--------------------------------------------------------
+Comments:
+* This model refers to the G2 test (i.e., ground vibration test)
+* The model computes the 3rd damping ratio (OOP2 bending) as a function of uncertain variables (i.e., EI)
+* We use the notation: X: vector of uncertain variables; angl: vector of deterministic parameters; Y: vector of model outputs
+--------------------------------------------------------
+Input:
+* X: multiplicative scaling factor for the uncertain variables
+    * X(1)      : bending rigidity EI
+--------------------------------------------------------
+Output:
+* Y: 3rd damping ratio corresponding to the different wing root angles (the angles arranged in increasing order of magnitude)
+    * Y(1)      :3rd damping ratio at the smallest root angle (Hz)
+    * Y(2)      :3rd damping ratio at the 2nd smallest root angle (Hz)
+    ...
+    * Y(6)      :3rd damping ratio at the largest root angle (Hz)
+--------------------------------------------------------
+%}
+%%
+%add folder below to path - contains functions relating to the experimental
+%data and test-specific computations
+addpath('groundTests'); 
+load('run_ONERA.mat'); run = run_ONERA;
+load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
+
+%set to work with modal form...
+run = run.setTransform('modal', 14); 
+
+angl = exprData{1, 3}.rootAngl;
+angl = angl*pi/180; %transform from deg to rad
+
+%function in the groundTests folder, labelled based on the test, take in
+%the 'run' object and returns the test-specific measurements
+[Y] = G2_damp_3(run, angl, 'EI', X(1), 'GJ', 1, 'Sxx', 1, 'Szz', 1);
+
+end
