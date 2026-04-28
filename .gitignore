@@ -43,6 +43,8 @@ octave-workspace
 !SJD_wing/groundTests/testData/*.mat
 !SJD_wing/run_ONERA.mat
 !SJD_wing/run_ext.mat
+!SJD_wing/OMA_damp_lower_and_upper_bounds.mat
+!SJD_wing/OMA_freq_lower_and_upper_bounds.mat
 *.fig
 *.png
 *.jpg
