@@ -35,6 +35,9 @@ oop1_mode_freq_angle_0_lb = min(ellipse_oop1_mode_damp_freq_angle_0(:, 2));
 oop1_mode_freq_angle_0_ub = max(ellipse_oop1_mode_damp_freq_angle_0(:, 2));
 oop1_mode_damp_angle_0_lb = min(oop1_mode_damp_freq_angle_0(:, 1));
 oop1_mode_damp_angle_0_ub = max(oop1_mode_damp_freq_angle_0(:, 1));
+oop1_mode_damp_angle_0_no_outliers_lb = min(oop1_mode_damp_freq_angle_0(:, 1));
+oop1_mode_damp_angle_0_no_outliers_ub_ = sort(oop1_mode_damp_freq_angle_0(:, 1), 'descend');
+oop1_mode_damp_angle_0_no_outliers_ub = oop1_mode_damp_angle_0_no_outliers_ub_(6);
 
 %% GVT angle 0, freq IP1
 load('gvt_poles.mat');
@@ -189,6 +192,9 @@ oop1_mode_freq_angle_10_lb = min(ellipse_oop1_mode_damp_freq_angle_10(:, 2));
 oop1_mode_freq_angle_10_ub = max(ellipse_oop1_mode_damp_freq_angle_10(:, 2));
 oop1_mode_damp_angle_10_lb = min(oop1_mode_damp_freq_angle_10(:, 1));
 oop1_mode_damp_angle_10_ub = max(oop1_mode_damp_freq_angle_10(:, 1));
+oop1_mode_damp_angle_10_no_outliers_lb = min(oop1_mode_damp_freq_angle_10(:, 1));
+oop1_mode_damp_angle_10_no_outliers_ub_ = sort(oop1_mode_damp_freq_angle_10(:, 1), 'descend');
+oop1_mode_damp_angle_10_no_outliers_ub = oop1_mode_damp_angle_10_no_outliers_ub_(8);
 
 %% GVT angle 10, freq IP1
 load('gvt_poles.mat');
@@ -339,6 +345,8 @@ oop1_mode_freq_angle_20_lb = min(ellipse_oop1_mode_damp_freq_angle_20(:, 2));
 oop1_mode_freq_angle_20_ub = max(ellipse_oop1_mode_damp_freq_angle_20(:, 2));
 oop1_mode_damp_angle_20_lb = min(oop1_mode_damp_freq_angle_20(:, 1));
 oop1_mode_damp_angle_20_ub = max(oop1_mode_damp_freq_angle_20(:, 1));
+oop1_mode_damp_angle_20_no_outliers_lb = min(oop1_mode_damp_freq_angle_0(:, 1));
+oop1_mode_damp_angle_20_no_outliers_ub = max(oop1_mode_damp_freq_angle_20(:, 1));
 
 %% GVT angle 20, freq IP1
 load('gvt_poles.mat');
@@ -491,6 +499,9 @@ oop1_mode_freq_angle_30_ub = max(ellipse_oop1_mode_damp_freq_angle_30(:, 2));
 oop1_mode_damp_angle_30_lb = min(oop1_mode_damp_freq_angle_30(:, 1));
 oop1_mode_damp_angle_30_ub_ = sort(oop1_mode_damp_freq_angle_30(:, 1), 'descend');
 oop1_mode_damp_angle_30_ub = oop1_mode_damp_angle_30_ub_(2);
+oop1_mode_damp_angle_30_no_outliers_lb = min(oop1_mode_damp_freq_angle_30(:, 1));
+oop1_mode_damp_angle_30_no_outliers_ub_ = sort(oop1_mode_damp_freq_angle_30(:, 1), 'descend');
+oop1_mode_damp_angle_30_no_outliers_ub = oop1_mode_damp_angle_30_no_outliers_ub_(3);
 
 %% GVT angle 30, freq IP1
 load('gvt_poles.mat');
@@ -642,6 +653,9 @@ oop1_mode_freq_angle_60_lb = min(ellipse_oop1_mode_damp_freq_angle_60(:, 2));
 oop1_mode_freq_angle_60_ub = max(ellipse_oop1_mode_damp_freq_angle_60(:, 2));
 oop1_mode_damp_angle_60_lb = min(oop1_mode_damp_freq_angle_60(:, 1));
 oop1_mode_damp_angle_60_ub = max(oop1_mode_damp_freq_angle_60(:, 1));
+oop1_mode_damp_angle_60_no_outliers_lb = min(oop1_mode_damp_freq_angle_60(:, 1));
+oop1_mode_damp_angle_60_no_outliers_ub_ = sort(oop1_mode_damp_freq_angle_60(:, 1), 'descend');
+oop1_mode_damp_angle_60_no_outliers_ub = oop1_mode_damp_angle_60_no_outliers_ub_(4);
 
 %% GVT angle 60, freq IP1
 load('gvt_poles.mat');
@@ -772,6 +786,10 @@ oop1_mode_freq_angle_90_lb = min(ellipse_oop1_mode_damp_freq_angle_90(:, 2));
 oop1_mode_freq_angle_90_ub = max(ellipse_oop1_mode_damp_freq_angle_90(:, 2));
 oop1_mode_damp_angle_90_lb = min(oop1_mode_damp_freq_angle_90(:, 1));
 oop1_mode_damp_angle_90_ub = max(oop1_mode_damp_freq_angle_90(:, 1));
+oop1_mode_damp_angle_90_no_outliers_lb_ = sort(oop1_mode_damp_freq_angle_90(:, 1), 'ascend');
+oop1_mode_damp_angle_90_no_outliers_lb = oop1_mode_damp_angle_90_no_outliers_lb_(2);
+oop1_mode_damp_angle_90_no_outliers_ub_ = sort(oop1_mode_damp_freq_angle_90(:, 1), 'descend');
+oop1_mode_damp_angle_90_no_outliers_ub = oop1_mode_damp_angle_90_no_outliers_ub_(2);
 
 %% GVT angle 90, freq IP1
 load('gvt_poles.mat');
@@ -907,11 +925,18 @@ oop2_mode_damp_ub = [oop2_mode_damp_angle_0_ub, oop2_mode_damp_angle_10_ub, oop2
 tor1_mode_damp_lb = [tor1_mode_damp_angle_0_lb, tor1_mode_damp_angle_10_lb, tor1_mode_damp_angle_20_lb, tor1_mode_damp_angle_30_lb, tor1_mode_damp_angle_60_lb, tor1_mode_damp_angle_90_lb];
 tor1_mode_damp_ub = [tor1_mode_damp_angle_0_ub, tor1_mode_damp_angle_10_ub, tor1_mode_damp_angle_20_ub, tor1_mode_damp_angle_30_ub, tor1_mode_damp_angle_60_ub, tor1_mode_damp_angle_90_ub];
 
+%% bringing together damp UB and LB (no outliers)
+oop1_mode_damp_no_outliers_lb = [oop1_mode_damp_angle_0_no_outliers_lb, oop1_mode_damp_angle_10_no_outliers_lb, oop1_mode_damp_angle_20_no_outliers_lb, oop1_mode_damp_angle_30_no_outliers_lb, oop1_mode_damp_angle_60_no_outliers_lb, oop1_mode_damp_angle_90_no_outliers_lb];
+oop1_mode_damp_no_outliers_ub = [oop1_mode_damp_angle_0_no_outliers_ub, oop1_mode_damp_angle_10_no_outliers_ub, oop1_mode_damp_angle_20_no_outliers_ub, oop1_mode_damp_angle_30_no_outliers_ub, oop1_mode_damp_angle_60_no_outliers_ub, oop1_mode_damp_angle_90_no_outliers_ub];
+
 %% saving freq UB and LB
 save('GVT_freq_lower_and_upper_bounds.mat', 'oop1_mode_freq_lb', 'oop1_mode_freq_ub', 'oop2_mode_freq_lb', 'oop2_mode_freq_ub', 'ip1_mode_freq_lb', 'ip1_mode_freq_ub', 'tor1_mode_freq_lb', 'tor1_mode_freq_ub')
 
 %% saving damp UB and LB
 save('GVT_damp_lower_and_upper_bounds.mat', 'oop1_mode_damp_lb', 'oop1_mode_damp_ub', 'oop2_mode_damp_lb', 'oop2_mode_damp_ub', 'tor1_mode_damp_lb', 'tor1_mode_damp_ub');
+
+%% saving damp UB and LB (no outliers)
+save('GVT_damp_no_outliers_lower_and_upper_bounds.mat', 'oop1_mode_damp_no_outliers_lb', 'oop1_mode_damp_no_outliers_ub');
 
 %% preparation for error bars for strains
 load('groundTests\testData\SJD_groundTestData.mat', 'exprData');
