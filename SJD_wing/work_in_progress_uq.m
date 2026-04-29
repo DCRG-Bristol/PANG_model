@@ -674,6 +674,56 @@ save('OMA_freq_lower_and_upper_bounds.mat', 'tor1_mode_angle_5_freq_lb', 'tor1_m
 %% saving damp UB and LB
 save('OMA_damp_lower_and_upper_bounds.mat', 'tor1_mode_angle_5_damp_lb', 'tor1_mode_angle_5_damp_ub', 'oop2_mode_angle_5_damp_lb', 'oop2_mode_angle_5_damp_ub');
 
+%% preparation for error bars for strains (ang_expr = 1.4)
+beta_y_g1_1_bending_moment_at_0 = -2.07;
+beta_y_g1_1_at_0 = beta_y_g1_1_bending_moment_at_0/2.268;
+addpath('WTTests'); 
+ang_expr = 1.4; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
+beta_y_wt_experimental_data_set_angle_5 = exp_statResp.beta_y;
+
+%% preparation for error bars for strains (ang_expr = 0.3)
+ang_expr = 0.3; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
+beta_y_wt_experimental_data_set_angle_2 = exp_statResp.beta_y;
+
+%% preparation for error bars for strains (ang_expr = 0.6)
+ang_expr = 0.6; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
+beta_y_wt_experimental_data_set_angle_3 = exp_statResp.beta_y;
+
+%% preparation for error bars for strains (ang_expr = 1.1)
+ang_expr = 1.1; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
+beta_y_wt_experimental_data_set_angle_4 = exp_statResp.beta_y;
+
+%% calculate the error bars for strains
+beta_y_wt_experimental_data_set_angle_5_unscaled = beta_y_wt_experimental_data_set_angle_5+beta_y_g1_1_at_0;
+beta_y_wt_experimental_data_set_angle_5_lb = beta_y_wt_experimental_data_set_angle_5-0.01*abs(beta_y_wt_experimental_data_set_angle_5_unscaled)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_wt_experimental_data_set_angle_5_ub = beta_y_wt_experimental_data_set_angle_5+0.01*abs(beta_y_wt_experimental_data_set_angle_5_unscaled)+0.01*abs(beta_y_g1_1_at_0);
+
+beta_y_wt_experimental_data_set_angle_4_unscaled = beta_y_wt_experimental_data_set_angle_4+beta_y_g1_1_at_0;
+beta_y_wt_experimental_data_set_angle_4_lb = beta_y_wt_experimental_data_set_angle_4-0.01*abs(beta_y_wt_experimental_data_set_angle_4_unscaled)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_wt_experimental_data_set_angle_4_ub = beta_y_wt_experimental_data_set_angle_4+0.01*abs(beta_y_wt_experimental_data_set_angle_4_unscaled)+0.01*abs(beta_y_g1_1_at_0);
+
+beta_y_wt_experimental_data_set_angle_3_unscaled = beta_y_wt_experimental_data_set_angle_3+beta_y_g1_1_at_0;
+beta_y_wt_experimental_data_set_angle_3_lb = beta_y_wt_experimental_data_set_angle_3-0.01*abs(beta_y_wt_experimental_data_set_angle_3_unscaled)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_wt_experimental_data_set_angle_3_ub = beta_y_wt_experimental_data_set_angle_3+0.01*abs(beta_y_wt_experimental_data_set_angle_3_unscaled)+0.01*abs(beta_y_g1_1_at_0);
+
+beta_y_wt_experimental_data_set_angle_2_unscaled = beta_y_wt_experimental_data_set_angle_2+beta_y_g1_1_at_0;
+beta_y_wt_experimental_data_set_angle_2_lb = beta_y_wt_experimental_data_set_angle_2-0.01*abs(beta_y_wt_experimental_data_set_angle_2_unscaled)-0.01*abs(beta_y_g1_1_at_0);
+beta_y_wt_experimental_data_set_angle_2_ub = beta_y_wt_experimental_data_set_angle_2+0.01*abs(beta_y_wt_experimental_data_set_angle_2_unscaled)+0.01*abs(beta_y_g1_1_at_0);
+
+save('WT_strains_lower_and_upper_bounds.mat', 'beta_y_wt_experimental_data_set_angle_2_lb', 'beta_y_wt_experimental_data_set_angle_2_ub', 'beta_y_wt_experimental_data_set_angle_3_lb', 'beta_y_wt_experimental_data_set_angle_3_ub', 'beta_y_wt_experimental_data_set_angle_4_lb', 'beta_y_wt_experimental_data_set_angle_4_ub', 'beta_y_wt_experimental_data_set_angle_5_lb', 'beta_y_wt_experimental_data_set_angle_5_ub');
+
 %%
 % load('WTTests\WT_testData\SJD_wing_proc_modalData.mat');
 % modal_data_idx_angle_5_idx_speed_6 = modalData.stabPls{5, 6};

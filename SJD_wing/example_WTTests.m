@@ -32,18 +32,45 @@ ang_expr = 1.4; %note angles to access experimental data in degrees
 
 % see plotting exmaple below for output detailss>>>>>>>>>>>>>>>>>>>>>>>>
 %static repsonse...
+load('WT_strains_lower_and_upper_bounds.mat')
 figure;
 %plot numerical...
 plot(statResp.U, statResp.beta_y, 'k-'); hold on;
 plot(Uf, beta_yf, 'ro', 'markerfacecolor', 'r'); hold on;
 %plot experimental...
-plot(exp_statResp.U, exp_statResp.beta_y, 'bx-'); hold on;
-plot(exp_Uf, exp_beta_yf, 'r^'); hold on;
-xlabel('U, [m/s]'); ylabel('\beta_y, [1/m]');
-legend({'Static response (model)', 'Hopf Bifurcations (model)', 'Static response (expr)', 'Hopf Bifurcations (expr.)'})
+if ang_expr == 1.4
+    plot(exp_statResp.U, exp_statResp.beta_y, 'bx-'); hold on;
+    errorbar(exp_statResp.U, exp_statResp.beta_y, exp_statResp.beta_y-[0; beta_y_wt_experimental_data_set_angle_5_lb(2:end)], [0; beta_y_wt_experimental_data_set_angle_5_ub(2:end)]-exp_statResp.beta_y, 0.3, 0.3, 'bx-'); hold on;
+    errorbar(exp_Uf, exp_beta_yf, [], [], 0.3, 0.3, 'r^'); hold on;
+    xlabel('U, [m/s]'); ylabel('\beta_y, [1/m]');
+    legend({'Static response (model)', 'Hopf Bifurcations (model)', 'Static response (expr)', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Hopf Bifurcations (expr.)'})
+elseif ang_expr == 0.3
+    plot(exp_statResp.U, exp_statResp.beta_y, 'bx-'); hold on;
+    errorbar(exp_statResp.U, exp_statResp.beta_y, exp_statResp.beta_y-[0; beta_y_wt_experimental_data_set_angle_2_lb(2:end)], [0; beta_y_wt_experimental_data_set_angle_2_ub(2:end)]-exp_statResp.beta_y, 0.3, 0.3, 'bx-'); hold on;
+    errorbar(exp_Uf, exp_beta_yf, [], [], 0.3, 0.3, 'r^'); hold on;
+    xlabel('U, [m/s]'); ylabel('\beta_y, [1/m]');
+    legend({'Static response (model)', 'Hopf Bifurcations (model)', '', 'Static response (expr)', '', '', '', '', '', '', '', '', '', '', '', 'Hopf Bifurcations (expr.)'})
+elseif ang_expr == 0.6
+    plot(exp_statResp.U, exp_statResp.beta_y, 'bx-'); hold on;
+    errorbar(exp_statResp.U, exp_statResp.beta_y, exp_statResp.beta_y-[0; beta_y_wt_experimental_data_set_angle_3_lb(2:end)], [0; beta_y_wt_experimental_data_set_angle_3_ub(2:end)]-exp_statResp.beta_y, 0.3, 0.3, 'bx-'); hold on;
+    errorbar(exp_Uf, exp_beta_yf, [], [], 0.3, 0.3, 'r^'); hold on;
+    xlabel('U, [m/s]'); ylabel('\beta_y, [1/m]');
+    legend({'Static response (model)', 'Hopf Bifurcations (model)', '', 'Static response (expr)', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Hopf Bifurcations (expr.)'})
+elseif ang_expr == 1.1
+    plot(exp_statResp.U, exp_statResp.beta_y, 'bx-'); hold on;
+    errorbar(exp_statResp.U, exp_statResp.beta_y, exp_statResp.beta_y-[0; beta_y_wt_experimental_data_set_angle_4_lb(2:end)], [0; beta_y_wt_experimental_data_set_angle_4_ub(2:end)]-exp_statResp.beta_y, 0.3, 0.3, 'bx-'); hold on;
+    errorbar(exp_Uf, exp_beta_yf, [], [], 0.3, 0.3, 'r^'); hold on;
+    xlabel('U, [m/s]'); ylabel('\beta_y, [1/m]');
+    legend({'Static response (model)', 'Hopf Bifurcations (model)', '', 'Static response (expr)', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Hopf Bifurcations (expr.)'})
+else
+    plot(exp_statResp.U, exp_statResp.beta_y, 'bx-'); hold on;
+    plot(exp_Uf, exp_beta_yf, 'r^'); hold on;
+    xlabel('U, [m/s]'); ylabel('\beta_y, [1/m]');
+    legend({'Static response (model)', 'Hopf Bifurcations (model)', 'Static response (expr)', 'Hopf Bifurcations (expr.)'})
+end    
+
 load('OMA_freq_lower_and_upper_bounds.mat');
 load('OMA_damp_lower_and_upper_bounds.mat');
-
 exp_mkrs = {'mx', 'ko', 'b^', 'rs'};
 clrs = {'m', 'k', 'b', 'r'};
 figure;
