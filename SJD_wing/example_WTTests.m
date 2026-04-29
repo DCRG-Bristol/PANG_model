@@ -52,7 +52,9 @@ for mode=1:4
     plot(statResp.U, statResp.damp(mode,:), 'color', clrs{mode}); hold on;
     plot(exp_statResp.U, exp_statResp.damp(mode,:), exp_mkrs{mode},...
         'markerFaceColor', clrs{mode}); hold on;
-    if ang_expr == 1.4 & mode == 4
+    if ang_expr == 1.4 & mode == 3
+        errorbar(exp_statResp.U([1,5,6,7,8,9,10]), exp_statResp.damp(mode,[1,5,6,7,8,9,10]), exp_statResp.damp(mode,[1,5,6,7,8,9,10])-oop2_mode_angle_5_damp_lb, oop2_mode_angle_5_damp_ub-exp_statResp.damp(mode,[1,5,6,7,8,9,10]), 'bx'); hold on;
+    elseif ang_expr == 1.4 & mode == 4
         errorbar(exp_statResp.U([1,5,6,7,8,9,10,11,12,18]), exp_statResp.damp(mode,[1,5,6,7,8,9,10,11,12,18]), exp_statResp.damp(mode,[1,5,6,7,8,9,10,11,12,18])-tor1_mode_angle_5_damp_lb, tor1_mode_angle_5_damp_ub-exp_statResp.damp(mode,[1,5,6,7,8,9,10,11,12,18]), 'rx'); hold on;
     end
 
@@ -60,7 +62,9 @@ for mode=1:4
     plot(statResp.U, statResp.frqs(mode,:), clrs{mode}); hold on;
     plot(exp_statResp.U, exp_statResp.frqs(mode,:), exp_mkrs{mode},...
         'markerFaceColor', clrs{mode}); hold on;
-    if ang_expr == 1.4 & mode == 4
+    if ang_expr == 1.4 & mode == 3
+        errorbar(exp_statResp.U([1,5,6,7,8,9,10]), exp_statResp.frqs(mode,[1,5,6,7,8,9,10]), exp_statResp.frqs(mode,[1,5,6,7,8,9,10])-oop2_mode_angle_5_freq_lb, oop2_mode_angle_5_freq_ub-exp_statResp.frqs(mode,[1,5,6,7,8,9,10]), 'bx'); hold on;
+    elseif ang_expr == 1.4 & mode == 4
         errorbar(exp_statResp.U([1,5,6,7,8,9,10,11,12,18]), exp_statResp.frqs(mode,[1,5,6,7,8,9,10,11,12,18]), exp_statResp.frqs(mode,[1,5,6,7,8,9,10,11,12,18])-tor1_mode_angle_5_freq_lb, tor1_mode_angle_5_freq_ub-exp_statResp.frqs(mode,[1,5,6,7,8,9,10,11,12,18]), 'rx'); hold on;
     end
 end
