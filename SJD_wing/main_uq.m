@@ -1410,7 +1410,7 @@ load('ground_strains_lower_and_upper_bounds.mat', 'beta_y_g1_1_lb', 'beta_y_g1_1
 
 % Plots generator for parameter sweeps for the uncertain variables
 inputs_name = ["EI scaling factor"];  % list of the names of the uncertain variables
-outputs_name = ["Bend.strain(1/m) at 10deg", "Bend.strain(1/m) at 20deg", "Bend.strain(1/m) at 30deg", "Bend.strain(1/m) at 60deg"];       % list of the names of the QIs
+outputs_name = ["Bend.response(1/m) at 10deg", "Bend.response(1/m) at 20deg", "Bend.response(1/m) at 30deg", "Bend.response(1/m) at 60deg"];       % list of the names of the QIs
 N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
 descriptive_title_for_plots = sprintf('%s surrogate', MetaOpts.MetaType);
 N_eval = 100;                                                        % number of discretisation points for each uncertain variable (for plots)
@@ -1571,7 +1571,7 @@ load('ground_strains_lower_and_upper_bounds.mat', 'beta_x_g1_1_lb', 'beta_x_g1_1
 
 % Plots generator for parameter sweeps for the uncertain variables
 inputs_name = ["EI scaling factor", "GJ scaling factor"];  % list of the names of the uncertain variables
-outputs_name = ["Tors.strain(1/m) at 10deg", "Tors.strain(1/m) at 20deg", "Tors.strain(1/m) at 30deg", "Tors.strain(1/m) at 60deg"];       % list of the names of the QIs
+outputs_name = ["Tors.response(1/m) at 10deg", "Tors.response(1/m) at 20deg", "Tors.response(1/m) at 30deg", "Tors.response(1/m) at 60deg"];       % list of the names of the QIs
 N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
 descriptive_title_for_plots = sprintf('%s surrogate', MetaOpts.MetaType);
 N_eval = 100;                                                        % number of discretisation points for each uncertain variable (for plots)
@@ -1730,7 +1730,7 @@ load('ground_strains_lower_and_upper_bounds.mat', 'beta_y_g1_2_lb', 'beta_y_g1_2
 
 % Plots generator for parameter sweeps for the uncertain variables
 inputs_name = ["EI scaling factor"];  % list of the names of the uncertain variables
-outputs_name = ["Bend.strain(1/m) at 10deg", "Bend.strain(1/m) at 20deg", "Bend.strain(1/m) at 30deg", "Bend.strain(1/m) at 60deg"];       % list of the names of the QIs
+outputs_name = ["Bend.response(1/m) at 10deg", "Bend.response(1/m) at 20deg", "Bend.response(1/m) at 30deg", "Bend.response(1/m) at 60deg"];       % list of the names of the QIs
 N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
 descriptive_title_for_plots = sprintf('%s surrogate', MetaOpts.MetaType);
 N_eval = 100;                                                        % number of discretisation points for each uncertain variable (for plots)
@@ -1891,7 +1891,7 @@ load('ground_strains_lower_and_upper_bounds.mat', 'beta_x_g1_2_lb', 'beta_x_g1_2
 
 % Plots generator for parameter sweeps for the uncertain variables
 inputs_name = ["EI scaling factor", "GJ scaling factor"];  % list of the names of the uncertain variables
-outputs_name = ["Tors.strain(1/m) at 10deg", "Tors.strain(1/m) at 20deg", "Tors.strain(1/m) at 30deg", "Tors.strain(1/m) at 60deg"];       % list of the names of the QIs
+outputs_name = ["Tors.response(1/m) at 10deg", "Tors.response(1/m) at 20deg", "Tors.response(1/m) at 30deg", "Tors.response(1/m) at 60deg"];       % list of the names of the QIs
 N_outputs = length(outputs_name);             % number of quantities of interest (QIs)
 descriptive_title_for_plots = sprintf('%s surrogate', MetaOpts.MetaType);
 N_eval = 100;                                                        % number of discretisation points for each uncertain variable (for plots)
