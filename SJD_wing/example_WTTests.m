@@ -11,8 +11,8 @@ run = run.setTransform('modal', 14);
 
 %% run for a selected angle
 
-ang = 1.6*pi/180; %angle to run..
-ang_expr = 1.9; %note angles to access experimental data in degrees
+ang = 0.6*pi/180; %angle to run..
+ang_expr = 0.6; %note angles to access experimental data in degrees
 
 %function to retrieve processes experimental data...
 [ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
@@ -60,10 +60,44 @@ subplot(2,1,1); xline(Uf); xlabel('U, [m/s]'); ylabel('\zeta, [-]');
 set(gca, 'xAxisLocation', 'origin')
 subplot(2,1,2); xline(Uf); xlabel('U, [m/s]'); ylabel('\omega, [Hz]');
 
-%% work in progress - potential option with COCO...
+%% COCO-based continuation...
 
-% %run for a fixed angle case...
-% [statResp, Uf, beta_yf, beta_xf, coco_log] = W_statStab(run, true, ang, 0.275, 0.44, 'Sxx', 1);
-% 
-% %compute entire boundary...
-% [U_bd, beta_ybd, beta_xbd] = W_stabEnvel(run, coco_log);
+%required: COCO version 2020 installed and initialied in path.
+
+%the continuation processes are called across two steps..
+
+%STEP1: equilibirum continuation: same function 'W_statStab' with the
+%second entry (isCOCO) set to true. Collect 'coco_log' from output.
+[statResp, Uf, beta_yf, beta_xf, coco_log] = W_statStab(run, true, ang, 0.28, 0.44, 'Sxx', 0.8);
+
+%STEP2: call continuation function: pass in the 'coco_log' from STEP1
+[lcoResp, coco_log] = W_LCO(run, coco_log);
+
+%see output structures below...
+
+%plot bifurcation diagram....beta_y response>>>>>
+%LCO output structure....
+max_beta_y_LCO = lcoResp.mx_beta_y;
+min_beta_y_LCO = lcoResp.mn_beta_y;
+frq_LCO = lcoResp.frq;
+U_LCO = lcoResp.U;
+isStab_LCO = lcoResp.isStab_LCO;
+LCO_ampl = max_beta_y_LCO - min_beta_y_LCO; %peak-to-peak amplitude
+
+figure; %..plot peak-to peak amplitude...
+plot(Uf, zeros(size(Uf)), '^', 'markerFaceColor', 'r', 'color', 'k'); %hopf, points...
+hold on;
+
+%stable lco parts..make otehr NaN
+stable_LCO_beta_y=LCO_ampl; stable_LCO_beta_y(~isStab_LCO)=NaN;
+
+%unstable lco parts..make others NaN
+unstable_LCO_beta_y=LCO_ampl; unstable_LCO_beta_y(isStab_LCO)=NaN;
+
+plot(U_LCO, stable_LCO_beta_y, 'b-'); %stable LCO..
+hold on;
+plot(U_LCO, unstable_LCO_beta_y, 'b--'); %unstable LCO..
+hold on;
+xlabel('Airspeed, U, [m/s]');
+ylabel('\beta_y amplitude, [1/m]');
+
