@@ -1,10 +1,7 @@
-function [true_ang, statResp, Uf, beta_yf, beta_xf] = expr_statStab(ang)
+function [true_ang, lcoResp] = expr_lco(ang)
 
 Data = open('WTTests\WT_testData\SJD_wing_rawData.mat');% experimental data must be added to this folder
 Data=Data.Data;
-
-modalData = open('WTTests\WT_testData\SJD_wing_proc_modalData.mat');
-modalData = modalData.modalData;
 
 %sensors...
 sen_idx = [1,2,3,5]; %sensors to use
@@ -36,11 +33,6 @@ true_ang = Data.P1.val(p1_idx);
 
 v_expr = Data.P2{p1_idx}.val; %experimental velo. at this angle..
 dBlock = Data.P2{p1_idx}.Data;
-instabTest=false;
-
-hopfSpeed = [0,0];
-hopfMy = [0,0];
-hopfMx = [0,0];
 
 [~,velOdr] = sort(v_expr);
 for v_idx=1:length(v_expr)
@@ -57,41 +49,23 @@ for v_idx=1:length(v_expr)
 
     expr_equib(v_idx,:) = Mean;
 
-    if instabTest
-        if stab_res
-        else
-            hopfSpeed(1,2) = v_expr(p2_idx);
-            hopfMy(1,2) = expr_equib(v_idx,1)-expr_equib(1,1);
-            hopfMx(1,2) = expr_equib(v_idx,3)-expr_equib(1,3);
-        end
+
+    if stab_res %if unstable...
+        beta_y(:,v_idx) = sort(poinc{1});
+        beta_x(:,v_idx) = sort(poinc{3});
+        lcoFrq(v_idx) = 1./prd;
     else
-        if stab_res
-            hopfSpeed(1,1) = v_expr(velOdr(v_idx-1));
-            hopfMy(1,1) =...
-                expr_equib(velOdr(v_idx-1),1)-expr_equib(1,1);
-            hopfMx(1,1) = expr_equib(v_idx-1,3)-expr_equib(1,3);
-        end
+        beta_y(:,v_idx) = [NaN; NaN];
+        beta_x(:,v_idx) = [NaN; NaN];
+        lcoFrq(v_idx) = [NaN];
     end
-    instabTest=stab_res;
 end
 
-hopfSpeed(hopfSpeed==0)=NaN;
-hopfMy(hopfMy==0)=NaN;
-hopfMx(hopfMx==0)=NaN;
-
-statResp.U = v_expr(velOdr);
-statResp.beta_x = (expr_equib(velOdr,3)-expr_equib(1,3))/(GJ_ref);
-statResp.beta_y = (expr_equib(velOdr,1)-expr_equib(1,1))/(EI_ref);
-
-for mode=1:4
-    pls = modalData.poles{mode}{p1_idx}(1:length(v_expr)); pls=pls(:)';
-    statResp.frqs(mode,:) = abs(pls);
-    statResp.damp(mode,:) = -real(pls)./abs(pls);
-end
-
-Uf = hopfSpeed;
-beta_yf = hopfMy/(EI_ref);
-beta_xf = hopfMx/(GJ_ref);
+lcoResp.U = v_expr(velOdr);
+lcoResp.mn_beta_x = (beta_x(1,velOdr)-expr_equib(1,3))/(GJ_ref);
+lcoResp.mn_beta_y = (beta_y(1,velOdr)-expr_equib(1,1))/(EI_ref);
+lcoResp.mx_beta_x = (beta_x(2,velOdr)-expr_equib(1,3))/(GJ_ref);
+lcoResp.mx_beta_y = (beta_y(2,velOdr)-expr_equib(1,1))/(EI_ref);
 
 %% Identify Poincare intersections
 

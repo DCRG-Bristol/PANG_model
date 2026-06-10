@@ -12,7 +12,7 @@ run = run.setTransform('modal', 14);
 %% run for a selected angle
 
 ang = 0.6*pi/180; %angle to run..
-ang_expr = 0.6; %note angles to access experimental data in degrees
+ang_expr = 1.1; %note angles to access experimental data in degrees
 
 %function to retrieve processes experimental data...
 [ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
@@ -62,6 +62,9 @@ subplot(2,1,2); xline(Uf); xlabel('U, [m/s]'); ylabel('\omega, [Hz]');
 
 %% COCO-based continuation...
 
+%experimental results...
+[ang_true, lcoResp_expr] = expr_lco(ang_expr);
+
 %required: COCO version 2020 installed and initialied in path.
 
 %the continuation processes are called across two steps..
@@ -98,6 +101,11 @@ plot(U_LCO, stable_LCO_beta_y, 'b-'); %stable LCO..
 hold on;
 plot(U_LCO, unstable_LCO_beta_y, 'b--'); %unstable LCO..
 hold on;
+
+%add experimental data...
+plot(lcoResp_expr.U, abs(lcoResp_expr.mx_beta_y - lcoResp_expr.mn_beta_y(1,:)), 'ko',...
+    'markerfaceColor', [0.3, 0.3, 0.3]); hold on;
+
 xlabel('Airspeed, U, [m/s]');
 ylabel('\beta_y amplitude, [1/m]');
 
