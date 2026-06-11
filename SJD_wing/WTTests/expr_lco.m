@@ -66,6 +66,7 @@ lcoResp.mn_beta_x = (beta_x(1,velOdr)-expr_equib(1,3))/(GJ_ref);
 lcoResp.mn_beta_y = (beta_y(1,velOdr)-expr_equib(1,1))/(EI_ref);
 lcoResp.mx_beta_x = (beta_x(2,velOdr)-expr_equib(1,3))/(GJ_ref);
 lcoResp.mx_beta_y = (beta_y(2,velOdr)-expr_equib(1,1))/(EI_ref);
+lcoResp.frq = lcoFrq(velOdr);
 
 %% Identify Poincare intersections
 

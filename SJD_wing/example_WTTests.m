@@ -1,4 +1,4 @@
-clear all; %close all;
+clear all; close all;
 
 %add folder below to path - contains functions relating to the experimental
 %data and test-specific computations
@@ -11,7 +11,7 @@ run = run.setTransform('modal', 14);
 
 %% run for a selected angle
 
-ang = 0.6*pi/180; %angle to run..
+ang = 1.1*pi/180; %angle to run..
 ang_expr = 1.1; %note angles to access experimental data in degrees
 
 %function to retrieve processes experimental data...
@@ -71,7 +71,7 @@ subplot(2,1,2); xline(Uf); xlabel('U, [m/s]'); ylabel('\omega, [Hz]');
 
 %STEP1: equilibirum continuation: same function 'W_statStab' with the
 %second entry (isCOCO) set to true. Collect 'coco_log' from output.
-[statResp, Uf, beta_yf, beta_xf, coco_log] = W_statStab(run, true, ang, 0.28, 0.44, 'Sxx', 0.8);
+[statResp, Uf, beta_yf, beta_xf, coco_log] = W_statStab(run, true, ang, 0.275, 0.44, 'Sxx', 1);
 
 %STEP2: call continuation function: pass in the 'coco_log' from STEP1
 [lcoResp, coco_log] = W_LCO(run, coco_log);
