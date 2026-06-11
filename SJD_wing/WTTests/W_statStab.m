@@ -46,7 +46,7 @@ if isCont
     prob_equib = coco_set(prob_equib,'ode','vectorized', false,...
         'ResTol',1e-3, 'Tol', 1e-1);
 
-    U0 = 11; %initial velocity
+    U0 = 18; %initial velocity
 
     prob_equib = ode_isol2ep(prob_equib, '',...
         @(q,p)(...
@@ -55,13 +55,13 @@ if isCont
         q,... %initial estimate
         {'U', 'alp'}, [U0, ang]); %continuation variables and initial values...
 
-    coco_log.name = ['eq_',datestr(now, 'HH_MM_SS_dd_mm_yy')];
+    coco_log.ep.name = ['eq_',datestr(now, 'HH_MM_SS_dd_mm_yy')];
 
     %call coco.....
-    bd_TrvEquib = coco(prob_equib, coco_log.name, [],...
-        1, {'U'}, [10, 29]); %run continuuation between 10<U<21
+    bd_TrvEquib = coco(prob_equib, coco_log.ep.name, [],...
+        1, {'U'}, [15, 29]); %run continuuation between 10<U<21
 
-    equib = coco_bd_read(coco_log.name);
+    equib = coco_bd_read(coco_log.ep.name);
     q = coco_bd_col(equib, 'x');
     eigs_all = coco_bd_col(equib, 'eigs');
     Ur = coco_bd_col(equib, 'U');
@@ -95,6 +95,8 @@ if isCont
     end
 
     coco_log.inputPars = varargin;
+    coco_log.ML = alpL;
+    coco_log.lam = lamL;
     coco_log.ang = ang;
 
 else
@@ -183,12 +185,12 @@ obj.ML = ML0;
 %% utility functions...
     function beta_y = rbm(qin)
         beta_y =...
-            project.basis.W2(s_I)'*obj.transF*qin(obj.structDisp) - beta_y0;
+            project.basis.W2(s_I)'*obj.transF*qin(obj.structDisp,:) - beta_y0;
     end
 
     function beta_x = rtm(qin)
         beta_x =...
-            project.basis.T1(s_II)'*obj.transF*qin(obj.structDisp) - beta_x0;
+            project.basis.T1(s_II)'*obj.transF*qin(obj.structDisp,:) - beta_x0;
     end
 
 end
