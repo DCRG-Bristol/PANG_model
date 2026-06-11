@@ -83,7 +83,7 @@ subplot(2,1,2); xline(Uf); xlabel('U, [m/s]'); ylabel('\omega, [Hz]');
 %LCO output structure....
 max_beta_y_LCO = lcoResp.mx_beta_y;
 min_beta_y_LCO = lcoResp.mn_beta_y;
-frq_LCO = lcoResp.frq; %frequencies for the LCO orbits
+frq_LCO = lcoResp.frq; %frequencies for the LCO orbits (experimental data also available in 'lcoResp_expr')
 U_LCO = lcoResp.U;
 isStab_LCO = lcoResp.isStab_LCO;
 LCO_ampl = max_beta_y_LCO - min_beta_y_LCO; %peak-to-peak amplitude
