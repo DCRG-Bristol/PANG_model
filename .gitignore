@@ -64,6 +64,8 @@ octave-workspace
 *.png
 *.jpg
 *.gif
+*.txt
+!SJD_wing/readme.txt
 
 
 
