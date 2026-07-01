@@ -1,4 +1,4 @@
-function [Y1, Y2, Y3] = model_W1_3(X)
+function [Y1, Y2, Y3, Y4] = model_W1_3(X)
 %% Title section - QIs versus wing root pitch angle and lambda_L, alpha_L, EI, GJ, Sxx (W1.3 test - LCOs)
 %{
 --------------------------------------------------------
@@ -20,6 +20,7 @@ Outputs:
 * Y1        : amplitudes of the LCO bending responses (max response-min response) for increasing airspeed 
 * Y2        : amplitudes of the LCO torsional responses (max-min) for increasing airspeed 
 * Y3        : frequencies of the LCO orbits for increasing airspeed 
+* Y4        : vector of increasing airspeeds at which the LCOs are observed
 %}
 %%
 %add folder below to path - contains functions relating to the experimental
@@ -50,5 +51,6 @@ max_beta_x_LCO = lcoResp.mx_beta_x;
 min_beta_x_LCO = lcoResp.mn_beta_x;
 Y2 = max_beta_x_LCO - min_beta_x_LCO; %peak-to-peak amplitude
 Y3 = lcoResp.frq;
+Y4 = lcoResp.U;
 
 end
