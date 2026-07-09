@@ -1,4 +1,4 @@
-function [Y1, Y2, Y3, Y4, Y5] = model_W1_W2(X)
+function [Y1, Y2, Y3, Y4, Y5, Y6] = model_W1_W2(X)
 %% Title section - QIs versus wing root pitch angle and lambda_L, alpha_L, EI, GJ, Sxx (W1.1, W1.2, W2 tests)
 %{
 --------------------------------------------------------
@@ -35,6 +35,7 @@ Outputs:
     * Y5(2, :)  : damping ratios for the first in-plane bending mode (IP1)
     * Y5(3, :)  : damping ratios for the second out-of-plane bending mode (OOP2)
     * Y5(4, :)  : damping ratios for the first torsional mode (TOR1)
+* Y6        : vector of increasing airspeeds
 --------------------------------------------------------
 %}
 %%
@@ -54,5 +55,6 @@ ang = 1.0*pi/180; %wing root pitch angle to run..; transform from deg to rad
 
 Y4 = statResp.frqs;
 Y5 = statResp.damp;
+Y6 = statResp.U;
 
 end
