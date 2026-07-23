@@ -123,6 +123,14 @@ ang_expr_ = 0.3; %note angles to access experimental data in degrees
 save('prediction_coco_before_update_alpha_03.mat', 'lcoResp_expr_', '-append');
 save('prediction_coco_after_update_alpha_03.mat', 'lcoResp_expr_', '-append');
 
+%% run for a selected angle
+ang_expr_ = 0.3; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true_, exp_statResp_, exp_Uf_, exp_beta_yf_, exp_beta_xf_] = expr_statStab(ang_expr_);
+save('prediction_coco_before_update_alpha_03.mat', 'exp_Uf_', '-append');
+save('prediction_coco_after_update_alpha_03.mat', 'exp_Uf_', '-append');
+
 %% COCO-based continuation...
 
 ang_expr_ = 0.6; %note angles to access experimental data in degrees
@@ -132,6 +140,14 @@ ang_expr_ = 0.6; %note angles to access experimental data in degrees
 
 save('prediction_coco_before_update_alpha_06.mat', 'lcoResp_expr_', '-append');
 save('prediction_coco_after_update_alpha_06.mat', 'lcoResp_expr_', '-append');
+
+%% run for a selected angle
+ang_expr_ = 0.6; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true_, exp_statResp_, exp_Uf_, exp_beta_yf_, exp_beta_xf_] = expr_statStab(ang_expr_);
+save('prediction_coco_before_update_alpha_06.mat', 'exp_Uf_', '-append');
+save('prediction_coco_after_update_alpha_06.mat', 'exp_Uf_', '-append');
 
 %% COCO-based continuation...
 
@@ -143,6 +159,14 @@ ang_expr_ = 1.1; %note angles to access experimental data in degrees
 save('prediction_coco_before_update_alpha_11.mat', 'lcoResp_expr_', '-append');
 save('prediction_coco_after_update_alpha_11.mat', 'lcoResp_expr_', '-append');
 
+%% run for a selected angle
+ang_expr_ = 1.1; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true_, exp_statResp_, exp_Uf_, exp_beta_yf_, exp_beta_xf_] = expr_statStab(ang_expr_);
+save('prediction_coco_before_update_alpha_11.mat', 'exp_Uf_', '-append');
+save('prediction_coco_after_update_alpha_11.mat', 'exp_Uf_', '-append');
+
 %% COCO-based continuation...
 
 ang_expr_ = 1.4; %note angles to access experimental data in degrees
@@ -152,3 +176,11 @@ ang_expr_ = 1.4; %note angles to access experimental data in degrees
 
 save('prediction_coco_before_update_alpha_14.mat', 'lcoResp_expr_', '-append');
 save('prediction_coco_after_update_alpha_14.mat', 'lcoResp_expr_', '-append');
+
+%% run for a selected angle
+ang_expr_ = 1.4; %note angles to access experimental data in degrees
+
+%function to retrieve processes experimental data...
+[ang_true_, exp_statResp_, exp_Uf_, exp_beta_yf_, exp_beta_xf_] = expr_statStab(ang_expr_);
+save('prediction_coco_before_update_alpha_14.mat', 'exp_Uf_', '-append');
+save('prediction_coco_after_update_alpha_14.mat', 'exp_Uf_', '-append');
