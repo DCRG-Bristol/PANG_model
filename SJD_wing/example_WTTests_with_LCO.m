@@ -11,8 +11,8 @@ run = run.setTransform('modal', 14);
 
 %% run for a selected angle
 
-ang = 1.0*pi/180; %angle to run..
-ang_expr = 1.1; %note angles to access experimental data in degrees
+ang = 0.3*pi/180; %angle to run..
+ang_expr = 0.3; %note angles to access experimental data in degrees
 
 %function to retrieve processes experimental data...
 [ang_true, exp_statResp, exp_Uf, exp_beta_yf, exp_beta_xf] = expr_statStab(ang_expr);
@@ -21,7 +21,7 @@ ang_expr = 1.1; %note angles to access experimental data in degrees
 %values...AVAILABLE ANGLES: [0, 0.3, 0.6, 1.1, 1.4, 1.9, 2.5] degrees
 
 %function to run static responses and stability checks...
-[statResp, Uf, beta_yf, beta_xf] = W_statStab(run, false, ang, 0.275, 0.44, 'EI', 1, 'GJ', 1, 'Sxx', 1, 'Szz', 1);
+[statResp, Uf, beta_yf, beta_xf] = W_statStab(run, false, ang, 0.275, 0.44, 'EI', 1.0143, 'GJ', 1.0789, 'Sxx', 1.1157, 'Szz', 1.1157);
 %inputs as below>>>>
 %run - run object
 %ang - wing root pitch angle
@@ -62,6 +62,9 @@ set(gca, 'xAxisLocation', 'origin')
 subplot(2,1,2); xline(Uf); xlabel('U, [m/s]'); ylabel('\omega, [Hz]');
 
 %% COCO-based continuation...
+
+ang = 1.2*pi/180; %angle to run..
+ang_expr = 1.4; %note angles to access experimental data in degrees
 
 %experimental results...
 [ang_true, lcoResp_expr] = expr_lco(ang_expr);
@@ -110,3 +113,42 @@ plot(lcoResp_expr.U, abs(lcoResp_expr.mx_beta_y - lcoResp_expr.mn_beta_y(1,:)), 
 xlabel('Airspeed, U, [m/s]');
 ylabel('\beta_y amplitude, [1/m]');
 
+%% COCO-based continuation...
+
+ang_expr_ = 0.3; %note angles to access experimental data in degrees
+
+%experimental results...
+[ang_true_, lcoResp_expr_] = expr_lco(ang_expr_);
+
+save('prediction_coco_before_update_alpha_03.mat', 'lcoResp_expr_', '-append');
+save('prediction_coco_after_update_alpha_03.mat', 'lcoResp_expr_', '-append');
+
+%% COCO-based continuation...
+
+ang_expr_ = 0.6; %note angles to access experimental data in degrees
+
+%experimental results...
+[ang_true_, lcoResp_expr_] = expr_lco(ang_expr_);
+
+save('prediction_coco_before_update_alpha_06.mat', 'lcoResp_expr_', '-append');
+save('prediction_coco_after_update_alpha_06.mat', 'lcoResp_expr_', '-append');
+
+%% COCO-based continuation...
+
+ang_expr_ = 1.1; %note angles to access experimental data in degrees
+
+%experimental results...
+[ang_true_, lcoResp_expr_] = expr_lco(ang_expr_);
+
+save('prediction_coco_before_update_alpha_11.mat', 'lcoResp_expr_', '-append');
+save('prediction_coco_after_update_alpha_11.mat', 'lcoResp_expr_', '-append');
+
+%% COCO-based continuation...
+
+ang_expr_ = 1.4; %note angles to access experimental data in degrees
+
+%experimental results...
+[ang_true_, lcoResp_expr_] = expr_lco(ang_expr_);
+
+save('prediction_coco_before_update_alpha_14.mat', 'lcoResp_expr_', '-append');
+save('prediction_coco_after_update_alpha_14.mat', 'lcoResp_expr_', '-append');
